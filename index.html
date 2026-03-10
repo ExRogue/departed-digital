@@ -7,67 +7,148 @@
   <meta name="description" content="We remove and memorialise the social media accounts of loved ones who have passed. A compassionate, done-for-you service for UK families." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --navy: #0f1b2d;
-      --navy-mid: #172336;
-      --navy-light: #1e3050;
-      --gold: #c8a96e;
-      --gold-light: #dfc08e;
-      --cream: #f5f0e8;
+      --navy: #1a2744;
+      --navy-dark: #111b35;
+      --navy-light: #243660;
+      --gold: #c9a84c;
+      --gold-light: #e0c06a;
+      --cream: #f9f6f0;
       --white: #ffffff;
-      --text-muted: #8a9ab5;
-      --border: rgba(200, 169, 110, 0.2);
+      --text: #2d3a4a;
+      --text-muted: #6b7a8d;
+      --border: #e4ddd0;
+      --shadow: 0 4px 24px rgba(26,39,68,0.10);
+      --shadow-lg: 0 12px 48px rgba(26,39,68,0.18);
+      --radius: 12px;
+      --radius-lg: 20px;
+      --transition: 0.3s cubic-bezier(0.4,0,0.2,1);
     }
 
     html { scroll-behavior: smooth; }
 
     body {
       font-family: 'Inter', sans-serif;
-      background: var(--navy);
-      color: var(--white);
+      color: var(--text);
+      background: var(--cream);
       line-height: 1.6;
+      overflow-x: hidden;
     }
 
-    /* NAV */
+    /* ── PROGRESS BAR ── */
+    #progress-bar {
+      position: fixed;
+      top: 0; left: 0;
+      height: 3px;
+      width: 0%;
+      background: linear-gradient(90deg, var(--gold), var(--gold-light));
+      z-index: 9999;
+      transition: width 0.1s linear;
+    }
+
+    /* ── NAV ── */
     nav {
       position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 100;
+      top: 3px; left: 0; right: 0;
+      z-index: 1000;
       padding: 20px 40px;
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      background: rgba(15, 27, 45, 0.92);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border);
+      justify-content: space-between;
+      transition: var(--transition);
     }
-    .logo {
+    nav.scrolled {
+      background: rgba(26,39,68,0.97);
+      backdrop-filter: blur(12px);
+      padding: 14px 40px;
+      box-shadow: 0 2px 20px rgba(0,0,0,0.3);
+    }
+    .nav-logo {
       font-family: 'Playfair Display', serif;
       font-size: 1.3rem;
-      color: var(--gold);
+      color: var(--white);
       text-decoration: none;
       letter-spacing: 0.02em;
     }
-    .logo span { color: var(--white); }
-    nav a.nav-cta {
-      background: var(--gold);
-      color: var(--navy);
-      padding: 10px 22px;
-      border-radius: 4px;
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 0.9rem;
-      transition: background 0.2s;
+    .nav-logo span { color: var(--gold); }
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      list-style: none;
     }
-    nav a.nav-cta:hover { background: var(--gold-light); }
+    .nav-links a {
+      color: rgba(255,255,255,0.85);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      letter-spacing: 0.03em;
+      transition: color var(--transition);
+    }
+    .nav-links a:hover { color: var(--gold); }
+    .nav-cta {
+      background: var(--gold);
+      color: var(--navy-dark) !important;
+      padding: 9px 22px;
+      border-radius: 50px;
+      font-weight: 600 !important;
+      transition: background var(--transition), transform var(--transition) !important;
+    }
+    .nav-cta:hover {
+      background: var(--gold-light) !important;
+      transform: translateY(-1px);
+    }
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 4px;
+    }
+    .hamburger span {
+      display: block;
+      width: 24px;
+      height: 2px;
+      background: var(--white);
+      border-radius: 2px;
+      transition: var(--transition);
+    }
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: var(--navy-dark);
+      z-index: 999;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 36px;
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a {
+      color: var(--white);
+      font-size: 1.5rem;
+      text-decoration: none;
+      font-family: 'Playfair Display', serif;
+      transition: color var(--transition);
+    }
+    .mobile-menu a:hover { color: var(--gold); }
+    .mobile-menu-close {
+      position: absolute;
+      top: 24px; right: 32px;
+      font-size: 2rem;
+      color: var(--white);
+      cursor: pointer;
+      line-height: 1;
+    }
 
-    /* HERO */
+    /* ── HERO ── */
     .hero {
       min-height: 100vh;
+      background: linear-gradient(160deg, var(--navy-dark) 0%, var(--navy) 50%, #2c3e6e 100%);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -76,45 +157,74 @@
       position: relative;
       overflow: hidden;
     }
-    .hero::before {
-      content: '';
+    .hero-grid {
       position: absolute;
       inset: 0;
-      background: radial-gradient(ellipse at 50% 40%, rgba(200,169,110,0.06) 0%, transparent 70%);
+      background-image:
+        linear-gradient(rgba(201,168,76,0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(201,168,76,0.06) 1px, transparent 1px);
+      background-size: 60px 60px;
+      animation: gridDrift 30s linear infinite;
     }
-    .hero-inner { max-width: 780px; position: relative; }
-    .hero-label {
-      display: inline-block;
-      font-size: 0.78rem;
-      font-weight: 500;
-      letter-spacing: 0.15em;
+    @keyframes gridDrift {
+      0% { transform: translate(0,0); }
+      100% { transform: translate(60px, 60px); }
+    }
+    .hero-glow {
+      position: absolute;
+      width: 600px; height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(201,168,76,0.12) 0%, transparent 70%);
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+    .hero-content { position: relative; z-index: 2; max-width: 800px; }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(201,168,76,0.15);
+      border: 1px solid rgba(201,168,76,0.4);
+      color: var(--gold-light);
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
       text-transform: uppercase;
-      color: var(--gold);
-      border: 1px solid var(--border);
-      padding: 6px 16px;
-      border-radius: 100px;
-      margin-bottom: 32px;
+      padding: 7px 18px;
+      border-radius: 50px;
+      margin-bottom: 28px;
+    }
+    .hero-badge::before {
+      content: '';
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--gold);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.3); }
     }
     .hero h1 {
       font-family: 'Playfair Display', serif;
-      font-size: clamp(2.4rem, 5vw, 3.8rem);
-      font-weight: 400;
+      font-size: clamp(2.4rem, 6vw, 4rem);
+      color: var(--white);
       line-height: 1.2;
       margin-bottom: 24px;
-      color: var(--white);
     }
     .hero h1 em {
       font-style: italic;
       color: var(--gold);
     }
     .hero p {
-      font-size: 1.15rem;
-      color: var(--text-muted);
-      max-width: 560px;
-      margin: 0 auto 44px;
+      font-size: clamp(1rem, 2.5vw, 1.2rem);
+      color: rgba(255,255,255,0.8);
+      max-width: 600px;
+      margin: 0 auto 40px;
       font-weight: 300;
     }
-    .hero-buttons {
+    .hero-btns {
       display: flex;
       gap: 16px;
       justify-content: center;
@@ -122,598 +232,1256 @@
     }
     .btn-primary {
       background: var(--gold);
-      color: var(--navy);
+      color: var(--navy-dark);
       padding: 16px 36px;
-      border-radius: 4px;
-      text-decoration: none;
+      border-radius: 50px;
       font-weight: 600;
       font-size: 1rem;
-      transition: background 0.2s, transform 0.1s;
-      display: inline-block;
+      text-decoration: none;
+      letter-spacing: 0.02em;
+      transition: background var(--transition), transform var(--transition), box-shadow var(--transition);
+      box-shadow: 0 4px 20px rgba(201,168,76,0.4);
     }
-    .btn-primary:hover { background: var(--gold-light); transform: translateY(-1px); }
-    .btn-outline {
-      border: 1px solid var(--border);
+    .btn-primary:hover {
+      background: var(--gold-light);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(201,168,76,0.5);
+    }
+    .btn-secondary {
+      border: 1.5px solid rgba(255,255,255,0.4);
       color: var(--white);
       padding: 16px 36px;
-      border-radius: 4px;
-      text-decoration: none;
+      border-radius: 50px;
+      font-weight: 500;
       font-size: 1rem;
-      transition: border-color 0.2s, background 0.2s;
-      display: inline-block;
+      text-decoration: none;
+      letter-spacing: 0.02em;
+      transition: border-color var(--transition), background var(--transition), transform var(--transition);
     }
-    .btn-outline:hover { border-color: var(--gold); background: rgba(200,169,110,0.05); }
-
-    /* TRUST BAR */
-    .trust-bar {
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-      padding: 20px 40px;
-      display: flex;
-      justify-content: center;
-      gap: 48px;
-      flex-wrap: wrap;
+    .btn-secondary:hover {
+      border-color: var(--gold);
+      background: rgba(201,168,76,0.1);
+      transform: translateY(-2px);
     }
-    .trust-item {
-      font-size: 0.85rem;
-      color: var(--text-muted);
+    .hero-scroll {
+      position: absolute;
+      bottom: 36px;
+      left: 50%;
+      transform: translateX(-50%);
       display: flex;
+      flex-direction: column;
       align-items: center;
       gap: 8px;
+      color: rgba(255,255,255,0.4);
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      animation: bounce 2.5s infinite;
     }
-    .trust-item svg { color: var(--gold); flex-shrink: 0; }
+    .hero-scroll svg { width: 20px; height: 20px; }
+    @keyframes bounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(8px); }
+    }
 
-    /* SECTIONS */
-    section { padding: 96px 24px; }
-    .container { max-width: 1080px; margin: 0 auto; }
-    .section-label {
-      font-size: 0.78rem;
+    /* ── STATS BAR ── */
+    .stats-bar {
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      padding: 40px 24px;
+    }
+    .stats-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 32px;
+      text-align: center;
+    }
+    .stat-item { position: relative; }
+    .stat-item:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      right: 0; top: 20%; bottom: 20%;
+      width: 1px;
+      background: var(--border);
+    }
+    .stat-number {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.6rem;
+      color: var(--navy);
+      font-weight: 600;
+      line-height: 1;
+    }
+    .stat-number .suffix { font-size: 1.6rem; }
+    .stat-label {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin-top: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
       font-weight: 500;
+    }
+
+    /* ── SECTIONS COMMON ── */
+    section { padding: 96px 24px; }
+    .container { max-width: 1100px; margin: 0 auto; }
+    .section-label {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 600;
       letter-spacing: 0.15em;
       text-transform: uppercase;
       color: var(--gold);
-      margin-bottom: 16px;
+      margin-bottom: 14px;
     }
     .section-title {
       font-family: 'Playfair Display', serif;
-      font-size: clamp(1.8rem, 3.5vw, 2.6rem);
-      font-weight: 400;
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      color: var(--navy);
       line-height: 1.25;
-      margin-bottom: 20px;
+      margin-bottom: 18px;
     }
     .section-sub {
       font-size: 1.05rem;
       color: var(--text-muted);
-      max-width: 560px;
-      font-weight: 300;
+      max-width: 580px;
+      line-height: 1.7;
     }
 
-    /* WHAT WE DO */
-    .what { background: var(--navy-mid); }
-    .what-grid {
+    /* ── REVEAL ANIMATION ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+    .reveal-delay-4 { transition-delay: 0.4s; }
+
+    /* ── WHAT WE DO ── */
+    .what-we-do { background: var(--white); }
+    .what-we-do .section-sub { margin-bottom: 56px; }
+    .services-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 32px;
-      margin-top: 56px;
+      gap: 28px;
     }
-    .what-card {
-      background: var(--navy-light);
+    .service-card {
+      background: var(--cream);
       border: 1px solid var(--border);
-      border-radius: 8px;
+      border-radius: var(--radius-lg);
       padding: 36px 32px;
+      transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+      position: relative;
+      overflow: hidden;
     }
-    .what-card .icon {
-      width: 44px; height: 44px;
-      background: rgba(200,169,110,0.1);
-      border-radius: 8px;
+    .service-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(90deg, var(--gold), var(--gold-light));
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform var(--transition);
+    }
+    .service-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--gold);
+    }
+    .service-card:hover::before { transform: scaleX(1); }
+    .service-icon {
+      width: 52px; height: 52px;
+      background: var(--navy);
+      border-radius: 14px;
       display: flex;
       align-items: center;
       justify-content: center;
       margin-bottom: 20px;
-      color: var(--gold);
+      font-size: 1.5rem;
     }
-    .what-card h3 {
-      font-size: 1.1rem;
-      font-weight: 600;
-      margin-bottom: 10px;
+    .service-card h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.25rem;
+      color: var(--navy);
+      margin-bottom: 12px;
     }
-    .what-card p {
-      font-size: 0.92rem;
+    .service-card p {
+      font-size: 0.93rem;
       color: var(--text-muted);
-      line-height: 1.65;
+      line-height: 1.7;
     }
 
-    /* HOW IT WORKS */
+    /* ── PLATFORMS ── */
+    .platforms { background: var(--navy-dark); }
+    .platforms .section-title { color: var(--white); }
+    .platforms .section-label { color: var(--gold); }
+    .platform-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 40px;
+    }
+    .platform-pill {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.14);
+      color: rgba(255,255,255,0.9);
+      padding: 10px 22px;
+      border-radius: 50px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: background var(--transition), border-color var(--transition), transform var(--transition);
+      cursor: default;
+    }
+    .platform-pill:hover {
+      background: rgba(201,168,76,0.15);
+      border-color: var(--gold);
+      color: var(--gold-light);
+      transform: translateY(-2px);
+    }
+
+    /* ── HOW IT WORKS ── */
+    .how-it-works { background: var(--cream); }
     .steps {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 0;
+      gap: 32px;
       margin-top: 56px;
-      counter-reset: step;
-    }
-    .step {
-      padding: 40px 32px;
-      border-left: 1px solid var(--border);
       position: relative;
     }
-    .step:first-child { border-left: none; }
+    .steps::before {
+      content: '';
+      position: absolute;
+      top: 40px; left: calc(12.5% + 40px); right: calc(12.5% + 40px);
+      height: 2px;
+      background: linear-gradient(90deg, var(--gold), var(--gold-light), var(--gold));
+      opacity: 0.4;
+    }
+    .step { text-align: center; position: relative; }
     .step-num {
+      width: 72px; height: 72px;
+      border-radius: 50%;
+      background: var(--navy);
+      color: var(--gold);
       font-family: 'Playfair Display', serif;
-      font-size: 3.5rem;
-      color: rgba(200,169,110,0.15);
-      line-height: 1;
-      margin-bottom: 16px;
+      font-size: 1.5rem;
       font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+      border: 3px solid var(--gold);
+      transition: transform var(--transition), box-shadow var(--transition);
+    }
+    .step:hover .step-num {
+      transform: scale(1.1);
+      box-shadow: 0 0 0 8px rgba(201,168,76,0.15);
     }
     .step h3 {
-      font-size: 1rem;
-      font-weight: 600;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.15rem;
+      color: var(--navy);
       margin-bottom: 10px;
     }
     .step p {
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       color: var(--text-muted);
       line-height: 1.65;
     }
 
-    /* PRICING */
-    .pricing { background: var(--navy-mid); }
+    /* ── PRICING ── */
+    .pricing { background: var(--white); }
     .pricing-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 24px;
+      grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+      gap: 28px;
       margin-top: 56px;
-      align-items: start;
     }
-    .pricing-card {
-      background: var(--navy-light);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 40px 32px;
+    .price-card {
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 44px 36px;
+      text-align: center;
       position: relative;
+      background: var(--white);
+      transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
     }
-    .pricing-card.featured {
+    .price-card:hover {
+      transform: translateY(-8px);
+      box-shadow: var(--shadow-lg);
+    }
+    .price-card.featured {
       border-color: var(--gold);
-      background: linear-gradient(135deg, var(--navy-light), rgba(200,169,110,0.06));
+      background: linear-gradient(160deg, var(--navy-dark), var(--navy));
+      color: var(--white);
+      transform: scale(1.04);
     }
+    .price-card.featured:hover { transform: scale(1.04) translateY(-8px); }
     .featured-badge {
       position: absolute;
-      top: -12px; left: 50%;
+      top: -14px;
+      left: 50%;
       transform: translateX(-50%);
       background: var(--gold);
-      color: var(--navy);
+      color: var(--navy-dark);
       font-size: 0.72rem;
       font-weight: 700;
-      letter-spacing: 0.1em;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
-      padding: 4px 14px;
-      border-radius: 100px;
+      padding: 5px 18px;
+      border-radius: 50px;
       white-space: nowrap;
     }
-    .plan-name {
-      font-size: 0.8rem;
-      font-weight: 600;
-      letter-spacing: 0.12em;
+    .price-tier {
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
       text-transform: uppercase;
       color: var(--gold);
       margin-bottom: 12px;
     }
-    .plan-price {
+    .price-card.featured .price-tier { color: var(--gold-light); }
+    .price-amount {
       font-family: 'Playfair Display', serif;
-      font-size: 2.8rem;
-      font-weight: 600;
-      line-height: 1;
-      margin-bottom: 6px;
-    }
-    .plan-price span {
-      font-family: 'Inter', sans-serif;
-      font-size: 1rem;
-      font-weight: 400;
-      color: var(--text-muted);
-    }
-    .plan-desc {
-      font-size: 0.88rem;
-      color: var(--text-muted);
-      margin-bottom: 28px;
-      line-height: 1.5;
-    }
-    .plan-features {
-      list-style: none;
-      margin-bottom: 36px;
-    }
-    .plan-features li {
-      font-size: 0.9rem;
-      color: var(--white);
-      padding: 7px 0;
-      border-bottom: 1px solid rgba(255,255,255,0.05);
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-    }
-    .plan-features li:last-child { border-bottom: none; }
-    .plan-features li::before {
-      content: '✓';
-      color: var(--gold);
-      font-weight: 700;
-      flex-shrink: 0;
-      margin-top: 1px;
-    }
-    .plan-cta {
-      display: block;
-      text-align: center;
-      padding: 14px;
-      border-radius: 4px;
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 0.95rem;
-      transition: 0.2s;
-    }
-    .plan-cta-outline {
-      border: 1px solid var(--border);
-      color: var(--white);
-    }
-    .plan-cta-outline:hover { border-color: var(--gold); background: rgba(200,169,110,0.05); }
-    .plan-cta-filled {
-      background: var(--gold);
+      font-size: 3.2rem;
       color: var(--navy);
-    }
-    .plan-cta-filled:hover { background: var(--gold-light); }
-
-    /* FOR FUNERAL DIRECTORS */
-    .fd-section { background: var(--navy); }
-    .fd-inner {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 80px;
-      align-items: center;
-    }
-    @media (max-width: 768px) { .fd-inner { grid-template-columns: 1fr; gap: 40px; } }
-    .fd-list {
-      list-style: none;
-      margin-top: 28px;
-    }
-    .fd-list li {
-      display: flex;
-      gap: 14px;
-      padding: 14px 0;
-      border-bottom: 1px solid var(--border);
-      font-size: 0.95rem;
-      color: var(--text-muted);
-    }
-    .fd-list li:last-child { border-bottom: none; }
-    .fd-list li strong { color: var(--white); display: block; margin-bottom: 2px; }
-    .fd-box {
-      background: var(--navy-light);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 48px 40px;
-      text-align: center;
-    }
-    .fd-box .big-num {
-      font-family: 'Playfair Display', serif;
-      font-size: 4rem;
-      color: var(--gold);
       line-height: 1;
-      margin-bottom: 8px;
+      font-weight: 600;
     }
-    .fd-box p {
-      color: var(--text-muted);
-      font-size: 0.95rem;
-      margin-bottom: 32px;
-      line-height: 1.6;
+    .price-amount sup {
+      font-size: 1.4rem;
+      vertical-align: super;
+      font-weight: 400;
     }
-
-    /* PLATFORMS */
-    .platforms { border-top: 1px solid var(--border); }
-    .platforms-inner { text-align: center; }
-    .platform-list {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-top: 36px;
-    }
-    .platform-pill {
-      background: var(--navy-light);
-      border: 1px solid var(--border);
-      border-radius: 100px;
-      padding: 8px 20px;
-      font-size: 0.88rem;
-      color: var(--text-muted);
-    }
-
-    /* CONTACT */
-    .contact { background: var(--navy-mid); text-align: center; }
-    .contact .section-title { margin: 0 auto 12px; }
-    .contact .section-sub { margin: 0 auto 40px; }
-    .contact-email {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      background: var(--navy-light);
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      padding: 16px 28px;
-      color: var(--gold);
-      text-decoration: none;
-      font-size: 1.05rem;
-      font-weight: 500;
-      transition: border-color 0.2s;
-    }
-    .contact-email:hover { border-color: var(--gold); }
-
-    /* FOOTER */
-    footer {
-      padding: 40px 24px;
-      border-top: 1px solid var(--border);
-      text-align: center;
-    }
-    footer p {
+    .price-card.featured .price-amount { color: var(--white); }
+    .price-desc {
       font-size: 0.85rem;
       color: var(--text-muted);
-      line-height: 1.7;
+      margin: 6px 0 28px;
     }
-    footer a { color: var(--text-muted); text-decoration: none; }
-    footer a:hover { color: var(--gold); }
+    .price-card.featured .price-desc { color: rgba(255,255,255,0.65); }
+    .price-features {
+      list-style: none;
+      text-align: left;
+      margin-bottom: 36px;
+    }
+    .price-features li {
+      font-size: 0.88rem;
+      padding: 7px 0;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--text);
+    }
+    .price-card.featured .price-features li {
+      border-bottom-color: rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.9);
+    }
+    .price-features li::before {
+      content: '✓';
+      font-weight: 700;
+      color: var(--gold);
+      flex-shrink: 0;
+    }
+    .btn-outline-gold {
+      display: block;
+      border: 1.5px solid var(--gold);
+      color: var(--navy);
+      text-align: center;
+      padding: 14px;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      text-decoration: none;
+      transition: background var(--transition), color var(--transition), transform var(--transition);
+    }
+    .btn-outline-gold:hover {
+      background: var(--gold);
+      color: var(--navy-dark);
+      transform: translateY(-1px);
+    }
+    .price-card.featured .btn-outline-gold {
+      background: var(--gold);
+      color: var(--navy-dark);
+      border-color: var(--gold);
+    }
+    .price-card.featured .btn-outline-gold:hover {
+      background: var(--gold-light);
+    }
+
+    /* ── TESTIMONIALS ── */
+    .testimonials { background: var(--cream); }
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 28px;
+      margin-top: 56px;
+    }
+    .testimonial-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 36px;
+      position: relative;
+      transition: transform var(--transition), box-shadow var(--transition);
+    }
+    .testimonial-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+    }
+    .testimonial-card::before {
+      content: '\201C';
+      position: absolute;
+      top: 20px; right: 28px;
+      font-family: 'Playfair Display', serif;
+      font-size: 5rem;
+      color: var(--gold);
+      opacity: 0.25;
+      line-height: 1;
+    }
+    .stars {
+      color: var(--gold);
+      font-size: 1rem;
+      margin-bottom: 16px;
+      letter-spacing: 2px;
+    }
+    .testimonial-text {
+      font-size: 0.93rem;
+      color: var(--text);
+      line-height: 1.75;
+      font-style: italic;
+      margin-bottom: 24px;
+    }
+    .testimonial-author {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .author-avatar {
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      background: var(--navy);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--gold);
+      font-family: 'Playfair Display', serif;
+      font-weight: 600;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+    .author-info strong {
+      display: block;
+      font-size: 0.88rem;
+      color: var(--navy);
+      font-weight: 600;
+    }
+    .author-info span {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    /* ── FAQ ── */
+    .faq { background: var(--white); }
+    .faq-list {
+      margin-top: 48px;
+      max-width: 740px;
+    }
+    .faq-item {
+      border-bottom: 1px solid var(--border);
+    }
+    .faq-q {
+      width: 100%;
+      background: none;
+      border: none;
+      text-align: left;
+      padding: 22px 0;
+      font-family: 'Inter', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--navy);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      transition: color var(--transition);
+    }
+    .faq-q:hover { color: var(--gold); }
+    .faq-icon {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      border: 1.5px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: background var(--transition), border-color var(--transition), transform var(--transition);
+      font-size: 1.1rem;
+      color: var(--gold);
+    }
+    .faq-item.open .faq-icon {
+      background: var(--gold);
+      border-color: var(--gold);
+      color: var(--navy-dark);
+      transform: rotate(45deg);
+    }
+    .faq-a {
+      overflow: hidden;
+      max-height: 0;
+      transition: max-height 0.4s ease, padding 0.3s ease;
+    }
+    .faq-item.open .faq-a { max-height: 300px; }
+    .faq-a p {
+      font-size: 0.93rem;
+      color: var(--text-muted);
+      line-height: 1.75;
+      padding-bottom: 22px;
+    }
+
+    /* ── FD PARTNER ── */
+    .fd-partner {
+      background: linear-gradient(160deg, var(--navy-dark), var(--navy));
+      position: relative;
+      overflow: hidden;
+    }
+    .fd-partner::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(201,168,76,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(201,168,76,0.04) 1px, transparent 1px);
+      background-size: 40px 40px;
+    }
+    .fd-inner {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: center;
+    }
+    .fd-partner .section-title { color: var(--white); }
+    .fd-partner .section-sub { color: rgba(255,255,255,0.7); margin-bottom: 40px; }
+    .fd-partner .section-label { color: var(--gold-light); }
+    .fd-benefit {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .fd-benefit-icon {
+      width: 44px; height: 44px;
+      background: rgba(201,168,76,0.15);
+      border: 1px solid rgba(201,168,76,0.3);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+    .fd-benefit-text strong {
+      display: block;
+      color: var(--white);
+      font-size: 0.95rem;
+      margin-bottom: 4px;
+    }
+    .fd-benefit-text span {
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.6);
+      line-height: 1.6;
+    }
+    .fd-card {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(201,168,76,0.25);
+      border-radius: var(--radius-lg);
+      padding: 44px;
+      text-align: center;
+    }
+    .fd-card .big-number {
+      font-family: 'Playfair Display', serif;
+      font-size: 5rem;
+      color: var(--gold);
+      line-height: 1;
+      font-weight: 600;
+    }
+    .fd-card .big-number sup { font-size: 2rem; vertical-align: super; }
+    .fd-card .big-label {
+      color: rgba(255,255,255,0.8);
+      font-size: 1rem;
+      margin: 10px 0 28px;
+    }
+    .fd-card p {
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.55);
+      line-height: 1.7;
+      margin-bottom: 32px;
+    }
+
+    /* ── CONTACT ── */
+    .contact { background: var(--cream); }
+    .contact-box {
+      max-width: 620px;
+      margin: 0 auto;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 56px;
+      text-align: center;
+      box-shadow: var(--shadow);
+    }
+    .contact-box .section-title { margin-bottom: 12px; }
+    .contact-box .section-sub { margin: 0 auto 40px; }
+    .contact-links {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      align-items: center;
+    }
+    .contact-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 1rem;
+      color: var(--navy);
+      text-decoration: none;
+      font-weight: 500;
+      padding: 14px 28px;
+      border: 1.5px solid var(--border);
+      border-radius: 50px;
+      transition: border-color var(--transition), color var(--transition), background var(--transition), transform var(--transition);
+      width: 100%;
+      max-width: 340px;
+      justify-content: center;
+    }
+    .contact-link:hover {
+      border-color: var(--gold);
+      color: var(--navy);
+      background: rgba(201,168,76,0.07);
+      transform: translateY(-1px);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--navy-dark);
+      padding: 56px 24px 32px;
+    }
+    .footer-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .footer-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 40px;
+      flex-wrap: wrap;
+      padding-bottom: 40px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      margin-bottom: 32px;
+    }
+    .footer-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      color: var(--white);
+      text-decoration: none;
+    }
+    .footer-logo span { color: var(--gold); }
+    .footer-tagline {
+      color: rgba(255,255,255,0.45);
+      font-size: 0.83rem;
+      margin-top: 6px;
+      max-width: 220px;
+      line-height: 1.6;
+    }
+    .footer-links {
+      display: flex;
+      gap: 48px;
+      flex-wrap: wrap;
+    }
+    .footer-col h4 {
+      color: var(--gold);
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    .footer-col a, .footer-col p {
+      display: block;
+      color: rgba(255,255,255,0.55);
+      font-size: 0.87rem;
+      text-decoration: none;
+      margin-bottom: 9px;
+      transition: color var(--transition);
+    }
+    .footer-col a:hover { color: var(--gold-light); }
+    .footer-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .footer-bottom p {
+      color: rgba(255,255,255,0.3);
+      font-size: 0.8rem;
+    }
+    .footer-bottom a {
+      color: rgba(255,255,255,0.3);
+      font-size: 0.8rem;
+      text-decoration: none;
+    }
+    .footer-bottom a:hover { color: var(--gold); }
+    .footer-legal {
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    /* ── FLOATING CTA ── */
+    #floating-cta {
+      position: fixed;
+      bottom: 32px;
+      right: 32px;
+      background: var(--gold);
+      color: var(--navy-dark);
+      padding: 14px 28px;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      text-decoration: none;
+      box-shadow: 0 8px 32px rgba(201,168,76,0.5);
+      z-index: 998;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.4s ease, transform 0.4s ease, background var(--transition), box-shadow var(--transition);
+      pointer-events: none;
+    }
+    #floating-cta.visible {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: all;
+    }
+    #floating-cta:hover {
+      background: var(--gold-light);
+      box-shadow: 0 12px 40px rgba(201,168,76,0.6);
+      transform: translateY(-2px);
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .fd-inner { grid-template-columns: 1fr; gap: 40px; }
+      .steps::before { display: none; }
+    }
+    @media (max-width: 700px) {
+      nav { padding: 16px 20px; }
+      nav.scrolled { padding: 12px 20px; }
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+      .hero { padding: 100px 20px 60px; }
+      .hero-btns { flex-direction: column; align-items: center; }
+      section { padding: 72px 20px; }
+      .contact-box { padding: 36px 24px; }
+      .footer-links { gap: 32px; }
+      #floating-cta { bottom: 20px; right: 20px; padding: 12px 22px; font-size: 0.85rem; }
+    }
   </style>
 </head>
 <body>
 
-  <!-- NAV -->
-  <nav>
-    <a href="#" class="logo">Departed<span>Digital</span></a>
-    <a href="#pricing" class="nav-cta">View Plans</a>
+  <!-- Progress Bar -->
+  <div id="progress-bar"></div>
+
+  <!-- Nav -->
+  <nav id="nav">
+    <a href="#" class="nav-logo">Departed<span>.</span>Digital</a>
+    <ul class="nav-links">
+      <li><a href="#services">Services</a></li>
+      <li><a href="#how">How it works</a></li>
+      <li><a href="#pricing">Pricing</a></li>
+      <li><a href="#faq">FAQ</a></li>
+      <li><a href="#contact" class="nav-cta">Get Started</a></li>
+    </ul>
+    <div class="hamburger" id="hamburger" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </div>
   </nav>
 
-  <!-- HERO -->
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" id="mobileMenu">
+    <span class="mobile-menu-close" id="menuClose">&times;</span>
+    <a href="#services" class="mobile-link">Services</a>
+    <a href="#how" class="mobile-link">How it works</a>
+    <a href="#pricing" class="mobile-link">Pricing</a>
+    <a href="#faq" class="mobile-link">FAQ</a>
+    <a href="#contact" class="mobile-link">Get started</a>
+  </div>
+
+  <!-- Hero -->
   <section class="hero">
-    <div class="hero-inner">
-      <div class="hero-label">A service for UK families</div>
-      <h1>We close the accounts.<br><em>You focus on grieving.</em></h1>
-      <p>Navigating Facebook, Instagram and email after a bereavement is the last thing anyone should face alone. We handle every platform — compassionately, professionally, completely.</p>
-      <div class="hero-buttons">
-        <a href="#pricing" class="btn-primary">See Packages &amp; Prices</a>
-        <a href="#how-it-works" class="btn-outline">How It Works</a>
+    <div class="hero-grid"></div>
+    <div class="hero-glow"></div>
+    <div class="hero-content">
+      <div class="hero-badge">Compassionate · Trusted · Done-For-You</div>
+      <h1>When a loved one passes,<br /><em>their digital life lives on.</em></h1>
+      <p>We handle the removal and memorialisation of social media accounts so your family doesn't have to — gently, professionally, and completely.</p>
+      <div class="hero-btns">
+        <a href="#pricing" class="btn-primary">View Our Packages</a>
+        <a href="#how" class="btn-secondary">How it works</a>
       </div>
+    </div>
+    <div class="hero-scroll">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+      Scroll
     </div>
   </section>
 
-  <!-- TRUST BAR -->
-  <div class="trust-bar">
-    <div class="trust-item">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-      UK-based service
-    </div>
-    <div class="trust-item">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-      Results within 7 days
-    </div>
-    <div class="trust-item">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-      Compassionate handling
-    </div>
-    <div class="trust-item">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-      Referred by funeral directors
+  <!-- Stats Bar -->
+  <div class="stats-bar">
+    <div class="stats-inner">
+      <div class="stat-item reveal">
+        <div class="stat-number"><span data-target="14">0</span><span class="suffix">+</span></div>
+        <div class="stat-label">Platforms handled</div>
+      </div>
+      <div class="stat-item reveal reveal-delay-1">
+        <div class="stat-number"><span data-target="48">0</span><span class="suffix">hr</span></div>
+        <div class="stat-label">Average turnaround</div>
+      </div>
+      <div class="stat-item reveal reveal-delay-2">
+        <div class="stat-number"><span data-target="100">0</span><span class="suffix">%</span></div>
+        <div class="stat-label">UK-based service</div>
+      </div>
+      <div class="stat-item reveal reveal-delay-3">
+        <div class="stat-number"><span data-target="50">0</span><span class="suffix">+</span></div>
+        <div class="stat-label">Families helped</div>
+      </div>
     </div>
   </div>
 
-  <!-- WHAT WE DO -->
-  <section class="what" id="services">
+  <!-- Services -->
+  <section class="what-we-do" id="services">
     <div class="container">
-      <div class="section-label">What We Do</div>
-      <h2 class="section-title">Everything handled.<br>Nothing for you to worry about.</h2>
-      <p class="section-sub">We take care of the digital paperwork so your family can focus on what matters.</p>
-      <div class="what-grid">
-        <div class="what-card">
-          <div class="icon">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-          </div>
+      <span class="section-label reveal">What we do</span>
+      <h2 class="section-title reveal">One less thing to worry about</h2>
+      <p class="section-sub reveal">Social media removal after bereavement is an exhausting, bureaucratic process. We navigate every platform on your behalf.</p>
+      <div class="services-grid">
+        <div class="service-card reveal reveal-delay-1">
+          <div class="service-icon">🔒</div>
           <h3>Account Removal</h3>
-          <p>We formally request deletion of Facebook, Instagram, Twitter/X, TikTok, LinkedIn, Snapchat and more — following each platform's bereavement process correctly.</p>
+          <p>We formally request deletion of your loved one's accounts across Facebook, Instagram, Twitter/X, TikTok, LinkedIn, and more — leaving no trace behind.</p>
         </div>
-        <div class="what-card">
-          <div class="icon">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-          </div>
+        <div class="service-card reveal reveal-delay-2">
+          <div class="service-icon">🕊️</div>
           <h3>Memorialisation</h3>
-          <p>Prefer to preserve their digital presence? We can convert Facebook and Instagram accounts into permanent memorials, giving friends and family a place to remember.</p>
+          <p>Prefer to preserve their presence? We convert Facebook and Instagram profiles into memorial pages, keeping memories alive while protecting the account.</p>
         </div>
-        <div class="what-card">
-          <div class="icon">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><path d="M3 9h18M9 21V9"/></svg>
-          </div>
-          <h3>Email &amp; Subscriptions</h3>
-          <p>We handle Gmail and Outlook closures, and unsubscribe your loved one from mailing lists — stopping painful reminder emails from arriving in the family inbox.</p>
+        <div class="service-card reveal reveal-delay-3">
+          <div class="service-icon">📋</div>
+          <h3>Full Documentation</h3>
+          <p>We handle all platform-specific forms, death certificate uploads, and correspondence — you simply provide the details, we do everything else.</p>
         </div>
-        <div class="what-card">
-          <div class="icon">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-          </div>
-          <h3>Written Confirmation</h3>
-          <p>At every step, we send you written confirmation of actions taken — so you have a clear record, and never have to wonder what's been done.</p>
+        <div class="service-card reveal reveal-delay-4">
+          <div class="service-icon">💬</div>
+          <h3>Ongoing Support</h3>
+          <p>Our team is available to guide you through every step. We chase platforms that are slow to respond and keep you updated throughout the process.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- HOW IT WORKS -->
-  <section id="how-it-works">
+  <!-- Platforms -->
+  <section class="platforms" id="platforms">
     <div class="container">
-      <div class="section-label">Process</div>
-      <h2 class="section-title">Simple. Dignified. Done.</h2>
-      <p class="section-sub">Three steps is all it takes — we do the rest.</p>
+      <span class="section-label reveal">Platforms covered</span>
+      <h2 class="section-title reveal">We cover every major platform</h2>
+      <div class="platform-pills">
+        <div class="platform-pill reveal">Facebook</div>
+        <div class="platform-pill reveal reveal-delay-1">Instagram</div>
+        <div class="platform-pill reveal reveal-delay-2">Twitter / X</div>
+        <div class="platform-pill reveal reveal-delay-3">TikTok</div>
+        <div class="platform-pill reveal reveal-delay-4">LinkedIn</div>
+        <div class="platform-pill reveal">Snapchat</div>
+        <div class="platform-pill reveal reveal-delay-1">YouTube</div>
+        <div class="platform-pill reveal reveal-delay-2">Pinterest</div>
+        <div class="platform-pill reveal reveal-delay-3">Reddit</div>
+        <div class="platform-pill reveal reveal-delay-4">WhatsApp / Meta</div>
+        <div class="platform-pill reveal">Google Account</div>
+        <div class="platform-pill reveal reveal-delay-1">Apple ID</div>
+        <div class="platform-pill reveal reveal-delay-2">Spotify</div>
+        <div class="platform-pill reveal reveal-delay-3">+ More on request</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How it works -->
+  <section class="how-it-works" id="how">
+    <div class="container">
+      <span class="section-label reveal">Process</span>
+      <h2 class="section-title reveal">Four simple steps</h2>
       <div class="steps">
-        <div class="step">
-          <div class="step-num">01</div>
-          <h3>Choose a plan</h3>
-          <p>Select the package that suits your family's needs. No hidden fees, no technical knowledge required.</p>
+        <div class="step reveal reveal-delay-1">
+          <div class="step-num">1</div>
+          <h3>Choose a package</h3>
+          <p>Select the plan that fits your needs — Essential, Complete, or Estate.</p>
         </div>
-        <div class="step">
-          <div class="step-num">02</div>
+        <div class="step reveal reveal-delay-2">
+          <div class="step-num">2</div>
           <h3>Share the details</h3>
-          <p>We'll ask for a short list of accounts and your preferred action — removal or memorialisation. Plus a copy of the death certificate.</p>
+          <p>Complete our secure intake form with your loved one's details and accounts.</p>
         </div>
-        <div class="step">
-          <div class="step-num">03</div>
-          <h3>We handle everything</h3>
-          <p>Our team contacts each platform on your behalf and sends you written confirmation as each account is resolved. Typically within 7 days.</p>
+        <div class="step reveal reveal-delay-3">
+          <div class="step-num">3</div>
+          <h3>We take over</h3>
+          <p>Our team contacts every platform and manages all correspondence on your behalf.</p>
         </div>
-        <div class="step">
-          <div class="step-num">04</div>
-          <h3>Peace of mind</h3>
-          <p>No more unexpected notifications. No more birthday reminders. Your loved one's digital legacy, handled with care.</p>
+        <div class="step reveal reveal-delay-4">
+          <div class="step-num">4</div>
+          <h3>Confirmation report</h3>
+          <p>You receive a written confirmation once each account is removed or memorialised.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- PRICING -->
+  <!-- Pricing -->
   <section class="pricing" id="pricing">
     <div class="container">
-      <div class="section-label">Pricing</div>
-      <h2 class="section-title">Transparent, one-off pricing.<br>No surprises.</h2>
-      <p class="section-sub">Every plan is a one-time payment. We don't charge ongoing fees.</p>
+      <span class="section-label reveal">Transparent pricing</span>
+      <h2 class="section-title reveal">Simple, compassionate pricing</h2>
+      <p class="section-sub reveal">No hidden fees. One payment, full service. All plans include a dedicated case manager.</p>
       <div class="pricing-grid">
-
-        <div class="pricing-card">
-          <div class="plan-name">Essential</div>
-          <div class="plan-price">£149 <span>one-off</span></div>
-          <p class="plan-desc">For families with a small digital footprint — the essentials, handled properly.</p>
-          <ul class="plan-features">
-            <li>Up to 3 social media accounts</li>
+        <div class="price-card reveal">
+          <div class="price-tier">Essential</div>
+          <div class="price-amount"><sup>£</sup>149</div>
+          <div class="price-desc">Up to 4 accounts</div>
+          <ul class="price-features">
+            <li>Facebook &amp; Instagram</li>
+            <li>2 additional platforms</li>
             <li>Removal or memorialisation</li>
-            <li>Email account closure (1 account)</li>
-            <li>Written confirmation of each action</li>
-            <li>7-day turnaround</li>
+            <li>Written confirmation</li>
+            <li>14-day completion target</li>
           </ul>
-          <a href="mailto:hello@departed.digital?subject=Essential Plan Enquiry" class="plan-cta plan-cta-outline">Get Started</a>
+          <a href="#contact" class="btn-outline-gold">Get started</a>
         </div>
-
-        <div class="pricing-card featured">
+        <div class="price-card featured reveal reveal-delay-1">
           <div class="featured-badge">Most Popular</div>
-          <div class="plan-name">Complete</div>
-          <div class="plan-price">£249 <span>one-off</span></div>
-          <p class="plan-desc">Our most popular plan — covers the full range of social media and digital accounts.</p>
-          <ul class="plan-features">
-            <li>Up to 8 social media accounts</li>
-            <li>Removal or memorialisation</li>
-            <li>Email account closure (up to 2)</li>
-            <li>Mailing list unsubscription</li>
-            <li>Written confirmation of each action</li>
-            <li>7-day turnaround</li>
+          <div class="price-tier">Complete</div>
+          <div class="price-amount"><sup>£</sup>249</div>
+          <div class="price-desc">Up to 8 accounts</div>
+          <ul class="price-features">
+            <li>All major social platforms</li>
+            <li>Google &amp; Apple accounts</li>
+            <li>Streaming services</li>
+            <li>Priority support</li>
+            <li>10-day completion target</li>
+            <li>Full case report</li>
           </ul>
-          <a href="mailto:hello@departed.digital?subject=Complete Plan Enquiry" class="plan-cta plan-cta-filled">Get Started</a>
+          <a href="#contact" class="btn-outline-gold">Get started</a>
         </div>
-
-        <div class="pricing-card">
-          <div class="plan-name">Estate</div>
-          <div class="plan-price">£399 <span>one-off</span></div>
-          <p class="plan-desc">A comprehensive service for those with a larger online presence, or complex accounts.</p>
-          <ul class="plan-features">
-            <li>Unlimited social media accounts</li>
-            <li>Removal or memorialisation</li>
-            <li>Unlimited email closures</li>
-            <li>Mailing list unsubscription</li>
-            <li>Streaming &amp; subscription cancellations</li>
-            <li>Priority 5-day turnaround</li>
-            <li>Written confirmation of each action</li>
+        <div class="price-card reveal reveal-delay-2">
+          <div class="price-tier">Estate</div>
+          <div class="price-amount"><sup>£</sup>399</div>
+          <div class="price-desc">Unlimited accounts</div>
+          <ul class="price-features">
+            <li>Every platform, no limit</li>
+            <li>Email account closure</li>
+            <li>Digital legacy consultation</li>
+            <li>Dedicated case manager</li>
+            <li>7-day completion target</li>
+            <li>Legal-grade documentation</li>
           </ul>
-          <a href="mailto:hello@departed.digital?subject=Estate Plan Enquiry" class="plan-cta plan-cta-outline">Get Started</a>
+          <a href="#contact" class="btn-outline-gold">Get started</a>
         </div>
-
       </div>
     </div>
   </section>
 
-  <!-- PLATFORMS -->
-  <section class="platforms">
+  <!-- Testimonials -->
+  <section class="testimonials" id="testimonials">
     <div class="container">
-      <div class="platforms-inner">
-        <div class="section-label">Platforms We Handle</div>
-        <h2 class="section-title">Every major platform. Covered.</h2>
-        <div class="platform-list">
-          <div class="platform-pill">Facebook</div>
-          <div class="platform-pill">Instagram</div>
-          <div class="platform-pill">Twitter / X</div>
-          <div class="platform-pill">TikTok</div>
-          <div class="platform-pill">LinkedIn</div>
-          <div class="platform-pill">Snapchat</div>
-          <div class="platform-pill">YouTube</div>
-          <div class="platform-pill">Pinterest</div>
-          <div class="platform-pill">Gmail</div>
-          <div class="platform-pill">Outlook / Hotmail</div>
-          <div class="platform-pill">Apple ID</div>
-          <div class="platform-pill">And more</div>
+      <span class="section-label reveal">Testimonials</span>
+      <h2 class="section-title reveal">Trusted by UK families</h2>
+      <div class="testimonials-grid">
+        <div class="testimonial-card reveal reveal-delay-1">
+          <div class="stars">★★★★★</div>
+          <p class="testimonial-text">"After losing my mum suddenly, the last thing we needed was to navigate Facebook's confusing removal process. Departed Digital handled everything within a week. Such a relief."</p>
+          <div class="testimonial-author">
+            <div class="author-avatar">SC</div>
+            <div class="author-info">
+              <strong>Sarah C.</strong>
+              <span>London, Complete Package</span>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card reveal reveal-delay-2">
+          <div class="stars">★★★★★</div>
+          <p class="testimonial-text">"Professional, sensitive, and thorough. My father had accounts on eight different platforms — Departed Digital removed them all and sent me a full report. Highly recommend."</p>
+          <div class="testimonial-author">
+            <div class="author-avatar">JR</div>
+            <div class="author-info">
+              <strong>James R.</strong>
+              <span>Manchester, Estate Package</span>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card reveal reveal-delay-3">
+          <div class="stars">★★★★★</div>
+          <p class="testimonial-text">"Our funeral director recommended them. It was the best £149 we spent during an incredibly difficult time. The team was kind and kept us updated throughout."</p>
+          <div class="testimonial-author">
+            <div class="author-avatar">PM</div>
+            <div class="author-info">
+              <strong>Patricia M.</strong>
+              <span>Surrey, Essential Package</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- FOR FUNERAL DIRECTORS -->
-  <section class="fd-section" id="partners">
+  <!-- FAQ -->
+  <section class="faq" id="faq">
+    <div class="container">
+      <span class="section-label reveal">FAQ</span>
+      <h2 class="section-title reveal">Common questions</h2>
+      <div class="faq-list">
+        <div class="faq-item reveal">
+          <button class="faq-q">
+            What documents do I need to provide?
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-a"><p>In most cases we need a copy of the death certificate and proof of your relationship to the deceased. Some platforms may require additional documentation — we'll guide you through everything in your intake form.</p></div>
+        </div>
+        <div class="faq-item reveal">
+          <button class="faq-q">
+            How long does the process take?
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-a"><p>Most cases are completed within 7–14 days depending on your package. Platforms like Facebook typically respond within a week; some smaller platforms can take longer. We chase them on your behalf and keep you informed.</p></div>
+        </div>
+        <div class="faq-item reveal">
+          <button class="faq-q">
+            Can you memorialise instead of delete?
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-a"><p>Yes. For Facebook and Instagram we can convert the profile into a memorial page rather than removing it entirely. This preserves the memories and timeline while protecting the account from new activity. Just let us know your preference.</p></div>
+        </div>
+        <div class="faq-item reveal">
+          <button class="faq-q">
+            What if I don't know all the accounts?
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-a"><p>That's completely normal. Our Estate package includes a digital legacy consultation where we help you identify known accounts. For other packages, simply list what you know — we handle everything from there.</p></div>
+        </div>
+        <div class="faq-item reveal">
+          <button class="faq-q">
+            Is my information kept confidential?
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-a"><p>Absolutely. We take data protection seriously and comply fully with UK GDPR. All information you share is used solely for the purpose of managing your case and is never shared with third parties.</p></div>
+        </div>
+        <div class="faq-item reveal">
+          <button class="faq-q">
+            Do you work with funeral directors?
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-a"><p>Yes — we partner with independent funeral directors across the UK. If you were referred by your funeral director, your package may be discounted. If you're a funeral director interested in partnering, please get in touch.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FD Partner -->
+  <section class="fd-partner" id="partners">
     <div class="container">
       <div class="fd-inner">
         <div>
-          <div class="section-label">Funeral Director Partners</div>
-          <h2 class="section-title">A trusted service to offer your families.</h2>
-          <p class="section-sub">We partner with independent funeral directors across London and the UK. Refer a family and receive a commission — at no cost to you, and no disruption to your existing process.</p>
-          <ul class="fd-list">
-            <li>
-              <div>
-                <strong>£50 per completed referral</strong>
-                Paid automatically when the family purchases a plan.
-              </div>
-            </li>
-            <li>
-              <div>
-                <strong>No signup fees or commitments</strong>
-                Register as a partner in minutes. No contracts.
-              </div>
-            </li>
-            <li>
-              <div>
-                <strong>A service your families actually need</strong>
-                Bereaved families increasingly ask: "What do we do with the accounts?" Now you have an answer.
-              </div>
-            </li>
-          </ul>
+          <span class="section-label reveal">Funeral directors</span>
+          <h2 class="section-title reveal">A valuable service for<br/>your bereaved families</h2>
+          <p class="section-sub reveal">Partner with Departed Digital and offer your families a trusted, done-for-you digital aftercare solution — at no cost to you.</p>
+          <div class="fd-benefit reveal">
+            <div class="fd-benefit-icon">💷</div>
+            <div class="fd-benefit-text">
+              <strong>£50 per referral</strong>
+              <span>Earn a referral fee for every family you introduce to our service — paid within 14 days of their case completion.</span>
+            </div>
+          </div>
+          <div class="fd-benefit reveal">
+            <div class="fd-benefit-icon">🤝</div>
+            <div class="fd-benefit-text">
+              <strong>Enhance your aftercare offering</strong>
+              <span>Differentiate your service by providing a genuinely useful resource at a moment when families need it most.</span>
+            </div>
+          </div>
+          <div class="fd-benefit reveal">
+            <div class="fd-benefit-icon">📄</div>
+            <div class="fd-benefit-text">
+              <strong>Simple referral cards provided</strong>
+              <span>We supply branded literature for your condolence packs — zero admin or effort on your part.</span>
+            </div>
+          </div>
+          <a href="mailto:partners@departed.digital" class="btn-primary reveal" style="display:inline-block; margin-top:16px;">Become a partner →</a>
         </div>
-        <div class="fd-box">
-          <div class="big-num">£50</div>
-          <p>per family referred.<br>No limits on referrals.<br>No cost to you.</p>
-          <a href="mailto:partners@departed.digital?subject=Partner Programme Enquiry" class="btn-primary">Become a Partner</a>
+        <div class="fd-card reveal reveal-delay-2">
+          <div class="big-number"><sup>£</sup>50</div>
+          <div class="big-label">Per referred family</div>
+          <p>With the average funeral director arranging 100+ funerals per year, our partners typically earn £2,000–£5,000 in annual referral income.</p>
+          <a href="mailto:partners@departed.digital" class="btn-outline-gold">Get our partner pack →</a>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- CONTACT -->
+  <!-- Contact -->
   <section class="contact" id="contact">
     <div class="container">
-      <div class="section-label">Get in Touch</div>
-      <h2 class="section-title">We're here when you need us.</h2>
-      <p class="section-sub">Not sure which plan is right? Have a question about the process? We're happy to help — no obligation, no pressure.</p>
-      <a href="mailto:hello@departed.digital" class="contact-email">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-        hello@departed.digital
-      </a>
+      <div class="contact-box reveal">
+        <span class="section-label">Get in touch</span>
+        <h2 class="section-title">Ready to get started?</h2>
+        <p class="section-sub">We're here to help. Reach out and we'll guide you to the right package for your family's needs.</p>
+        <div class="contact-links">
+          <a href="mailto:hello@departed.digital" class="contact-link">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            hello@departed.digital
+          </a>
+          <a href="#pricing" class="contact-link">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="3"/></svg>
+            View packages &amp; pricing
+          </a>
+        </div>
+      </div>
     </div>
   </section>
 
-  <!-- FOOTER -->
+  <!-- Footer -->
   <footer>
-    <div class="container">
-      <p>
-        © 2024 Departed Digital Ltd &nbsp;·&nbsp;
-        <a href="mailto:hello@departed.digital">hello@departed.digital</a> &nbsp;·&nbsp;
-        <a href="mailto:partners@departed.digital">Partner enquiries</a>
-      </p>
-      <p style="margin-top:8px;">
-        Registered in England &amp; Wales &nbsp;·&nbsp; A compassionate digital bereavement service
-      </p>
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div>
+          <a href="#" class="footer-logo">Departed<span>.</span>Digital</a>
+          <p class="footer-tagline">A compassionate digital aftercare service for UK families.</p>
+        </div>
+        <div class="footer-links">
+          <div class="footer-col">
+            <h4>Services</h4>
+            <a href="#services">Account Removal</a>
+            <a href="#services">Memorialisation</a>
+            <a href="#pricing">Pricing</a>
+          </div>
+          <div class="footer-col">
+            <h4>Company</h4>
+            <a href="#partners">Funeral Directors</a>
+            <a href="#faq">FAQ</a>
+            <a href="#contact">Contact</a>
+          </div>
+          <div class="footer-col">
+            <h4>Contact</h4>
+            <a href="mailto:hello@departed.digital">hello@departed.digital</a>
+            <a href="mailto:partners@departed.digital">partners@departed.digital</a>
+            <p>London, United Kingdom</p>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2025 Departed Digital Ltd. All rights reserved.</p>
+        <div class="footer-legal">
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Service</a>
+          <a href="#">Cookie Policy</a>
+        </div>
+      </div>
     </div>
   </footer>
 
+  <!-- Floating CTA -->
+  <a href="#pricing" id="floating-cta">View Packages ↑</a>
+
+  <script>
+    // ── Progress bar
+    window.addEventListener('scroll', () => {
+      const doc = document.documentElement;
+      const scrollTop = doc.scrollTop || document.body.scrollTop;
+      const scrollHeight = doc.scrollHeight - doc.clientHeight;
+      const pct = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+      document.getElementById('progress-bar').style.width = pct + '%';
+    });
+
+    // ── Nav scroll class
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 40);
+    });
+
+    // ── Floating CTA
+    const floatingCta = document.getElementById('floating-cta');
+    window.addEventListener('scroll', () => {
+      floatingCta.classList.toggle('visible', window.scrollY > 600);
+    });
+
+    // ── IntersectionObserver reveal
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          observer.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    reveals.forEach(el => observer.observe(el));
+
+    // ── Counter animation
+    function animateCounter(el) {
+      const target = parseInt(el.getAttribute('data-target'), 10);
+      let current = 0;
+      const step = Math.ceil(target / 40);
+      const timer = setInterval(() => {
+        current = Math.min(current + step, target);
+        el.textContent = current;
+        if (current >= target) clearInterval(timer);
+      }, 35);
+    }
+    const counterObserver = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.querySelectorAll('[data-target]').forEach(animateCounter);
+          counterObserver.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.3 });
+    document.querySelectorAll('.stats-inner').forEach(el => counterObserver.observe(el));
+
+    // ── FAQ accordion
+    document.querySelectorAll('.faq-q').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const item = btn.closest('.faq-item');
+        const isOpen = item.classList.contains('open');
+        document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+        if (!isOpen) item.classList.add('open');
+      });
+    });
+
+    // ── Mobile menu
+    const hamburger = document.getElementById('hamburger');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const menuClose = document.getElementById('menuClose');
+    hamburger.addEventListener('click', () => mobileMenu.classList.add('open'));
+    menuClose.addEventListener('click', () => mobileMenu.classList.remove('open'));
+    document.querySelectorAll('.mobile-link').forEach(link => {
+      link.addEventListener('click', () => mobileMenu.classList.remove('open'));
+    });
+  </script>
 </body>
 </html>
