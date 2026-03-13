@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Admin Dashboard | Departed Digital</title>
+  <title>Operations Dashboard | Departed Digital</title>
   <meta name="robots" content="noindex, nofollow" />
   <link rel="icon" type="image/x-icon" href="/favicon.ico" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -27,7 +27,7 @@
       --text: #2d3a4a;
       --text-muted: #6b7a8d;
       --border: #e4ddd0;
-      --shadow: 0 14px 52px rgba(26,39,68,0.12);
+      --shadow: 0 16px 56px rgba(26,39,68,0.12);
       --radius: 24px;
     }
     body {
@@ -42,7 +42,7 @@
       padding: 20px 24px;
     }
     .nav-inner, .container {
-      max-width: 1220px;
+      max-width: 1320px;
       margin: 0 auto;
     }
     .nav-inner {
@@ -50,17 +50,18 @@
       justify-content: space-between;
       align-items: center;
       gap: 24px;
+      flex-wrap: wrap;
     }
     .logo {
       font-family: 'Playfair Display', serif;
-      font-size: 1.24rem;
       color: var(--white);
       text-decoration: none;
+      font-size: 1.25rem;
     }
     .logo span { color: var(--gold); }
     .nav-links {
       display: flex;
-      gap: 18px;
+      gap: 16px;
       flex-wrap: wrap;
     }
     .nav-links a {
@@ -69,9 +70,7 @@
       font-size: 0.92rem;
     }
     .nav-links a:hover { color: var(--gold-light); }
-    main {
-      padding: 48px 24px 72px;
-    }
+    main { padding: 40px 24px 72px; }
     .eyebrow {
       display: inline-block;
       color: var(--gold);
@@ -79,21 +78,22 @@
       font-weight: 700;
       letter-spacing: 0.14em;
       text-transform: uppercase;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
     h1, h2, h3 {
       font-family: 'Playfair Display', serif;
       color: var(--navy);
     }
     h1 {
-      font-size: clamp(2.3rem, 5vw, 3.7rem);
-      line-height: 1.1;
+      font-size: clamp(2.4rem, 5vw, 4rem);
+      line-height: 1.08;
       margin-bottom: 14px;
     }
     .intro {
-      max-width: 780px;
+      max-width: 860px;
       color: var(--text-muted);
       margin-bottom: 28px;
+      font-size: 1rem;
     }
     .panel {
       background: var(--white);
@@ -107,8 +107,8 @@
     }
     .access-grid {
       display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 16px;
+      grid-template-columns: 1fr auto auto;
+      gap: 14px;
       align-items: end;
     }
     label {
@@ -125,38 +125,45 @@
       padding: 13px 15px;
       border-radius: 14px;
       border: 1.5px solid var(--border);
-      background: #faf8f3;
+      background: #fbf8f3;
       color: var(--text);
       font: inherit;
     }
-    textarea {
-      min-height: 140px;
-      resize: vertical;
-    }
+    textarea { min-height: 130px; resize: vertical; }
     button, .button-link {
       display: inline-flex;
       align-items: center;
       justify-content: center;
       border: none;
       border-radius: 999px;
-      padding: 14px 22px;
+      padding: 14px 20px;
       font-weight: 700;
-      font-size: 0.95rem;
+      font-size: 0.94rem;
       cursor: pointer;
       text-decoration: none;
       font-family: inherit;
+      white-space: nowrap;
     }
     button.primary, .button-link.primary {
       background: var(--gold);
       color: var(--navy-dark);
     }
-    button.primary:hover, .button-link.primary:hover {
-      background: var(--gold-light);
+    button.primary:hover, .button-link.primary:hover { background: var(--gold-light); }
+    button.secondary, .button-link.secondary {
+      background: transparent;
+      color: var(--navy);
+      border: 1px solid var(--border);
     }
     .helper {
       margin-top: 12px;
       color: var(--text-muted);
       font-size: 0.92rem;
+    }
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 24px;
+      align-items: start;
     }
     .stats-grid {
       display: grid;
@@ -165,43 +172,58 @@
       margin-bottom: 24px;
     }
     .stat-card {
-      padding: 24px;
+      padding: 22px;
     }
     .stat-card strong {
       display: block;
       color: var(--text-muted);
-      font-size: 0.82rem;
+      font-size: 0.78rem;
       text-transform: uppercase;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.09em;
       margin-bottom: 12px;
     }
     .stat-card span {
       display: block;
-      font-family: 'Playfair Display', serif;
       color: var(--navy);
+      font-family: 'Playfair Display', serif;
       font-size: 2.1rem;
       line-height: 1;
       margin-bottom: 10px;
     }
-    .dashboard-layout {
-      display: grid;
-      grid-template-columns: 1.15fr 0.85fr;
-      gap: 24px;
-      align-items: start;
+    .analytics-panel, .cases-panel, .detail-panel {
+      padding: 26px;
     }
-    .cases-panel, .detail-panel {
-      padding: 28px;
+    .analytics-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      margin-top: 18px;
+    }
+    .mini-card {
+      background: #fbf8f3;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 18px;
+    }
+    .mini-card h3 {
+      font-size: 1.15rem;
+      margin-bottom: 12px;
+    }
+    .mini-card ul {
+      list-style: none;
+      display: grid;
+      gap: 10px;
+      color: var(--text-muted);
+      font-size: 0.92rem;
+    }
+    .mini-card li strong {
+      color: var(--navy);
     }
     .cases-toolbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      margin-bottom: 18px;
-      flex-wrap: wrap;
-    }
-    .filter-select {
-      width: 220px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 220px 220px;
+      gap: 12px;
+      margin: 18px 0 20px;
     }
     table {
       width: 100%;
@@ -216,16 +238,12 @@
     }
     th {
       color: var(--text-muted);
-      font-size: 0.8rem;
+      font-size: 0.79rem;
       text-transform: uppercase;
       letter-spacing: 0.06em;
     }
-    tr.case-row {
-      cursor: pointer;
-    }
-    tr.case-row.active {
-      background: #fff9eb;
-    }
+    tr.case-row { cursor: pointer; }
+    tr.case-row.active { background: #fff8e9; }
     .badge {
       display: inline-flex;
       align-items: center;
@@ -242,64 +260,98 @@
     }
     .detail-summary {
       display: grid;
-      gap: 8px;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px 18px;
       color: var(--text-muted);
-      font-size: 0.95rem;
+      font-size: 0.94rem;
     }
-    .detail-summary strong {
-      color: var(--text);
+    .detail-summary strong { color: var(--text); }
+    .signal-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    .signal-card {
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      background: #fbf8f3;
+      padding: 18px;
+    }
+    .signal-card h3 {
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+    }
+    .signal-card ul {
+      margin-left: 18px;
+      color: var(--text-muted);
+      display: grid;
+      gap: 8px;
+      font-size: 0.92rem;
     }
     .field-grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 16px;
     }
-    .field.full {
-      grid-column: 1 / -1;
+    .field.full { grid-column: 1 / -1; }
+    .action-row, .quick-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
     }
-    .timeline {
+    .quick-actions { margin-top: 6px; }
+    .templates-grid {
+      display: grid;
+      gap: 14px;
+    }
+    .template-card {
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      background: #fbf8f3;
+      padding: 18px;
+    }
+    .template-card h3 {
+      font-size: 1.18rem;
+      margin-bottom: 10px;
+    }
+    .template-card pre {
+      white-space: pre-wrap;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 0.83rem;
+      color: var(--text-muted);
+      max-height: 180px;
+      overflow: auto;
+      margin-bottom: 12px;
+    }
+    .timeline, .documents-list {
+      list-style: none;
       display: grid;
       gap: 12px;
-      list-style: none;
     }
-    .timeline li {
-      border-left: 3px solid rgba(201,168,76,0.55);
-      padding-left: 14px;
+    .timeline li, .documents-list li {
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      background: #fbf8f3;
+      padding: 14px 16px;
       color: var(--text-muted);
     }
-    .timeline strong {
+    .timeline strong, .documents-list strong {
       display: block;
       color: var(--navy);
       margin-bottom: 4px;
-    }
-    .documents-list {
-      display: grid;
-      gap: 10px;
-      list-style: none;
-    }
-    .documents-list li {
-      padding: 12px 14px;
-      border-radius: 14px;
-      background: #faf8f3;
-      border: 1px solid var(--border);
-      color: var(--text-muted);
     }
     .empty {
       color: var(--text-muted);
       padding: 18px 0;
     }
-    @media (max-width: 1080px) {
-      .stats-grid, .dashboard-layout {
+    @media (max-width: 1180px) {
+      .dashboard-grid, .stats-grid, .analytics-layout, .signal-grid {
         grid-template-columns: 1fr;
       }
     }
-    @media (max-width: 760px) {
-      .access-grid, .field-grid {
+    @media (max-width: 900px) {
+      .cases-toolbar, .access-grid, .field-grid, .detail-summary {
         grid-template-columns: 1fr;
-      }
-      th:nth-child(5),
-      td:nth-child(5) {
-        display: none;
       }
     }
   </style>
@@ -312,60 +364,83 @@
         <a href="/">Website</a>
         <a href="/start">Start</a>
         <a href="/documents">Documents</a>
+        <a href="/studio">Studio</a>
       </div>
     </div>
   </nav>
 
   <main>
     <div class="container">
-      <span class="eyebrow">Operations</span>
-      <h1>Case management for Departed Digital.</h1>
-      <p class="intro">Use this dashboard to review new cases, follow payment status, see whether documents have been received, and keep internal notes in one place.</p>
+      <span class="eyebrow">Operations Console</span>
+      <h1>Run cases, monitor traffic, and hand work to humans or agents.</h1>
+      <p class="intro">This is the operating layer for Departed Digital. It combines case management, site analytics, case-ready exports for platform submissions, and prompt-ready summaries for AI agents or live operators. The discreet dashboard entry also lives at <strong>/studio</strong>.</p>
 
       <section class="panel access-panel">
         <div class="access-grid">
           <div>
             <label for="admin-token">Admin access token</label>
             <input id="admin-token" type="password" placeholder="Paste ADMIN_ACCESS_TOKEN" />
-            <p class="helper" id="admin-helper">This page stays private by requiring the same `ADMIN_ACCESS_TOKEN` configured in Vercel.</p>
+            <p class="helper" id="admin-helper">Load the dashboard with the same token configured in Vercel. This page is not linked publicly, and the alias path is <code>/studio</code>.</p>
           </div>
+          <button class="secondary" id="clear-dashboard" type="button">Clear token</button>
           <button class="primary" id="load-dashboard" type="button">Load dashboard</button>
         </div>
       </section>
 
       <section class="stats-grid" id="stats-grid">
-        <div class="panel stat-card"><strong>Total cases</strong><span>0</span><p class="helper">Load the dashboard to see live stats.</p></div>
-        <div class="panel stat-card"><strong>Awaiting payment</strong><span>0</span><p class="helper">New enquiries that still need the payment step.</p></div>
-        <div class="panel stat-card"><strong>Active cases</strong><span>0</span><p class="helper">Cases that are moving through handling right now.</p></div>
-        <div class="panel stat-card"><strong>Documents stored</strong><span>0</span><p class="helper">Supporting files attached to case records.</p></div>
+        <div class="panel stat-card"><strong>Total cases</strong><span>0</span><p class="helper">Load the dashboard to see live case metrics.</p></div>
+        <div class="panel stat-card"><strong>Awaiting payment</strong><span>0</span><p class="helper">Cases still waiting for the payment step.</p></div>
+        <div class="panel stat-card"><strong>Unique visitors</strong><span>0</span><p class="helper">Sessions tracked across the website.</p></div>
+        <div class="panel stat-card"><strong>CTA clicks</strong><span>0</span><p class="helper">Tracked conversion intent across key buttons.</p></div>
       </section>
 
-      <div class="dashboard-layout">
-        <section class="panel cases-panel">
-          <div class="cases-toolbar">
-            <div>
-              <span class="eyebrow" style="margin-bottom: 8px;">Inbox</span>
-              <h2 style="font-size:1.8rem;">Current cases</h2>
+      <div class="dashboard-grid">
+        <div>
+          <section class="panel analytics-panel">
+            <span class="eyebrow" style="margin-bottom: 8px;">Traffic and funnel</span>
+            <h2 style="font-size: 1.9rem;">Site analytics</h2>
+            <p class="helper">Lightweight first-party analytics based on your own backend. This shows what pages are being viewed, which CTAs are being clicked, and how the funnel is moving.</p>
+            <div class="analytics-layout" id="analytics-layout">
+              <div class="mini-card"><h3>Top pages</h3><p class="empty">Load the dashboard to see analytics.</p></div>
+              <div class="mini-card"><h3>Top clicks</h3><p class="empty">Load the dashboard to see analytics.</p></div>
+              <div class="mini-card"><h3>Funnel snapshot</h3><p class="empty">Load the dashboard to see analytics.</p></div>
+              <div class="mini-card"><h3>Latest events</h3><p class="empty">Load the dashboard to see analytics.</p></div>
             </div>
-            <select class="filter-select" id="status-filter">
-              <option value="all">All statuses</option>
-              <option value="awaiting_payment">Awaiting payment</option>
-              <option value="paid">Paid</option>
-              <option value="documents_received">Documents received</option>
-              <option value="active">Active</option>
-              <option value="completed">Completed</option>
-              <option value="blocked">Blocked</option>
-            </select>
-          </div>
-          <div id="cases-table-wrap">
-            <p class="empty">Load the dashboard to see cases.</p>
-          </div>
-        </section>
+          </section>
+
+          <section class="panel cases-panel" style="margin-top: 24px;">
+            <span class="eyebrow" style="margin-bottom: 8px;">Cases</span>
+            <h2 style="font-size: 1.9rem;">Case inbox</h2>
+            <div class="cases-toolbar">
+              <input id="case-search" type="search" placeholder="Search by reference, client, email, or deceased name" />
+              <select id="status-filter">
+                <option value="all">All statuses</option>
+                <option value="awaiting_payment">Awaiting payment</option>
+                <option value="paid">Paid</option>
+                <option value="awaiting_documents">Awaiting documents</option>
+                <option value="documents_received">Documents received</option>
+                <option value="active">Active</option>
+                <option value="submitted">Submitted</option>
+                <option value="completed">Completed</option>
+                <option value="blocked">Blocked</option>
+              </select>
+              <select id="package-filter">
+                <option value="all">All packages</option>
+                <option value="essential">Essential</option>
+                <option value="standard">Standard</option>
+                <option value="estate">Estate</option>
+              </select>
+            </div>
+            <div id="cases-table-wrap">
+              <p class="empty">Load the dashboard to see cases.</p>
+            </div>
+          </section>
+        </div>
 
         <aside class="panel detail-panel">
           <span class="eyebrow" style="margin-bottom: 8px;">Selected case</span>
-          <h2 style="font-size:1.8rem; margin-bottom: 12px;">Case detail</h2>
-          <div id="case-detail" class="empty">Choose a case from the list to review the full record.</div>
+          <h2 style="font-size: 1.9rem; margin-bottom: 14px;">Case detail and agent context</h2>
+          <div id="case-detail" class="empty">Choose a case from the inbox to review the full record, exports, and next action.</div>
         </aside>
       </div>
     </div>
@@ -375,17 +450,21 @@
     const adminTokenInput = document.getElementById('admin-token');
     const adminHelper = document.getElementById('admin-helper');
     const loadDashboardButton = document.getElementById('load-dashboard');
+    const clearDashboardButton = document.getElementById('clear-dashboard');
     const statsGrid = document.getElementById('stats-grid');
+    const analyticsLayout = document.getElementById('analytics-layout');
     const casesTableWrap = document.getElementById('cases-table-wrap');
     const caseDetail = document.getElementById('case-detail');
     const statusFilter = document.getElementById('status-filter');
+    const packageFilter = document.getElementById('package-filter');
+    const caseSearch = document.getElementById('case-search');
 
     const state = {
       token: sessionStorage.getItem('departedDigitalAdminToken') || '',
       stats: null,
       cases: [],
-      filteredCases: [],
-      selectedCaseId: ''
+      selectedCaseId: '',
+      filteredCases: []
     };
 
     adminTokenInput.value = state.token;
@@ -414,61 +493,128 @@
       });
     }
 
+    function formatTextArea(value) {
+      return escapeHtml(value || '').replace(/\n/g, '<br />');
+    }
+
+    async function copyText(value, label, helperId) {
+      try {
+        await navigator.clipboard.writeText(value);
+        const helper = document.getElementById(helperId);
+        if (helper) {
+          helper.textContent = label + ' copied.';
+        }
+      } catch (error) {
+        const helper = document.getElementById(helperId);
+        if (helper) {
+          helper.textContent = 'Could not copy to clipboard.';
+        }
+      }
+    }
+
+    function getSelectedCase() {
+      return state.cases.find((entry) => entry.id === state.selectedCaseId) || null;
+    }
+
     function renderStats() {
-      const stats = state.stats || {
-        totalCases: 0,
-        awaitingPayment: 0,
-        activeCases: 0,
-        documentsStored: 0,
-        paidCases: 0,
-        storage: { mode: 'file', persistent: false }
-      };
+      const stats = state.stats || { totalCases: 0, awaitingPayment: 0, activeCases: 0, documentsStored: 0, analytics: {} };
+      const analytics = stats.analytics || {};
 
       statsGrid.innerHTML = [
-        ['Total cases', stats.totalCases, 'Every case record currently stored in the backend.'],
-        ['Awaiting payment', stats.awaitingPayment, 'New enquiries that still need the secure payment step.'],
-        ['Active cases', stats.activeCases, 'Cases that are already being worked or are ready for platform submission.'],
-        ['Documents stored', stats.documentsStored, 'Files currently attached to case records.']
+        ['Total cases', stats.totalCases, 'All stored cases in the operations system.'],
+        ['Awaiting payment', stats.awaitingPayment, 'Cases where the next job is payment follow-up.'],
+        ['Active cases', stats.activeCases, 'Cases already in handling or submission work.'],
+        ['Documents stored', stats.documentsStored, 'Supporting files currently attached to cases.'],
+        ['Unique visitors', analytics.uniqueSessions || 0, 'Sessions recorded by the first-party analytics layer.'],
+        ['Page views', analytics.pageViews || 0, 'All tracked page views across the site.'],
+        ['CTA clicks', analytics.ctaClicks || 0, 'Tracked button and link clicks from the marketing site.'],
+        ['Intake submits', analytics.intakeSubmits || 0, 'Completed start-form submissions.']
       ].map(([label, value, helper]) => (
         '<div class="panel stat-card">' +
-          '<strong>' + label + '</strong>' +
-          '<span>' + value + '</span>' +
-          '<p class="helper">' + helper + '</p>' +
+          '<strong>' + escapeHtml(label) + '</strong>' +
+          '<span>' + escapeHtml(value) + '</span>' +
+          '<p class="helper">' + escapeHtml(helper) + '</p>' +
         '</div>'
       )).join('');
     }
 
-    function getVisibleCases() {
-      if (statusFilter.value === 'all') {
-        return state.cases;
-      }
+    function renderAnalytics() {
+      const analytics = (state.stats && state.stats.analytics) || {};
+      const topPages = analytics.topPages || [];
+      const topClicks = analytics.topClicks || [];
+      const latestEvents = analytics.latestEvents || [];
 
-      return state.cases.filter((entry) => entry.status === statusFilter.value);
+      analyticsLayout.innerHTML = (
+        '<div class="mini-card">' +
+          '<h3>Top pages</h3>' +
+          (topPages.length
+            ? '<ul>' + topPages.map((item) => '<li><strong>' + escapeHtml(item.path) + '</strong><br />' + escapeHtml(item.count) + ' views</li>').join('') + '</ul>'
+            : '<p class="empty">No page data yet.</p>') +
+        '</div>' +
+        '<div class="mini-card">' +
+          '<h3>Top clicks</h3>' +
+          (topClicks.length
+            ? '<ul>' + topClicks.map((item) => '<li><strong>' + escapeHtml(item.label) + '</strong><br />' + escapeHtml(item.count) + ' clicks</li>').join('') + '</ul>'
+            : '<p class="empty">No CTA data yet.</p>') +
+        '</div>' +
+        '<div class="mini-card">' +
+          '<h3>Funnel snapshot</h3>' +
+          '<ul>' +
+            '<li><strong>Article views:</strong> ' + escapeHtml(analytics.articleViews || 0) + '</li>' +
+            '<li><strong>Intake starts:</strong> ' + escapeHtml(analytics.intakeStarts || 0) + '</li>' +
+            '<li><strong>Intake submits:</strong> ' + escapeHtml(analytics.intakeSubmits || 0) + '</li>' +
+            '<li><strong>Payment clicks:</strong> ' + escapeHtml(analytics.paymentClicks || 0) + '</li>' +
+          '</ul>' +
+        '</div>' +
+        '<div class="mini-card">' +
+          '<h3>Latest events</h3>' +
+          (latestEvents.length
+            ? '<ul>' + latestEvents.slice(0, 8).map((item) => '<li><strong>' + escapeHtml(item.eventType) + '</strong><br />' + escapeHtml(item.path || item.caseId || 'site') + ' · ' + escapeHtml(formatDate(item.createdAt)) + '</li>').join('') + '</ul>'
+            : '<p class="empty">No analytics events yet.</p>') +
+        '</div>'
+      );
+    }
+
+    function getVisibleCases() {
+      const search = caseSearch.value.trim().toLowerCase();
+
+      return state.cases.filter((entry) => {
+        const matchesStatus = statusFilter.value === 'all' || entry.status === statusFilter.value;
+        const matchesPackage = packageFilter.value === 'all' || entry.selectedPackage === packageFilter.value;
+        const haystack = [
+          entry.reference,
+          entry.clientName,
+          entry.clientEmail,
+          entry.deceasedName
+        ].join(' ').toLowerCase();
+        const matchesSearch = !search || haystack.includes(search);
+        return matchesStatus && matchesPackage && matchesSearch;
+      });
     }
 
     function renderCases() {
       state.filteredCases = getVisibleCases();
 
       if (!state.filteredCases.length) {
-        casesTableWrap.innerHTML = '<p class="empty">No cases match that filter yet.</p>';
+        casesTableWrap.innerHTML = '<p class="empty">No cases match the current filters.</p>';
         return;
       }
 
-      const tableRows = state.filteredCases.map((entry) => (
-        '<tr class="case-row' + (entry.id === state.selectedCaseId ? ' active' : '') + '" data-id="' + entry.id + '">' +
+      const rows = state.filteredCases.map((entry) => (
+        '<tr class="case-row' + (entry.id === state.selectedCaseId ? ' active' : '') + '" data-id="' + escapeHtml(entry.id) + '">' +
           '<td><strong>' + escapeHtml(entry.reference) + '</strong><br /><span style="color:#6b7a8d;">' + escapeHtml(entry.packageLabel) + '</span></td>' +
           '<td>' + escapeHtml(entry.clientName) + '<br /><span style="color:#6b7a8d;">' + escapeHtml(entry.clientEmail) + '</span></td>' +
           '<td>' + escapeHtml(entry.deceasedName) + '</td>' +
           '<td><span class="badge">' + escapeHtml(entry.status.replace(/_/g, ' ')) + '</span></td>' +
           '<td>' + escapeHtml(entry.paymentStatus.replace(/_/g, ' ')) + '</td>' +
-          '<td>' + formatDate(entry.updatedAt) + '</td>' +
+          '<td>' + escapeHtml(entry.documentCount || 0) + '</td>' +
         '</tr>'
       )).join('');
 
       casesTableWrap.innerHTML = (
         '<table>' +
-          '<thead><tr><th>Case</th><th>Client</th><th>Deceased</th><th>Status</th><th>Payment</th><th>Updated</th></tr></thead>' +
-          '<tbody>' + tableRows + '</tbody>' +
+          '<thead><tr><th>Case</th><th>Client</th><th>Deceased</th><th>Status</th><th>Payment</th><th>Docs</th></tr></thead>' +
+          '<tbody>' + rows + '</tbody>' +
         '</table>'
       );
 
@@ -481,29 +627,39 @@
       });
     }
 
-    function getSelectedCase() {
-      return state.cases.find((entry) => entry.id === state.selectedCaseId) || null;
+    function quickSet(status, paymentStatus) {
+      const statusField = document.getElementById('detail-status');
+      const paymentField = document.getElementById('detail-payment-status');
+
+      if (statusField && status) {
+        statusField.value = status;
+      }
+
+      if (paymentField && paymentStatus) {
+        paymentField.value = paymentStatus;
+      }
     }
 
     function renderDetail() {
       const selected = getSelectedCase();
 
       if (!selected) {
-        caseDetail.innerHTML = 'Choose a case from the list to review the full record.';
+        caseDetail.innerHTML = 'Choose a case from the inbox to review the full record, exports, and next action.';
         return;
       }
 
+      const operational = selected.operational || {};
       const documents = (selected.documents || []).length
         ? '<ul class="documents-list">' + selected.documents.map((document) => (
-          '<li><strong>' + escapeHtml(document.documentType.replace(/_/g, ' ')) + ':</strong> ' + escapeHtml(document.fileName) + '<br />Uploaded ' + formatDate(document.uploadedAt) + '</li>'
+          '<li><strong>' + escapeHtml(document.documentType.replace(/_/g, ' ')) + '</strong>' +
+          escapeHtml(document.fileName) + '<br />Uploaded ' + escapeHtml(formatDate(document.uploadedAt)) + '</li>'
         )).join('') + '</ul>'
         : '<p class="empty">No supporting documents received yet.</p>';
 
       const timeline = (selected.activity || []).length
         ? '<ul class="timeline">' + selected.activity.map((event) => (
           '<li><strong>' + escapeHtml(event.eventType.replace(/_/g, ' ')) + '</strong>' +
-            '<span>' + formatDate(event.createdAt) + '</span>' +
-          '</li>'
+          escapeHtml(formatDate(event.createdAt)) + '</li>'
         )).join('') + '</ul>'
         : '<p class="empty">No activity logged yet.</p>';
 
@@ -511,11 +667,36 @@
         '<div class="detail-grid">' +
           '<div class="detail-summary">' +
             '<div><strong>Reference:</strong> ' + escapeHtml(selected.reference) + '</div>' +
-            '<div><strong>Client:</strong> ' + escapeHtml(selected.clientName) + ' (' + escapeHtml(selected.clientEmail) + ')</div>' +
+            '<div><strong>Package:</strong> ' + escapeHtml(selected.packageLabel) + '</div>' +
+            '<div><strong>Client:</strong> ' + escapeHtml(selected.clientName) + '</div>' +
+            '<div><strong>Email:</strong> ' + escapeHtml(selected.clientEmail) + '</div>' +
             '<div><strong>Deceased:</strong> ' + escapeHtml(selected.deceasedName) + '</div>' +
             '<div><strong>Outcome:</strong> ' + escapeHtml(selected.preferredOutcome || 'Not set') + '</div>' +
-            '<div><strong>Authority:</strong> ' + escapeHtml(selected.authorityBasis || 'Not yet supplied') + '</div>' +
+            '<div><strong>Relationship:</strong> ' + escapeHtml(selected.relationshipToDeceased || 'Not supplied') + '</div>' +
+            '<div><strong>Referral source:</strong> ' + escapeHtml(selected.referralSource || 'None recorded') + '</div>' +
           '</div>' +
+
+          '<div class="signal-grid">' +
+            '<div class="signal-card">' +
+              '<h3>Next best action</h3>' +
+              '<p>' + escapeHtml(operational.nextBestAction || 'Review the case and decide the next step.') + '</p>' +
+            '</div>' +
+            '<div class="signal-card">' +
+              '<h3>Missing items</h3>' +
+              ((operational.missingItems || []).length
+                ? '<ul>' + operational.missingItems.map((item) => '<li>' + escapeHtml(item) + '</li>').join('') + '</ul>'
+                : '<p>No obvious gaps at the moment.</p>') +
+            '</div>' +
+          '</div>' +
+
+          '<div class="quick-actions">' +
+            '<button class="secondary" type="button" id="quick-payment-link">Set payment link sent</button>' +
+            '<button class="secondary" type="button" id="quick-paid">Set paid</button>' +
+            '<button class="secondary" type="button" id="quick-awaiting-docs">Awaiting documents</button>' +
+            '<button class="secondary" type="button" id="quick-active">Set active</button>' +
+            '<a class="button-link secondary" href="' + escapeHtml(selected.caseLinks.documents) + '" target="_blank" rel="noreferrer">Open documents flow</a>' +
+          '</div>' +
+
           '<div class="field-grid">' +
             '<div class="field">' +
               '<label for="detail-status">Case status</label>' +
@@ -539,25 +720,60 @@
                 '<option value="refunded">Refunded</option>' +
               '</select>' +
             '</div>' +
-            '<div class="field full">' +
+            '<div class="field">' +
+              '<label for="detail-relationship">Relationship</label>' +
+              '<input id="detail-relationship" type="text" value="' + escapeHtml(selected.relationshipToDeceased || '') + '" />' +
+            '</div>' +
+            '<div class="field">' +
               '<label for="detail-authority">Authority basis</label>' +
               '<input id="detail-authority" type="text" value="' + escapeHtml(selected.authorityBasis || '') + '" />' +
             '</div>' +
             '<div class="field full">' +
-              '<label for="detail-notes">Internal notes</label>' +
-              '<textarea id="detail-notes">' + escapeHtml(selected.internalNotes || '') + '</textarea>' +
+              '<label for="detail-known-platforms">Known platforms</label>' +
+              '<textarea id="detail-known-platforms">' + escapeHtml(selected.knownPlatforms || '') + '</textarea>' +
+            '</div>' +
+            '<div class="field full">' +
+              '<label for="detail-profile-urls">Profile URLs or handles</label>' +
+              '<textarea id="detail-profile-urls">' + escapeHtml(selected.profileUrls || '') + '</textarea>' +
+            '</div>' +
+            '<div class="field full">' +
+              '<label for="detail-internal-notes">Internal notes</label>' +
+              '<textarea id="detail-internal-notes">' + escapeHtml(selected.internalNotes || '') + '</textarea>' +
             '</div>' +
           '</div>' +
-          '<button class="primary" id="save-case" type="button">Save case update</button>' +
-          '<p class="helper" id="save-helper">Updates are written back into the case record and activity log.</p>' +
+
+          '<div class="action-row">' +
+            '<button class="primary" id="save-case" type="button">Save case update</button>' +
+            '<button class="secondary" id="copy-agent-brief" type="button">Copy agent brief</button>' +
+            '<button class="secondary" id="copy-client-update" type="button">Copy client update</button>' +
+            '<button class="secondary" id="copy-platform-brief" type="button">Copy platform brief</button>' +
+          '</div>' +
+          '<p class="helper" id="save-helper">Use the copy buttons to hand the case to a VA, live operator, or AI agent without rewriting the context each time.</p>' +
+
+          '<div class="templates-grid">' +
+            '<div class="template-card">' +
+              '<h3>Agent brief</h3>' +
+              '<pre>' + escapeHtml(operational.agentSummary || '') + '</pre>' +
+            '</div>' +
+            '<div class="template-card">' +
+              '<h3>Client update draft</h3>' +
+              '<pre>' + escapeHtml(operational.clientUpdateDraft || '') + '</pre>' +
+            '</div>' +
+            '<div class="template-card">' +
+              '<h3>Platform submission brief</h3>' +
+              '<pre>' + escapeHtml(operational.platformSubmissionBrief || '') + '</pre>' +
+            '</div>' +
+          '</div>' +
+
           '<div>' +
             '<span class="eyebrow" style="margin-bottom:8px;">Documents</span>' +
-            '<h3 style="font-size:1.3rem; margin-bottom:12px;">Supporting files</h3>' +
+            '<h3 style="font-size:1.28rem; margin-bottom:12px;">Supporting files</h3>' +
             documents +
           '</div>' +
+
           '<div>' +
             '<span class="eyebrow" style="margin-bottom:8px;">Activity</span>' +
-            '<h3 style="font-size:1.3rem; margin-bottom:12px;">Timeline</h3>' +
+            '<h3 style="font-size:1.28rem; margin-bottom:12px;">Case timeline</h3>' +
             timeline +
           '</div>' +
         '</div>'
@@ -566,7 +782,28 @@
       document.getElementById('detail-status').value = selected.status || 'awaiting_payment';
       document.getElementById('detail-payment-status').value = selected.paymentStatus || 'pending';
 
+      document.getElementById('quick-payment-link').addEventListener('click', function () {
+        quickSet('awaiting_payment', 'payment_link_sent');
+      });
+      document.getElementById('quick-paid').addEventListener('click', function () {
+        quickSet('paid', 'paid');
+      });
+      document.getElementById('quick-awaiting-docs').addEventListener('click', function () {
+        quickSet('awaiting_documents', 'paid');
+      });
+      document.getElementById('quick-active').addEventListener('click', function () {
+        quickSet('active', 'paid');
+      });
       document.getElementById('save-case').addEventListener('click', saveSelectedCase);
+      document.getElementById('copy-agent-brief').addEventListener('click', function () {
+        copyText(operational.agentSummary || '', 'Agent brief', 'save-helper');
+      });
+      document.getElementById('copy-client-update').addEventListener('click', function () {
+        copyText(operational.clientUpdateDraft || '', 'Client update', 'save-helper');
+      });
+      document.getElementById('copy-platform-brief').addEventListener('click', function () {
+        copyText(operational.platformSubmissionBrief || '', 'Platform brief', 'save-helper');
+      });
     }
 
     async function saveSelectedCase() {
@@ -580,7 +817,7 @@
 
       saveButton.disabled = true;
       saveButton.textContent = 'Saving...';
-      helper.textContent = 'Saving the updated case details...';
+      helper.textContent = 'Saving case updates...';
 
       try {
         const response = await fetch('/api/admin/cases', {
@@ -590,20 +827,24 @@
             id: selected.id,
             status: document.getElementById('detail-status').value,
             paymentStatus: document.getElementById('detail-payment-status').value,
+            relationshipToDeceased: document.getElementById('detail-relationship').value,
             authorityBasis: document.getElementById('detail-authority').value,
-            internalNotes: document.getElementById('detail-notes').value
+            knownPlatforms: document.getElementById('detail-known-platforms').value,
+            profileUrls: document.getElementById('detail-profile-urls').value,
+            internalNotes: document.getElementById('detail-internal-notes').value
           })
         });
 
         const payload = await response.json();
+
         if (!response.ok || !payload.ok) {
-          throw new Error(payload.error || 'Save failed.');
+          throw new Error(payload.error || 'Could not save the case.');
         }
 
         await loadDashboard();
         helper.textContent = 'Case updated successfully.';
       } catch (error) {
-        helper.textContent = error.message || 'We could not save the case update.';
+        helper.textContent = error.message || 'Could not save the case.';
       } finally {
         saveButton.disabled = false;
         saveButton.textContent = 'Save case update';
@@ -612,11 +853,11 @@
 
     async function loadDashboard() {
       if (!state.token) {
-        adminHelper.textContent = 'Add the admin token first so this page can read the dashboard APIs.';
+        adminHelper.textContent = 'Add the admin token first so the dashboard can load.';
         return;
       }
 
-      adminHelper.textContent = 'Loading the case dashboard...';
+      adminHelper.textContent = 'Loading the operations dashboard...';
 
       try {
         const [statsResponse, casesResponse] = await Promise.all([
@@ -643,7 +884,13 @@
         }
 
         renderStats();
+        renderAnalytics();
         renderCases();
+
+        if (!getSelectedCase() && state.filteredCases.length) {
+          state.selectedCaseId = state.filteredCases[0].id;
+        }
+
         renderDetail();
         adminHelper.textContent = 'Dashboard loaded.';
       } catch (error) {
@@ -651,13 +898,36 @@
       }
     }
 
-    loadDashboardButton.addEventListener('click', async () => {
+    loadDashboardButton.addEventListener('click', async function () {
       state.token = adminTokenInput.value.trim();
       sessionStorage.setItem('departedDigitalAdminToken', state.token);
       await loadDashboard();
     });
 
-    statusFilter.addEventListener('change', () => {
+    clearDashboardButton.addEventListener('click', function () {
+      state.token = '';
+      adminTokenInput.value = '';
+      sessionStorage.removeItem('departedDigitalAdminToken');
+      adminHelper.textContent = 'Admin token cleared.';
+    });
+
+    statusFilter.addEventListener('change', function () {
+      renderCases();
+      if (!getSelectedCase() && state.filteredCases.length) {
+        state.selectedCaseId = state.filteredCases[0].id;
+      }
+      renderDetail();
+    });
+
+    packageFilter.addEventListener('change', function () {
+      renderCases();
+      if (!getSelectedCase() && state.filteredCases.length) {
+        state.selectedCaseId = state.filteredCases[0].id;
+      }
+      renderDetail();
+    });
+
+    caseSearch.addEventListener('input', function () {
       renderCases();
       if (!getSelectedCase() && state.filteredCases.length) {
         state.selectedCaseId = state.filteredCases[0].id;

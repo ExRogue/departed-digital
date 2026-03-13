@@ -250,7 +250,7 @@
             </div>
           </div>
           <p class="disabled-note" id="document-helper">Upload the death certificate and proof of authority here once payment has been confirmed.</p>
-          <button class="button primary" type="submit">Upload supporting documents</button>
+          <button class="button primary" type="submit" data-track="documents_upload" data-track-label="Documents upload supporting documents">Upload supporting documents</button>
           <a class="button secondary" href="/payment">Back to payment</a>
           </form>
         </section>
@@ -285,6 +285,7 @@
     </div>
   </footer>
 
+  <script src="/scripts/site-analytics.js"></script>
   <script>
     const params = new URLSearchParams(window.location.search);
     const caseIdFromUrl = params.get('case') || '';
@@ -316,7 +317,9 @@
         ['Email', caseData.clientEmail || 'Not provided'],
         ['Deceased', caseData.deceasedName || 'Not provided'],
         ['Package', caseData.packageLabel || caseData.selectedPackage || 'Not provided'],
-        ['Outcome', caseData.preferredOutcome || 'Not provided']
+        ['Outcome', caseData.preferredOutcome || 'Not provided'],
+        ['Relationship', caseData.relationshipToDeceased || 'Not provided'],
+        ['Known platforms', caseData.knownPlatforms || 'Not provided']
       ];
 
       if (caseData.documents && caseData.documents.length) {
@@ -469,6 +472,12 @@
           ...payload.case,
           publicToken: state.publicToken
         }));
+        if (window.DepartedAnalytics && typeof window.DepartedAnalytics.track === 'function') {
+          window.DepartedAnalytics.track('documents_uploaded', {
+            label: 'Documents uploaded',
+            count: files.length
+          });
+        }
         renderSummary(state.caseData);
         helper.textContent = 'Documents received. We can now review the case reference ' + (state.caseData.reference || '') + ' and confirm the next submission steps.';
         form.reset();

@@ -1139,8 +1139,8 @@
       <h1>We handle the digital admin you should not have to face alone.</h1>
       <p>Departed Digital closes or memorialises social media and digital accounts for bereaved families across the UK. You start with a short form, choose the right package, and only share sensitive documents after payment.</p>
       <div class="hero-btns">
-        <a href="/start" class="btn-primary">Start in Under a Minute</a>
-        <a href="#pricing" class="btn-secondary">See Packages</a>
+        <a href="/start" class="btn-primary" data-track="hero_cta" data-track-label="Homepage hero start">Start in Under a Minute</a>
+        <a href="#pricing" class="btn-secondary" data-track="hero_secondary" data-track-label="Homepage see packages">See Packages</a>
       </div>
       <p style="margin-top: 20px; color: rgba(255,255,255,0.76); font-size: 0.94rem;">No passwords needed. No death certificate in the first step. Clear written outcome at the end.</p>
     </div>
@@ -1270,7 +1270,7 @@
             <li>Platform submissions managed for you</li>
             <li>Written completion summary</li>
           </ul>
-          <a href="/start?package=essential" class="btn-outline-gold">Start Essential</a>
+          <a href="/start?package=essential" class="btn-outline-gold" data-track="pricing_cta" data-track-label="Homepage pricing essential">Start Essential</a>
         </div>
         <div class="price-card featured reveal reveal-delay-1">
           <div class="featured-badge">Most Popular</div>
@@ -1285,7 +1285,7 @@
             <li>Best fit for most family cases</li>
             <li>10 day target completion</li>
           </ul>
-          <a href="/start?package=standard" class="btn-outline-gold">Start Standard</a>
+          <a href="/start?package=standard" class="btn-outline-gold" data-track="pricing_cta" data-track-label="Homepage pricing standard">Start Standard</a>
         </div>
         <div class="price-card reveal reveal-delay-2">
           <div class="price-tier">Estate</div>
@@ -1299,7 +1299,7 @@
             <li>Written closure trail for records</li>
             <li>7 day target completion</li>
           </ul>
-          <a href="/start?package=estate" class="btn-outline-gold">Start Estate</a>
+          <a href="/start?package=estate" class="btn-outline-gold" data-track="pricing_cta" data-track-label="Homepage pricing estate">Start Estate</a>
         </div>
       </div>
       <p class="section-sub reveal" style="margin-top: 28px; margin-bottom: 0;">If a case looks more or less complex than expected, we will tell you before payment is requested.</p>
@@ -1428,7 +1428,7 @@
       <h2 class="section-title reveal">Helpful guides for bereaved families</h2>
       <p class="section-sub reveal" style="margin-bottom: 48px;">Free, practical guides to help you navigate digital accounts after losing a loved one.</p>
       <p class="reveal" style="margin-bottom: 32px;">
-        <a href="/blog" style="color: var(--gold); text-decoration: none; font-weight: 600;">Browse all guides →</a>
+        <a href="/blog" style="color: var(--gold); text-decoration: none; font-weight: 600;" data-track="resources_cta" data-track-label="Homepage browse all guides">Browse all guides →</a>
       </p>
       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 28px;">
         <a href="/blog/delete-deceased-facebook-account-uk" style="text-decoration: none;" class="reveal">
@@ -1504,8 +1504,8 @@
             </div>
           </div>
           <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:14px; margin-top: 8px;">
-            <a href="/start" class="btn-primary" style="display:inline-flex; align-items:center; justify-content:center; min-width:220px;">Start the Short Form</a>
-            <a href="#pricing" class="btn-secondary" style="display:inline-flex; align-items:center; justify-content:center; min-width:220px;">Compare Packages First</a>
+            <a href="/start" class="btn-primary" style="display:inline-flex; align-items:center; justify-content:center; min-width:220px;" data-track="contact_cta" data-track-label="Homepage contact start form">Start the Short Form</a>
+            <a href="#pricing" class="btn-secondary" style="display:inline-flex; align-items:center; justify-content:center; min-width:220px;" data-track="contact_secondary" data-track-label="Homepage contact compare packages">Compare Packages First</a>
           </div>
           <p style="text-align:center; font-size:0.86rem; color:var(--text-muted);">The goal is reassurance and clarity first. When backend storage is enabled, the short form creates a real case reference before payment.</p>
         </div>
@@ -1555,7 +1555,7 @@
   </footer>
 
   <!-- Floating CTA -->
-  <a href="/start" id="floating-cta">Start a Case ↑</a>
+  <a href="/start" id="floating-cta" data-track="floating_cta" data-track-label="Homepage floating start case">Start a Case ↑</a>
 
   <script>
     // ── Progress bar
@@ -1611,5 +1611,6 @@
       link.addEventListener('click', () => mobileMenu.classList.remove('open'));
     });
   </script>
+  <script src="/scripts/site-analytics.js"></script>
 </body>
 </html>

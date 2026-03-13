@@ -3,15 +3,24 @@ const fs = require('node:fs/promises');
 const path = require('node:path');
 const { get, list, put } = require('@vercel/blob');
 
-const { CASE_STATUSES, PACKAGE_CONFIG, PAYMENT_STATUSES } = require('./config');
+const {
+  CASE_STATUSES,
+  MAX_ANALYTICS_EVENTS,
+  PACKAGE_CONFIG,
+  PAYMENT_STATUSES
+} = require('./config');
 
 const DATA_ROOT = process.env.DEPARTED_DATA_ROOT
   ? path.resolve(process.env.DEPARTED_DATA_ROOT)
-  : path.join(process.cwd(), 'data');
+  : (process.env.VERCEL && !process.env.BLOB_READ_WRITE_TOKEN
+    ? '/tmp/departed-digital-data'
+    : path.join(process.cwd(), 'data'));
 const CASES_DIR = path.join(DATA_ROOT, 'cases');
 const DOCUMENTS_DIR = path.join(DATA_ROOT, 'documents');
 const INDEX_FILE = path.join(DATA_ROOT, 'meta', 'cases-index.json');
 const INDEX_BLOB_PATH = 'meta/cases-index.json';
+const ANALYTICS_FILE = path.join(DATA_ROOT, 'meta', 'analytics-events.json');
+const ANALYTICS_BLOB_PATH = 'meta/analytics-events.json';
 
 class StoreConfigurationError extends Error {
   constructor(message) {
@@ -53,6 +62,25 @@ function ensureArray(value) {
   return Array.isArray(value) ? value : [];
 }
 
+function trimTo(value, maxLength = 4000) {
+  return String(value || '').trim().slice(0, maxLength);
+}
+
+function toTitle(value) {
+  return trimTo(value, 120)
+    .replace(/_/g, ' ')
+    .replace(/\b\w/g, (character) => character.toUpperCase());
+}
+
+function formatList(value) {
+  return ensureArray(
+    String(value || '')
+      .split(/\n|,/)
+      .map((entry) => trimTo(entry, 240))
+      .filter(Boolean)
+  );
+}
+
 function makeReference(id, createdAt) {
   const stamp = createdAt.slice(0, 10).replace(/-/g, '');
   return `DD-${stamp}-${id.slice(0, 6).toUpperCase()}`;
@@ -67,6 +95,7 @@ function normalizeCaseSummary(caseRecord) {
     deceasedName: caseRecord.deceasedName,
     selectedPackage: caseRecord.selectedPackage,
     packageLabel: caseRecord.packageLabel,
+    relationshipToDeceased: caseRecord.relationshipToDeceased || '',
     status: caseRecord.status,
     paymentStatus: caseRecord.paymentStatus,
     documentCount: ensureArray(caseRecord.documents).length,
@@ -76,6 +105,8 @@ function normalizeCaseSummary(caseRecord) {
 }
 
 function buildPublicCase(caseRecord) {
+  const operational = buildOperationalKit(caseRecord);
+
   return {
     id: caseRecord.id,
     reference: caseRecord.reference,
@@ -84,6 +115,10 @@ function buildPublicCase(caseRecord) {
     deceasedName: caseRecord.deceasedName,
     preferredOutcome: caseRecord.preferredOutcome,
     caseDetails: caseRecord.caseDetails,
+    relationshipToDeceased: caseRecord.relationshipToDeceased || '',
+    knownPlatforms: caseRecord.knownPlatforms || '',
+    profileUrls: caseRecord.profileUrls || '',
+    urgency: caseRecord.urgency || 'standard',
     selectedPackage: caseRecord.selectedPackage,
     packageLabel: caseRecord.packageLabel,
     status: caseRecord.status,
@@ -97,6 +132,7 @@ function buildPublicCase(caseRecord) {
       size: document.size,
       uploadedAt: document.uploadedAt
     })),
+    operational,
     createdAt: caseRecord.createdAt,
     updatedAt: caseRecord.updatedAt
   };
@@ -105,10 +141,122 @@ function buildPublicCase(caseRecord) {
 function buildAdminCase(caseRecord) {
   return {
     ...buildPublicCase(caseRecord),
+    publicToken: caseRecord.publicToken,
+    caseLinks: {
+      payment: `/payment?case=${caseRecord.id}&token=${caseRecord.publicToken}&package=${caseRecord.selectedPackage}`,
+      documents: `/documents?case=${caseRecord.id}&token=${caseRecord.publicToken}`
+    },
     intakeSource: caseRecord.intakeSource,
     referralSource: caseRecord.referralSource,
     internalNotes: caseRecord.internalNotes || '',
     activity: ensureArray(caseRecord.activity)
+  };
+}
+
+function buildOperationalKit(caseRecord) {
+  const knownPlatforms = formatList(caseRecord.knownPlatforms);
+  const profileUrls = formatList(caseRecord.profileUrls);
+  const documentCount = ensureArray(caseRecord.documents).length;
+  const missingItems = [];
+
+  if (!caseRecord.relationshipToDeceased) {
+    missingItems.push('Relationship to the deceased is still missing.');
+  }
+
+  if (!knownPlatforms.length) {
+    missingItems.push('Known platforms have not been listed yet.');
+  }
+
+  if (!profileUrls.length) {
+    missingItems.push('No profile URLs or handles have been captured yet.');
+  }
+
+  if (!caseRecord.authorityBasis && documentCount === 0) {
+    missingItems.push('Authority basis and documents still need to be collected.');
+  }
+
+  let nextBestAction = 'Review the case and decide the next operational step.';
+
+  if (caseRecord.status === 'awaiting_payment' || caseRecord.paymentStatus === 'pending') {
+    nextBestAction = 'Send or confirm the correct payment link, then wait for payment before requesting sensitive documents.';
+  } else if (caseRecord.paymentStatus === 'payment_link_sent') {
+    nextBestAction = 'Follow up on payment and keep the case warm with a short reassurance note.';
+  } else if (caseRecord.paymentStatus === 'paid' && documentCount === 0) {
+    nextBestAction = 'Request the death certificate and proof of authority using the secure document step.';
+  } else if (documentCount > 0 && (caseRecord.status === 'documents_received' || caseRecord.status === 'awaiting_documents')) {
+    nextBestAction = 'Review the uploaded documents, confirm they are sufficient, and prepare the first platform submissions.';
+  } else if (caseRecord.status === 'active') {
+    nextBestAction = 'Submit to the listed platforms, log outcomes, and send a short progress update to the client.';
+  } else if (caseRecord.status === 'submitted') {
+    nextBestAction = 'Monitor platform responses, chase anything outstanding, and prepare the completion summary.';
+  } else if (caseRecord.status === 'completed') {
+    nextBestAction = 'Send the written completion record and close out any referral or archive tasks.';
+  } else if (caseRecord.status === 'blocked') {
+    nextBestAction = 'Resolve the blocker, request the missing information, and note the issue clearly for the next operator.';
+  }
+
+  const agentChecklist = [
+    `Case reference: ${caseRecord.reference}`,
+    `Selected package: ${caseRecord.packageLabel}`,
+    `Preferred outcome: ${toTitle(caseRecord.preferredOutcome || 'not_sure')}`,
+    knownPlatforms.length ? `Known platforms: ${knownPlatforms.join(', ')}` : 'Known platforms still need to be confirmed.',
+    profileUrls.length ? `Known profiles/handles: ${profileUrls.join(', ')}` : 'No profile URLs or handles are recorded yet.',
+    `Next best action: ${nextBestAction}`
+  ];
+
+  const agentSummary = [
+    `Departed Digital case ${caseRecord.reference}.`,
+    `Client: ${caseRecord.clientName} (${caseRecord.clientEmail}).`,
+    `Deceased: ${caseRecord.deceasedName}.`,
+    `Relationship: ${caseRecord.relationshipToDeceased || 'Not supplied yet'}.`,
+    `Package: ${caseRecord.packageLabel}.`,
+    `Outcome requested: ${toTitle(caseRecord.preferredOutcome || 'not_sure')}.`,
+    knownPlatforms.length ? `Platforms: ${knownPlatforms.join(', ')}.` : 'Platforms: still to be confirmed.',
+    profileUrls.length ? `Profiles or handles: ${profileUrls.join(', ')}.` : 'Profiles or handles: not yet supplied.',
+    caseRecord.caseDetails ? `Case details: ${caseRecord.caseDetails}.` : '',
+    `Current status: ${toTitle(caseRecord.status)} with payment ${toTitle(caseRecord.paymentStatus)}.`,
+    `Next best action: ${nextBestAction}`
+  ].filter(Boolean).join(' ');
+
+  const clientUpdateDraft = [
+    `Subject: Update on case ${caseRecord.reference}`,
+    '',
+    `Hi ${caseRecord.clientName || 'there'},`,
+    '',
+    `This is a quick update on the Departed Digital case for ${caseRecord.deceasedName}.`,
+    '',
+    `Current status: ${toTitle(caseRecord.status)}.`,
+    `Current payment status: ${toTitle(caseRecord.paymentStatus)}.`,
+    '',
+    nextBestAction,
+    '',
+    'We will keep the record updated and confirm the next step as soon as anything changes.',
+    '',
+    'Departed Digital'
+  ].join('\n');
+
+  const platformSubmissionBrief = [
+    `Departed Digital reference: ${caseRecord.reference}`,
+    `Requester name: ${caseRecord.clientName}`,
+    `Requester email: ${caseRecord.clientEmail}`,
+    `Relationship or authority: ${caseRecord.authorityBasis || caseRecord.relationshipToDeceased || 'To be confirmed'}`,
+    `Deceased person: ${caseRecord.deceasedName}`,
+    `Requested outcome: ${toTitle(caseRecord.preferredOutcome || 'not_sure')}`,
+    knownPlatforms.length ? `Known platforms: ${knownPlatforms.join(', ')}` : 'Known platforms: not yet recorded',
+    profileUrls.length ? `Profile URLs or handles: ${profileUrls.join(', ')}` : 'Profile URLs or handles: not yet recorded',
+    caseRecord.caseDetails ? `Case notes: ${caseRecord.caseDetails}` : 'Case notes: none recorded yet',
+    `Supporting documents received: ${documentCount}`
+  ].join('\n');
+
+  return {
+    nextBestAction,
+    missingItems,
+    knownPlatformsList: knownPlatforms,
+    profileUrlsList: profileUrls,
+    agentChecklist,
+    agentSummary,
+    clientUpdateDraft,
+    platformSubmissionBrief
   };
 }
 
@@ -172,6 +320,28 @@ async function writeIndex(index) {
 
   await ensureLocalDirs();
   return writeJsonFile(INDEX_FILE, index);
+}
+
+async function readAnalyticsEvents() {
+  if (getStorageMode() === 'blob') {
+    return readBlobJson(ANALYTICS_BLOB_PATH, []);
+  }
+
+  await ensureLocalDirs();
+  return readJsonFile(ANALYTICS_FILE, []);
+}
+
+async function writeAnalyticsEvents(events) {
+  const limitedEvents = events
+    .sort((left, right) => new Date(right.createdAt).getTime() - new Date(left.createdAt).getTime())
+    .slice(0, MAX_ANALYTICS_EVENTS);
+
+  if (getStorageMode() === 'blob') {
+    return writeBlobJson(ANALYTICS_BLOB_PATH, limitedEvents);
+  }
+
+  await ensureLocalDirs();
+  return writeJsonFile(ANALYTICS_FILE, limitedEvents);
 }
 
 function getCaseBlobPath(caseId) {
@@ -240,6 +410,10 @@ async function createCase(input) {
     deceasedName: input.deceasedName,
     preferredOutcome: input.preferredOutcome || 'not_sure',
     caseDetails: input.caseDetails || '',
+    relationshipToDeceased: input.relationshipToDeceased || '',
+    knownPlatforms: input.knownPlatforms || '',
+    profileUrls: input.profileUrls || '',
+    urgency: input.urgency || 'standard',
     selectedPackage,
     packageLabel,
     status: 'awaiting_payment',
@@ -316,6 +490,18 @@ async function updatePublicCase(id, publicToken, updates) {
       caseRecord.packageLabel = PACKAGE_CONFIG[updates.selectedPackage].label;
     }
 
+    if (typeof updates.relationshipToDeceased === 'string') {
+      caseRecord.relationshipToDeceased = trimTo(updates.relationshipToDeceased, 140);
+    }
+
+    if (typeof updates.knownPlatforms === 'string') {
+      caseRecord.knownPlatforms = trimTo(updates.knownPlatforms, 1200);
+    }
+
+    if (typeof updates.profileUrls === 'string') {
+      caseRecord.profileUrls = trimTo(updates.profileUrls, 2000);
+    }
+
     if (updates.paymentStatus && PAYMENT_STATUSES.includes(updates.paymentStatus)) {
       caseRecord.paymentStatus = updates.paymentStatus;
     }
@@ -355,6 +541,18 @@ async function updateAdminCase(id, updates) {
       caseRecord.authorityBasis = updates.authorityBasis.trim();
     }
 
+    if (typeof updates.relationshipToDeceased === 'string') {
+      caseRecord.relationshipToDeceased = trimTo(updates.relationshipToDeceased, 140);
+    }
+
+    if (typeof updates.knownPlatforms === 'string') {
+      caseRecord.knownPlatforms = trimTo(updates.knownPlatforms, 1200);
+    }
+
+    if (typeof updates.profileUrls === 'string') {
+      caseRecord.profileUrls = trimTo(updates.profileUrls, 2000);
+    }
+
     if (updates.activityEvent) {
       caseRecord.activity.unshift(createActivityEntry(updates.activityEvent, updates.activityMetadata, 'admin'));
     }
@@ -374,6 +572,76 @@ async function recordEvent(id, publicToken, eventType, metadata) {
     activityEvent: eventType,
     activityMetadata: metadata
   });
+}
+
+async function recordAnalyticsEvent(event) {
+  const events = await readAnalyticsEvents();
+  events.unshift({
+    id: crypto.randomUUID(),
+    eventType: trimTo(event.eventType, 80),
+    path: trimTo(event.path, 240),
+    label: trimTo(event.label, 180),
+    sessionId: trimTo(event.sessionId, 120),
+    pageTitle: trimTo(event.pageTitle, 240),
+    referrer: trimTo(event.referrer, 500),
+    caseId: trimTo(event.caseId, 80),
+    metadata: event.metadata && typeof event.metadata === 'object' ? event.metadata : {},
+    createdAt: new Date().toISOString()
+  });
+
+  await writeAnalyticsEvents(events);
+}
+
+async function getAnalyticsSummary() {
+  const events = await readAnalyticsEvents();
+  const sessions = new Set();
+  const pathCounts = new Map();
+  const labelCounts = new Map();
+
+  for (const event of events) {
+    if (event.sessionId) {
+      sessions.add(event.sessionId);
+    }
+
+    if (event.path) {
+      pathCounts.set(event.path, (pathCounts.get(event.path) || 0) + 1);
+    }
+
+    if (event.label) {
+      labelCounts.set(event.label, (labelCounts.get(event.label) || 0) + 1);
+    }
+  }
+
+  const topPages = Array.from(pathCounts.entries())
+    .sort((left, right) => right[1] - left[1])
+    .slice(0, 6)
+    .map(([pathName, count]) => ({ path: pathName, count }));
+
+  const topClicks = Array.from(labelCounts.entries())
+    .sort((left, right) => right[1] - left[1])
+    .slice(0, 6)
+    .map(([label, count]) => ({ label, count }));
+
+  const pageViews = events.filter((event) => event.eventType === 'page_view').length;
+  const ctaClicks = events.filter((event) => event.eventType === 'cta_click').length;
+  const articleViews = events.filter((event) => event.eventType === 'article_view').length;
+  const intakeStarts = events.filter((event) => event.eventType === 'intake_started').length;
+  const intakeSubmits = events.filter((event) => event.eventType === 'intake_submitted').length;
+  const paymentClicks = events.filter((event) => event.eventType === 'payment_cta_clicked').length;
+
+  return {
+    totalEvents: events.length,
+    uniqueSessions: sessions.size,
+    pageViews,
+    ctaClicks,
+    articleViews,
+    intakeStarts,
+    intakeSubmits,
+    paymentClicks,
+    topPages,
+    topClicks,
+    latestEvents: events.slice(0, 12)
+  };
 }
 
 function parseBase64Payload(data) {
@@ -476,10 +744,12 @@ module.exports = {
   buildPublicCase,
   createCase,
   getCaseForAdmin,
+  getAnalyticsSummary,
   getCaseForPublic,
   getDocumentInventory,
   getStorageHealth,
   listAdminCases,
+  recordAnalyticsEvent,
   recordEvent,
   updateAdminCase,
   updatePublicCase,

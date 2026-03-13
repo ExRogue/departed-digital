@@ -70,6 +70,8 @@ const PAYMENT_STATUSES = [
 
 const MAX_DOCUMENT_COUNT = 6;
 const MAX_DOCUMENT_SIZE_BYTES = 4 * 1024 * 1024;
+const MAX_ANALYTICS_EVENTS = 5000;
+const ADMIN_ENTRY_PATH = '/studio';
 
 function getPublicConfig() {
   return {
@@ -83,12 +85,20 @@ function getPublicConfig() {
     limits: {
       maxDocumentCount: MAX_DOCUMENT_COUNT,
       maxDocumentSizeBytes: MAX_DOCUMENT_SIZE_BYTES
+    },
+    analytics: {
+      endpoint: '/api/analytics'
+    },
+    management: {
+      hiddenEntryPath: ADMIN_ENTRY_PATH
     }
   };
 }
 
 module.exports = {
+  ADMIN_ENTRY_PATH,
   CASE_STATUSES,
+  MAX_ANALYTICS_EVENTS,
   MAX_DOCUMENT_COUNT,
   MAX_DOCUMENT_SIZE_BYTES,
   PACKAGE_CONFIG,

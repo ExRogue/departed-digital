@@ -330,8 +330,8 @@
           </div>
           <ul class="feature-list" id="package-features"></ul>
           <div class="cta-row">
-            <a class="btn-primary" id="payment-link" href="#">Continue to secure payment in Stripe</a>
-            <a class="btn-secondary" href="/start">Edit intake details</a>
+            <a class="btn-primary" id="payment-link" href="#" data-track="payment_cta" data-track-label="Payment continue secure payment">Continue to secure payment in Stripe</a>
+            <a class="btn-secondary" href="/start" data-track="payment_edit" data-track-label="Payment edit intake details">Edit intake details</a>
           </div>
           <p class="helper" id="payment-helper">After payment, we request the death certificate and proof of authority in the next step.</p>
           <div class="notice" id="payment-notice">
@@ -362,7 +362,7 @@
       <strong id="sticky-package">Standard · £249</strong>
       <span>Continue to secure payment when ready</span>
     </div>
-    <a class="btn-primary" id="sticky-payment-link" href="#">Continue to secure payment</a>
+    <a class="btn-primary" id="sticky-payment-link" href="#" data-track="payment_cta_sticky" data-track-label="Payment sticky continue secure payment">Continue to secure payment</a>
   </div>
 
   <footer>
@@ -374,6 +374,7 @@
     </div>
   </footer>
 
+  <script src="/scripts/site-analytics.js"></script>
   <script>
     const PACKAGE_DETAILS = {
       essential: {
@@ -454,7 +455,10 @@
         ['Client', caseData.clientName || 'Not provided'],
         ['Email', caseData.clientEmail || 'Not provided'],
         ['Deceased', caseData.deceasedName || 'Not provided'],
+        ['Relationship', caseData.relationshipToDeceased || 'Not provided'],
         ['Preferred outcome', caseData.preferredOutcome || 'Not provided'],
+        ['Known platforms', caseData.knownPlatforms || 'Not provided'],
+        ['Profiles or handles', caseData.profileUrls || 'Not provided'],
         ['Case details', caseData.caseDetails || 'Not provided']
       ];
 
@@ -477,6 +481,15 @@
             publicToken: state.publicToken,
             eventType,
             metadata
+            ,
+            analytics: window.DepartedAnalytics ? {
+              path: window.location.pathname,
+              label: eventType,
+              sessionId: window.DepartedAnalytics.sessionId,
+              pageTitle: document.title,
+              referrer: document.referrer,
+              metadata
+            } : null
           })
         });
       } catch (error) {

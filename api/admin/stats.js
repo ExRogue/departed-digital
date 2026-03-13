@@ -1,6 +1,6 @@
 const { allowCors, methodNotAllowed, sendError, sendJson } = require('../_lib/http');
 const { requireAdminKey } = require('../_lib/security');
-const { getDocumentInventory, getStorageHealth, listAdminCases } = require('../_lib/store');
+const { getAnalyticsSummary, getDocumentInventory, getStorageHealth, listAdminCases } = require('../_lib/store');
 
 module.exports = async function handler(req, res) {
   allowCors(res);
@@ -27,6 +27,7 @@ module.exports = async function handler(req, res) {
     const cases = await listAdminCases();
     const blobs = await getDocumentInventory();
     const storage = getStorageHealth();
+    const analytics = await getAnalyticsSummary();
 
     const stats = {
       totalCases: cases.length,
@@ -36,7 +37,8 @@ module.exports = async function handler(req, res) {
       completedCases: cases.filter((entry) => entry.status === 'completed').length,
       paidCases: cases.filter((entry) => entry.paymentStatus === 'paid').length,
       documentsStored: blobs.length,
-      storage
+      storage,
+      analytics
     };
 
     sendJson(res, 200, { ok: true, stats });

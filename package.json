@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "description": "Departed Digital marketing site with case intake, admin, and document upload APIs.",
   "scripts": {
-    "check": "node --check api/cases.js && node --check api/documents.js && node --check api/events.js && node --check api/public-config.js && node --check api/admin/cases.js && node --check api/admin/stats.js"
+    "check": "node --check api/analytics.js && node --check api/cases.js && node --check api/documents.js && node --check api/events.js && node --check api/public-config.js && node --check api/admin/cases.js && node --check api/admin/stats.js && node --check scripts/site-analytics.js"
   },
   "dependencies": {
     "@vercel/blob": "^2.3.1"

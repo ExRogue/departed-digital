@@ -1,5 +1,5 @@
 const { allowCors, methodNotAllowed, parseJsonBody, sendError, sendJson } = require('./_lib/http');
-const { recordEvent } = require('./_lib/store');
+const { recordAnalyticsEvent, recordEvent } = require('./_lib/store');
 
 function normalizeString(value, maxLength = 120) {
   return String(value || '').trim().slice(0, maxLength);
@@ -35,6 +35,19 @@ module.exports = async function handler(req, res) {
     if (!updated) {
       sendError(res, 404, 'Case not found.');
       return;
+    }
+
+    if (body.analytics && typeof body.analytics === 'object') {
+      await recordAnalyticsEvent({
+        eventType,
+        path: body.analytics.path,
+        label: body.analytics.label,
+        sessionId: body.analytics.sessionId,
+        pageTitle: body.analytics.pageTitle,
+        referrer: body.analytics.referrer,
+        caseId,
+        metadata: body.analytics.metadata
+      });
     }
 
     sendJson(res, 200, { ok: true });

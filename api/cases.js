@@ -32,6 +32,10 @@ function validateCreatePayload(payload) {
       deceasedName,
       preferredOutcome: normalizeString(payload.preferredOutcome, 60) || 'not_sure',
       caseDetails: normalizeString(payload.caseDetails, 4000),
+      relationshipToDeceased: normalizeString(payload.relationshipToDeceased, 140),
+      knownPlatforms: normalizeString(payload.knownPlatforms, 1200),
+      profileUrls: normalizeString(payload.profileUrls, 2000),
+      urgency: normalizeString(payload.urgency, 40) || 'standard',
       selectedPackage: PACKAGE_CONFIG[payload.selectedPackage] ? payload.selectedPackage : 'standard',
       intakeSource: normalizeString(payload.intakeSource, 80) || 'website',
       referralSource: normalizeString(payload.referralSource, 180)
@@ -110,6 +114,9 @@ module.exports = async function handler(req, res) {
 
       const updated = await updatePublicCase(caseId, publicToken, {
         selectedPackage: normalizeString(body.selectedPackage, 40),
+        relationshipToDeceased: normalizeString(body.relationshipToDeceased, 140),
+        knownPlatforms: normalizeString(body.knownPlatforms, 1200),
+        profileUrls: normalizeString(body.profileUrls, 2000),
         paymentStatus: normalizeString(body.paymentStatus, 40),
         status: normalizeString(body.status, 40),
         activityEvent: normalizeString(body.activityEvent, 80),

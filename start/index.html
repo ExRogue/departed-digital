@@ -464,7 +464,7 @@
       <section class="section">
         <span class="section-label">Step 1</span>
         <h2 class="section-title">A short first step</h2>
-        <p class="section-sub">This should take about a minute. The goal is just to identify the case and move the customer into the payment step with as little friction as possible.</p>
+        <p class="section-sub">This should take about a minute. We keep the required part short, then let families add optional detail that makes the case easier for us to handle and easier for platform teams to review later.</p>
         <div class="intake-layout">
           <div class="form-panel">
             <form id="intake-form">
@@ -491,12 +491,24 @@
                   </select>
                 </div>
                 <div class="field full">
-                  <label for="case-details">Known Accounts or Profile Links</label>
-                  <textarea id="case-details" name="case_details" placeholder="Facebook, Instagram, TikTok, Apple ID, profile links, usernames, or anything else that helps us identify the accounts."></textarea>
+                  <label for="relationship-to-deceased">Your Relationship to the Deceased <span style="font-weight:400; text-transform:none; letter-spacing:0; color: var(--text-muted);">(optional)</span></label>
+                  <input id="relationship-to-deceased" name="relationship_to_deceased" type="text" placeholder="Executor, daughter, son, spouse, solicitor..." />
+                </div>
+                <div class="field full">
+                  <label for="known-platforms">Known Platforms <span style="font-weight:400; text-transform:none; letter-spacing:0; color: var(--text-muted);">(optional)</span></label>
+                  <textarea id="known-platforms" name="known_platforms" placeholder="Facebook, Instagram, TikTok, Apple, Gmail, LinkedIn..."></textarea>
+                </div>
+                <div class="field full">
+                  <label for="profile-urls">Profile URLs or Usernames <span style="font-weight:400; text-transform:none; letter-spacing:0; color: var(--text-muted);">(optional)</span></label>
+                  <textarea id="profile-urls" name="profile_urls" placeholder="Paste profile links, usernames, or anything that helps us identify the accounts quickly."></textarea>
+                </div>
+                <div class="field full">
+                  <label for="case-details">Anything Else We Should Know <span style="font-weight:400; text-transform:none; letter-spacing:0; color: var(--text-muted);">(optional)</span></label>
+                  <textarea id="case-details" name="case_details" placeholder="Urgency, family context, whether a funeral director referred you, or anything that would help us handle the case well."></textarea>
                 </div>
               </div>
               <div class="cta-row">
-                <button type="submit" class="cta-primary">Continue to Package and Payment</button>
+                <button type="submit" class="cta-primary" data-track="start_submit" data-track-label="Start form continue">Continue to Package and Payment</button>
                 <a class="cta-secondary" href="/#pricing">Compare packages again</a>
               </div>
               <p class="helper" id="intake-helper">Next step: package selection and Stripe. No sensitive documents yet.</p>
@@ -510,8 +522,8 @@
             <ul>
               <li>No death certificate upload in the first enquiry</li>
               <li>No need to share passwords or direct access</li>
+              <li>Optional platform details make later Meta or Google submissions easier</li>
               <li>A real case reference is created before payment when backend storage is available</li>
-              <li>Secure document upload happens after payment, not before</li>
             </ul>
           </aside>
         </div>
@@ -529,11 +541,30 @@
     </div>
   </footer>
 
+  <script src="/scripts/site-analytics.js"></script>
   <script>
     const intakeForm = document.getElementById('intake-form');
     const intakeHelper = document.getElementById('intake-helper');
     const submitButton = intakeForm.querySelector('button[type="submit"]');
     const params = new URLSearchParams(window.location.search);
+    let hasTrackedStart = false;
+
+    function trackIntakeEvent(eventType, metadata) {
+      if (window.DepartedAnalytics && typeof window.DepartedAnalytics.track === 'function') {
+        window.DepartedAnalytics.track(eventType, metadata);
+      }
+    }
+
+    intakeForm.addEventListener('focusin', () => {
+      if (hasTrackedStart) {
+        return;
+      }
+
+      hasTrackedStart = true;
+      trackIntakeEvent('intake_started', {
+        label: 'Start form interaction'
+      });
+    }, { once: true });
 
     intakeForm.addEventListener('submit', async (event) => {
       event.preventDefault();
@@ -543,6 +574,9 @@
         clientEmail: document.getElementById('client-email').value.trim(),
         deceasedName: document.getElementById('deceased-name').value.trim(),
         preferredOutcome: document.getElementById('preferred-outcome').value,
+        relationshipToDeceased: document.getElementById('relationship-to-deceased').value.trim(),
+        knownPlatforms: document.getElementById('known-platforms').value.trim(),
+        profileUrls: document.getElementById('profile-urls').value.trim(),
         caseDetails: document.getElementById('case-details').value.trim(),
         selectedPackage: params.get('package') || 'standard',
         referralSource: params.get('ref') || ''
@@ -573,6 +607,10 @@
         };
 
         localStorage.setItem('departedDigitalIntake', JSON.stringify(caseData));
+        trackIntakeEvent('intake_submitted', {
+          label: 'Start form submitted',
+          packageKey: caseData.selectedPackage || intakeData.selectedPackage
+        });
 
         const nextUrl = new URL('/payment', window.location.origin);
         nextUrl.searchParams.set('case', payload.case.id);
@@ -583,6 +621,10 @@
       } catch (error) {
         localStorage.setItem('departedDigitalIntake', JSON.stringify(intakeData));
         intakeHelper.textContent = 'The backend is not live in this environment yet, so we are using the browser fallback for this test.';
+        trackIntakeEvent('intake_submitted', {
+          label: 'Start form submitted with fallback',
+          packageKey: intakeData.selectedPackage || 'standard'
+        });
         window.location.href = '/payment?package=' + encodeURIComponent(intakeData.selectedPackage || 'standard');
       } finally {
         submitButton.disabled = false;

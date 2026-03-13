@@ -44,6 +44,9 @@ module.exports = async function handler(req, res) {
         status: CASE_STATUSES.includes(body.status) ? body.status : '',
         paymentStatus: PAYMENT_STATUSES.includes(body.paymentStatus) ? body.paymentStatus : '',
         authorityBasis: normalizeString(body.authorityBasis, 180),
+        relationshipToDeceased: normalizeString(body.relationshipToDeceased, 140),
+        knownPlatforms: normalizeString(body.knownPlatforms, 1200),
+        profileUrls: normalizeString(body.profileUrls, 2000),
         internalNotes: normalizeString(body.internalNotes, 4000),
         activityEvent: 'admin_case_updated',
         activityMetadata: {

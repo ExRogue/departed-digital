@@ -10,10 +10,11 @@ The site now includes a first backend foundation inside the repo:
 
 - `/api/cases` for case creation, public case lookup, and package updates
 - `/api/events` for public funnel events such as package selection and payment CTA clicks
+- `/api/analytics` for lightweight first-party page-view and CTA tracking
 - `/api/documents` for supporting document uploads tied to a case
 - `/api/public-config` for payment link and package config exposure
 - `/api/admin/cases` and `/api/admin/stats` for the internal dashboard
-- `/admin` as the first operations dashboard for Steven and the VA
+- `/admin` and the discreet alias `/studio` as the first operations dashboard for Steven and the VA
 
 This means the front end no longer has to stay browser-only forever. The intake, payment, and document steps are ready to talk to a real store.
 
@@ -96,6 +97,12 @@ If `BLOB_READ_WRITE_TOKEN` is missing on Vercel, the APIs now return a clear con
   - case opened
   - case completed
   - referral converted
+
+Current implementation:
+
+- first-party analytics are already wired into the site and surfaced in the admin dashboard
+- top pages, top CTA clicks, and funnel signals can now be viewed without a third-party dashboard
+- durable analytics still benefit from `BLOB_READ_WRITE_TOKEN`, even though a temporary fallback can run before that is configured
 
 ## Core data model
 
@@ -241,6 +248,7 @@ Result:
 4. Capture referral source from funeral director handoffs more explicitly in the public flow
 5. Move case storage from JSON/blob documents into Postgres when the reporting/admin needs outgrow file-style records
 6. Add server-side analytics events around payment completion and case completion
+7. Add operator templates and automations for payment follow-up, document requests, and completion summaries
 
 ## Important constraints
 
