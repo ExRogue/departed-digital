@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
+  <!-- Navy background circle -->
+  <circle cx="16" cy="16" r="16" fill="#1a2744"/>
+  <!-- Stylised "D" letterform in gold -->
+  <text
+    x="16"
+    y="22"
+    font-family="Georgia, 'Times New Roman', serif"
+    font-size="20"
+    font-weight="700"
+    fill="#c9a84c"
+    text-anchor="middle"
+    dominant-baseline="auto"
+  >D</text>
+</svg>
