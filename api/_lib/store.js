@@ -285,7 +285,23 @@ async function writeJsonFile(filePath, value) {
 }
 
 async function readBlobJson(blobPath, fallback) {
-  const response = await get(blobPath, { access: 'private' });
+  let response;
+
+  try {
+    response = await get(blobPath, { access: 'private' });
+  } catch (error) {
+    const isMissingBlob = error
+      && (error.status === 404
+        || error.code === 'not_found'
+        || error.name === 'BlobNotFoundError'
+        || /not found/i.test(String(error.message || '')));
+
+    if (isMissingBlob) {
+      return fallback;
+    }
+
+    throw error;
+  }
 
   if (!response) {
     return fallback;
