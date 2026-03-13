@@ -445,7 +445,7 @@
       <div>
         <span class="eyebrow">Start a case</span>
         <h1>A calmer way to begin the digital admin after a loss.</h1>
-        <p>Choose the package that fits the case, see what details to gather, and send a pre-filled enquiry. We review the case, confirm scope, and send your secure payment link before work begins.</p>
+        <p>Start with a very short form. Then choose the package and continue to payment. We only ask for the death certificate and proof of authority after payment.</p>
       </div>
       <div class="hero-panel">
         <h2>What to expect</h2>
@@ -464,8 +464,8 @@
     <div class="container">
       <section class="section">
         <span class="section-label">Step 1</span>
-        <h2 class="section-title">Send the essentials only</h2>
-        <p class="section-sub">The first step should feel easy. We only ask for the minimum needed to identify the case and move the customer into package choice and payment.</p>
+        <h2 class="section-title">A short first step</h2>
+        <p class="section-sub">This should take about a minute. The goal is just to identify the case and move the customer into the payment step with as little friction as possible.</p>
         <div class="intake-layout">
           <div class="form-panel">
             <form id="intake-form">
@@ -491,24 +491,16 @@
                     <option value="mixed">A mix depending on the platform</option>
                   </select>
                 </div>
-                <div class="field">
-                  <label for="profile-urls">Profile URLs or Usernames</label>
-                  <textarea id="profile-urls" name="profile_urls" placeholder="Paste profile URLs, handles, or anything that helps us identify the accounts."></textarea>
-                </div>
                 <div class="field full">
-                  <label for="known-platforms">Known Platforms</label>
-                  <textarea id="known-platforms" name="known_platforms" placeholder="For example: Facebook, Instagram, TikTok, Apple ID, Gmail, LinkedIn..."></textarea>
-                </div>
-                <div class="field full">
-                  <label for="case-notes">Anything Else We Should Know</label>
-                  <textarea id="case-notes" name="case_notes" placeholder="Anything important about the case, urgency, or the platforms involved."></textarea>
+                  <label for="case-details">Known Accounts or Profile Links</label>
+                  <textarea id="case-details" name="case_details" placeholder="Facebook, Instagram, TikTok, Apple ID, profile links, usernames, or anything else that helps us identify the accounts."></textarea>
                 </div>
               </div>
               <div class="cta-row">
                 <button type="submit" class="cta-primary">Continue to Package and Payment</button>
                 <a class="cta-secondary" href="/#pricing">Compare packages again</a>
               </div>
-              <p class="helper">Next step: package selection and Stripe. Sensitive documents only come after payment.</p>
+              <p class="helper">Next step: package selection and Stripe. No sensitive documents yet.</p>
             </form>
           </div>
           <aside class="note-card">
@@ -519,118 +511,10 @@
             <ul>
               <li>No death certificate upload in the first enquiry</li>
               <li>No need to share passwords or direct access</li>
-              <li>Just enough detail to identify the case</li>
+              <li>Only 4 core fields plus one helpful details box</li>
               <li>Cleaner handoff into package selection and payment</li>
             </ul>
           </aside>
-        </div>
-      </section>
-
-      <section class="section">
-        <span class="section-label">Packages</span>
-        <h2 class="section-title">Preselect a package if you already know it</h2>
-        <p class="section-sub">This is optional. The customer can also choose on the payment page, which is where the Stripe button should live.</p>
-        <div class="package-grid">
-          <div class="package-card" data-package="essential">
-            <div class="package-top">
-              <div class="package-name">Essential</div>
-              <div class="price"><small>£</small>149</div>
-            </div>
-            <p class="package-meta">2 platforms · 14 day target</p>
-            <ul>
-              <li>Best for simpler social account cases</li>
-              <li>Good fit for 1 to 2 known platforms</li>
-              <li>Written completion summary included</li>
-            </ul>
-            <button type="button" data-select-package="essential">Preselect Essential</button>
-          </div>
-          <div class="package-card" data-package="standard">
-            <div class="package-top">
-              <div class="package-name">Standard</div>
-              <div class="price"><small>£</small>249</div>
-            </div>
-            <p class="package-meta">5 platforms · 10 day target</p>
-            <ul>
-              <li>Best fit for most family cases</li>
-              <li>Good fit for 3 to 5 known platforms</li>
-              <li>Priority follow-up included</li>
-            </ul>
-            <button type="button" data-select-package="standard">Preselect Standard</button>
-          </div>
-          <div class="package-card" data-package="estate">
-            <div class="package-top">
-              <div class="package-name">Estate</div>
-              <div class="price"><small>£</small>399</div>
-            </div>
-            <p class="package-meta">Unlimited platforms · 7 day target</p>
-            <ul>
-              <li>Best for 6+ platforms or estate-led cases</li>
-              <li>Complex executor support and legal-grade documentation</li>
-              <li>Priority handling throughout</li>
-            </ul>
-            <button type="button" data-select-package="estate">Preselect Estate</button>
-          </div>
-        </div>
-      </section>
-
-      <section class="section">
-        <span class="section-label">Checklist</span>
-        <h2 class="section-title">What to gather before you enquire</h2>
-        <p class="section-sub">You do not need to have everything ready. This list just makes the first conversation faster and clearer.</p>
-        <div class="detail-grid">
-          <div class="detail-card">
-            <h3>Who the case is for</h3>
-            <p>The full name of the deceased, your relationship to them, and whether you are acting as a family member, executor, or funeral director referral.</p>
-          </div>
-          <div class="detail-card">
-            <h3>Known platforms</h3>
-            <p>Any accounts you already know about such as Facebook, Instagram, TikTok, LinkedIn, Apple, Google, or email providers.</p>
-          </div>
-          <div class="detail-card">
-            <h3>Core documents</h3>
-            <p>A death certificate is usually needed. Some platforms also require proof of relationship or executor authority, which we will confirm before submission.</p>
-          </div>
-        </div>
-      </section>
-
-      <section class="section">
-        <span class="section-label">Next steps</span>
-        <h2 class="section-title">What happens after your enquiry</h2>
-        <p class="section-sub">This keeps the process honest and manageable: first we scope the case correctly, then we take payment, then we start work.</p>
-        <div class="steps">
-          <div class="step">
-            <div class="step-number">1</div>
-            <h3>You send the case details</h3>
-            <p>Use the pre-filled email below so we receive the package choice and the basics of the case in one place.</p>
-          </div>
-          <div class="step">
-            <div class="step-number">2</div>
-            <h3>We confirm scope</h3>
-            <p>We review the case, tell you whether the package is right, and confirm which supporting documents will likely be required.</p>
-          </div>
-          <div class="step">
-            <div class="step-number">3</div>
-            <h3>We send secure payment</h3>
-            <p>Once you are happy to proceed, we send the secure payment link and open the case for processing.</p>
-          </div>
-        </div>
-      </section>
-
-      <section class="section">
-        <div class="cta-panel">
-          <div>
-            <span class="section-label" style="color: var(--gold-light);">After payment</span>
-            <h2>Stripe belongs on the next screen, not this one.</h2>
-            <p>This page should stay low-friction. The next page is where the selected package is confirmed and the Stripe button appears. Only after that do we ask for the death certificate and proof of authority.</p>
-          </div>
-          <div class="cta-aside">
-            <strong>What happens after Stripe</strong>
-            <ul>
-              <li>We request the death certificate</li>
-              <li>We request proof of authority if needed</li>
-              <li>We move the case into the document and submission stage</li>
-            </ul>
-          </div>
         </div>
       </section>
     </div>
@@ -647,77 +531,22 @@
   </footer>
 
   <script>
-    const packageCopy = {
-      essential: {
-        label: 'Essential',
-        subject: 'Start an Essential case',
-        body: 'Package: Essential\n\nRelationship to the deceased:\nKnown platforms (up to 2):\nPreferred outcome (delete or memorialise):\nAnything else we should know:\n'
-      },
-      standard: {
-        label: 'Standard',
-        subject: 'Start a Standard case',
-        body: 'Package: Standard\n\nRelationship to the deceased:\nKnown platforms (up to 5):\nPreferred outcome (delete or memorialise):\nAnything else we should know:\n'
-      },
-      estate: {
-        label: 'Estate',
-        subject: 'Start an Estate case',
-        body: 'Package: Estate\n\nRelationship to the deceased or estate:\nKnown platforms (unlimited case):\nPreferred outcome (delete or memorialise):\nAnything else we should know:\n'
-      }
-    };
-
-    const selectedName = document.getElementById('selected-package-name');
-    const packageCards = document.querySelectorAll('[data-package]');
-    const packageButtons = document.querySelectorAll('[data-select-package]');
     const intakeForm = document.getElementById('intake-form');
-    let currentPackageKey = 'standard';
-
-    function previewPackage(packageKey) {
-      const fallbackKey = packageCopy[packageKey] ? packageKey : 'standard';
-      const selected = packageCopy[fallbackKey];
-      currentPackageKey = fallbackKey;
-
-      selectedName.textContent = selected.label;
-
-      packageCards.forEach((card) => {
-        card.classList.toggle('selected', card.getAttribute('data-package') === fallbackKey);
-      });
-
-      const nextUrl = new URL(window.location.href);
-      nextUrl.searchParams.set('package', fallbackKey);
-      window.history.replaceState({}, '', nextUrl.pathname + nextUrl.search);
-    }
-
-    function setPackage(packageKey) {
-      previewPackage(packageKey);
-    }
-
-    packageButtons.forEach((button) => {
-      button.addEventListener('click', () => setPackage(button.getAttribute('data-select-package')));
-    });
 
     intakeForm.addEventListener('submit', (event) => {
       event.preventDefault();
 
-      const packageKey = currentPackageKey;
-      const selected = packageCopy[packageKey];
       const intakeData = {
         clientName: document.getElementById('client-name').value,
         clientEmail: document.getElementById('client-email').value,
         deceasedName: document.getElementById('deceased-name').value,
-        selectedPackage: packageKey,
         preferredOutcome: document.getElementById('preferred-outcome').value,
-        knownPlatforms: document.getElementById('known-platforms').value,
-        profileUrls: document.getElementById('profile-urls').value,
-        caseNotes: document.getElementById('case-notes').value,
-        packageLabel: selected.label
+        caseDetails: document.getElementById('case-details').value
       };
 
       localStorage.setItem('departedDigitalIntake', JSON.stringify(intakeData));
-      window.location.href = '/payment?package=' + packageKey;
+      window.location.href = '/payment';
     });
-
-    const params = new URLSearchParams(window.location.search);
-    setPackage(params.get('package') || 'standard');
   </script>
 </body>
 </html>

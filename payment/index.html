@@ -212,6 +212,35 @@
       color: #6a5520;
       font-size: 0.92rem;
     }
+    .sticky-paybar {
+      position: fixed;
+      left: 24px;
+      right: 24px;
+      bottom: 18px;
+      z-index: 40;
+      background: rgba(17,27,53,0.96);
+      color: var(--white);
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: 0 18px 56px rgba(17,27,53,0.28);
+      border-radius: 20px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .sticky-paybar strong {
+      display: block;
+      font-size: 1rem;
+    }
+    .sticky-paybar span {
+      color: rgba(255,255,255,0.72);
+      font-size: 0.88rem;
+    }
+    .sticky-paybar .btn-primary {
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
     .empty-state {
       display: none;
       margin-top: 18px;
@@ -236,6 +265,20 @@
       .package-switcher,
       .layout {
         grid-template-columns: 1fr;
+      }
+    }
+    @media (max-width: 640px) {
+      .sticky-paybar {
+        left: 12px;
+        right: 12px;
+        bottom: 12px;
+        border-radius: 18px;
+        padding: 12px;
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .sticky-paybar .btn-primary {
+        width: 100%;
       }
     }
   </style>
@@ -314,6 +357,14 @@
     </div>
   </main>
 
+  <div class="sticky-paybar" id="sticky-paybar">
+    <div>
+      <strong id="sticky-package">Standard · £249</strong>
+      <span>Continue to secure payment when ready</span>
+    </div>
+    <a class="btn-primary" id="sticky-payment-link" href="#">Continue to secure payment</a>
+  </div>
+
   <footer>
     <div class="footer-inner">
       <a href="/">Home</a>
@@ -372,11 +423,15 @@
     const emptyState = document.getElementById('empty-state');
     const paymentLayout = document.getElementById('payment-layout');
     const packageOptions = document.querySelectorAll('[data-package]');
+    const stickyPaybar = document.getElementById('sticky-paybar');
+    const stickyPackage = document.getElementById('sticky-package');
+    const stickyPaymentLink = document.getElementById('sticky-payment-link');
 
     if (!intakeRaw) {
       emptyState.style.display = 'block';
       paymentLayout.style.display = 'none';
       document.getElementById('package-switcher').style.display = 'none';
+      stickyPaybar.style.display = 'none';
     } else {
       const intake = JSON.parse(intakeRaw);
       const paymentLink = document.getElementById('payment-link');
@@ -386,9 +441,7 @@
         ['Email', intake.clientEmail || 'Not provided'],
         ['Deceased', intake.deceasedName || 'Not provided'],
         ['Preferred outcome', intake.preferredOutcome || 'Not provided'],
-        ['Known platforms', intake.knownPlatforms || 'Not provided'],
-        ['Profile URLs', intake.profileUrls || 'Not provided'],
-        ['Case notes', intake.caseNotes || 'Not provided']
+        ['Case details', intake.caseDetails || 'Not provided']
       ];
 
       document.getElementById('summary-list').innerHTML = summaryItems.map(([label, value]) => '<li><strong>' + label + ':</strong> ' + value + '</li>').join('');
@@ -401,6 +454,7 @@
         document.getElementById('package-meta').textContent = details.meta;
         document.getElementById('package-price').innerHTML = '<small>£</small>' + details.price;
         document.getElementById('package-features').innerHTML = details.features.map((feature) => '<li>' + feature + '</li>').join('');
+        stickyPackage.textContent = details.label + ' · £' + details.price;
 
         packageOptions.forEach((option) => {
           option.classList.toggle('active', option.getAttribute('data-package') === packageKey);
@@ -412,7 +466,9 @@
 
         if (configuredLink) {
           paymentLink.href = configuredLink;
+          stickyPaymentLink.href = configuredLink;
           paymentLink.textContent = 'Continue to secure payment in Stripe';
+          stickyPaymentLink.textContent = 'Continue to secure payment';
           paymentNotice.style.display = 'none';
         } else {
           const mailBody = [
@@ -421,15 +477,16 @@
             'Email: ' + (intake.clientEmail || 'Not provided'),
             'Deceased: ' + (intake.deceasedName || 'Not provided'),
             'Preferred outcome: ' + (intake.preferredOutcome || 'Not provided'),
-            'Known platforms: ' + (intake.knownPlatforms || 'Not provided'),
-            'Profile URLs: ' + (intake.profileUrls || 'Not provided'),
-            'Case notes: ' + (intake.caseNotes || 'Not provided'),
+            'Case details: ' + (intake.caseDetails || 'Not provided'),
             '',
             'Please send the payment link for this case.'
           ].join('\n');
 
-          paymentLink.href = 'mailto:hello@departed.digital?subject=' + encodeURIComponent('Send payment link for ' + details.label + ' case') + '&body=' + encodeURIComponent(mailBody);
+          const fallbackHref = 'mailto:hello@departed.digital?subject=' + encodeURIComponent('Send payment link for ' + details.label + ' case') + '&body=' + encodeURIComponent(mailBody);
+          paymentLink.href = fallbackHref;
+          stickyPaymentLink.href = fallbackHref;
           paymentLink.textContent = 'Email us for the payment link';
+          stickyPaymentLink.textContent = 'Email us for the payment link';
           paymentNotice.style.display = 'block';
         }
       }
