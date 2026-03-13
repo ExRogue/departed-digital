@@ -464,8 +464,8 @@
     <div class="container">
       <section class="section">
         <span class="section-label">Step 1</span>
-        <h2 class="section-title">Send the case basics first</h2>
-        <p class="section-sub">This first form is intentionally light. It gives us enough to scope the case and direct you to the right payment step without collecting highly sensitive documents too early.</p>
+        <h2 class="section-title">Send the essentials only</h2>
+        <p class="section-sub">The first step should feel easy. We only ask for the minimum needed to identify the case and move the customer into package choice and payment.</p>
         <div class="intake-layout">
           <div class="form-panel">
             <form id="intake-form">
@@ -479,45 +479,8 @@
                   <input id="client-email" name="client_email" type="email" placeholder="you@example.com" required />
                 </div>
                 <div class="field">
-                  <label for="client-phone">Phone Number</label>
-                  <input id="client-phone" name="client_phone" type="tel" placeholder="+44 7..." />
-                </div>
-                <div class="field">
-                  <label for="relationship">Your Relationship</label>
-                  <input id="relationship" name="relationship" type="text" placeholder="Executor, daughter, son, spouse..." />
-                </div>
-                <div class="field">
                   <label for="deceased-name">Deceased's Name</label>
                   <input id="deceased-name" name="deceased_name" type="text" placeholder="Full name" required />
-                </div>
-                <div class="field">
-                  <label for="authority-basis">Authority Basis</label>
-                  <select id="authority-basis" name="authority_basis">
-                    <option value="">Select one</option>
-                    <option value="next_of_kin">Next of kin / family member</option>
-                    <option value="executor">Executor or estate administrator</option>
-                    <option value="lasting_power_of_attorney">Lasting power of attorney / formal authority</option>
-                    <option value="funeral_director">Funeral director referral</option>
-                    <option value="not_sure">Not sure yet</option>
-                  </select>
-                </div>
-                <div class="field">
-                  <label for="account-count">Approximate Number of Accounts</label>
-                  <select id="account-count" name="account_count">
-                    <option value="not_sure">Not sure yet</option>
-                    <option value="1_2">1 to 2</option>
-                    <option value="3_5">3 to 5</option>
-                    <option value="6_plus">6 or more</option>
-                  </select>
-                </div>
-                <div class="field">
-                  <label for="package-preference">Package Preference</label>
-                  <select id="package-preference" name="package_preference">
-                    <option value="not_sure">Not sure yet</option>
-                    <option value="essential">Essential</option>
-                    <option value="standard">Standard</option>
-                    <option value="estate">Estate</option>
-                  </select>
                 </div>
                 <div class="field">
                   <label for="preferred-outcome">Preferred Outcome</label>
@@ -528,13 +491,13 @@
                     <option value="mixed">A mix depending on the platform</option>
                   </select>
                 </div>
+                <div class="field">
+                  <label for="profile-urls">Profile URLs or Usernames</label>
+                  <textarea id="profile-urls" name="profile_urls" placeholder="Paste profile URLs, handles, or anything that helps us identify the accounts."></textarea>
+                </div>
                 <div class="field full">
                   <label for="known-platforms">Known Platforms</label>
                   <textarea id="known-platforms" name="known_platforms" placeholder="For example: Facebook, Instagram, TikTok, Apple ID, Gmail, LinkedIn..."></textarea>
-                </div>
-                <div class="field full">
-                  <label for="profile-urls">Profile URLs or Usernames</label>
-                  <textarea id="profile-urls" name="profile_urls" placeholder="Paste profile URLs, handles, or anything that helps us identify the accounts."></textarea>
                 </div>
                 <div class="field full">
                   <label for="case-notes">Anything Else We Should Know</label>
@@ -542,10 +505,10 @@
                 </div>
               </div>
               <div class="cta-row">
-                <button type="submit" class="cta-primary">Save Details and Continue</button>
+                <button type="submit" class="cta-primary">Continue to Package and Payment</button>
                 <a class="cta-secondary" href="/#pricing">Compare packages again</a>
               </div>
-              <p class="helper">Next step: we take these details to the payment page, where the selected package can be confirmed before anything sensitive is requested.</p>
+              <p class="helper">Next step: package selection and Stripe. Sensitive documents only come after payment.</p>
             </form>
           </div>
           <aside class="note-card">
@@ -556,8 +519,8 @@
             <ul>
               <li>No death certificate upload in the first enquiry</li>
               <li>No need to share passwords or direct access</li>
-              <li>Enough detail to recommend Essential, Standard, or Estate</li>
-              <li>Cleaner handoff into the payment and document steps</li>
+              <li>Just enough detail to identify the case</li>
+              <li>Cleaner handoff into package selection and payment</li>
             </ul>
           </aside>
         </div>
@@ -565,8 +528,8 @@
 
       <section class="section">
         <span class="section-label">Packages</span>
-        <h2 class="section-title">How the site chooses the next payment step</h2>
-        <p class="section-sub">If the package is obvious, we send you straight to that payment page. If it is less clear, we still save your details first and you can review the options before paying.</p>
+        <h2 class="section-title">Preselect a package if you already know it</h2>
+        <p class="section-sub">This is optional. The customer can also choose on the payment page, which is where the Stripe button should live.</p>
         <div class="package-grid">
           <div class="package-card" data-package="essential">
             <div class="package-top">
@@ -579,7 +542,7 @@
               <li>Good fit for 1 to 2 known platforms</li>
               <li>Written completion summary included</li>
             </ul>
-            <button type="button" data-select-package="essential">Use Essential</button>
+            <button type="button" data-select-package="essential">Preselect Essential</button>
           </div>
           <div class="package-card" data-package="standard">
             <div class="package-top">
@@ -592,7 +555,7 @@
               <li>Good fit for 3 to 5 known platforms</li>
               <li>Priority follow-up included</li>
             </ul>
-            <button type="button" data-select-package="standard">Use Standard</button>
+            <button type="button" data-select-package="standard">Preselect Standard</button>
           </div>
           <div class="package-card" data-package="estate">
             <div class="package-top">
@@ -605,7 +568,7 @@
               <li>Complex executor support and legal-grade documentation</li>
               <li>Priority handling throughout</li>
             </ul>
-            <button type="button" data-select-package="estate">Use Estate</button>
+            <button type="button" data-select-package="estate">Preselect Estate</button>
           </div>
         </div>
       </section>
@@ -657,15 +620,15 @@
         <div class="cta-panel">
           <div>
             <span class="section-label" style="color: var(--gold-light);">After payment</span>
-            <h2>Sensitive documents are requested in the next step, not the first one.</h2>
-            <p>Once payment is confirmed, the case moves into the supporting-document stage. That is where we request the death certificate and proof of authority needed for the platforms involved.</p>
+            <h2>Stripe belongs on the next screen, not this one.</h2>
+            <p>This page should stay low-friction. The next page is where the selected package is confirmed and the Stripe button appears. Only after that do we ask for the death certificate and proof of authority.</p>
           </div>
           <div class="cta-aside">
-            <strong>Typical follow-up documents</strong>
+            <strong>What happens after Stripe</strong>
             <ul>
-              <li>Death certificate</li>
-              <li>Proof of relationship or executor authority</li>
-              <li>Any platform-specific evidence needed for the case</li>
+              <li>We request the death certificate</li>
+              <li>We request proof of authority if needed</li>
+              <li>We move the case into the document and submission stage</li>
             </ul>
           </div>
         </div>
@@ -705,13 +668,13 @@
     const selectedName = document.getElementById('selected-package-name');
     const packageCards = document.querySelectorAll('[data-package]');
     const packageButtons = document.querySelectorAll('[data-select-package]');
-    const packagePreference = document.getElementById('package-preference');
-    const accountCount = document.getElementById('account-count');
     const intakeForm = document.getElementById('intake-form');
+    let currentPackageKey = 'standard';
 
     function previewPackage(packageKey) {
       const fallbackKey = packageCopy[packageKey] ? packageKey : 'standard';
       const selected = packageCopy[fallbackKey];
+      currentPackageKey = fallbackKey;
 
       selectedName.textContent = selected.label;
 
@@ -725,53 +688,22 @@
     }
 
     function setPackage(packageKey) {
-      packagePreference.value = packageKey;
       previewPackage(packageKey);
-    }
-
-    function derivePackage() {
-      if (packageCopy[packagePreference.value]) {
-        return packagePreference.value;
-      }
-
-      if (accountCount.value === '1_2') return 'essential';
-      if (accountCount.value === '3_5') return 'standard';
-      if (accountCount.value === '6_plus') return 'estate';
-      return 'standard';
     }
 
     packageButtons.forEach((button) => {
       button.addEventListener('click', () => setPackage(button.getAttribute('data-select-package')));
     });
 
-    packagePreference.addEventListener('change', () => {
-      if (packageCopy[packagePreference.value]) {
-        previewPackage(packagePreference.value);
-      } else {
-        previewPackage(derivePackage());
-      }
-    });
-
-    accountCount.addEventListener('change', () => {
-      if (!packageCopy[packagePreference.value]) {
-        previewPackage(derivePackage());
-      }
-    });
-
     intakeForm.addEventListener('submit', (event) => {
       event.preventDefault();
 
-      const packageKey = derivePackage();
+      const packageKey = currentPackageKey;
       const selected = packageCopy[packageKey];
       const intakeData = {
         clientName: document.getElementById('client-name').value,
         clientEmail: document.getElementById('client-email').value,
-        clientPhone: document.getElementById('client-phone').value,
-        relationship: document.getElementById('relationship').value,
         deceasedName: document.getElementById('deceased-name').value,
-        authorityBasis: document.getElementById('authority-basis').value,
-        accountCount: accountCount.value,
-        packagePreference: packagePreference.value,
         selectedPackage: packageKey,
         preferredOutcome: document.getElementById('preferred-outcome').value,
         knownPlatforms: document.getElementById('known-platforms').value,

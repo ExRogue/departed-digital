@@ -96,6 +96,38 @@
       gap: 24px;
       align-items: start;
     }
+    .package-switcher {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .package-option {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      transition: border-color 0.2s ease, transform 0.2s ease;
+      font: inherit;
+      text-align: left;
+    }
+    .package-option.active {
+      border-color: var(--gold);
+      transform: translateY(-2px);
+    }
+    .package-option strong {
+      display: block;
+      font-family: 'Playfair Display', serif;
+      color: var(--navy);
+      font-size: 1.25rem;
+      margin-bottom: 6px;
+    }
+    .package-option span {
+      color: var(--text-muted);
+      font-size: 0.92rem;
+    }
     .panel {
       background: var(--white);
       border: 1px solid var(--border);
@@ -201,6 +233,7 @@
     }
     footer a:hover { color: var(--gold); }
     @media (max-width: 920px) {
+      .package-switcher,
       .layout {
         grid-template-columns: 1fr;
       }
@@ -222,7 +255,22 @@
     <div class="container">
       <span class="eyebrow">Step 2</span>
       <h1>Review the case and continue to the right payment.</h1>
-      <p class="intro">This page confirms the package and the core details from the intake form. If the Stripe payment link is configured, the button below takes the customer straight to payment. If it is not configured yet, the fallback opens a pre-filled email so no lead is lost.</p>
+      <p class="intro">This is the package-and-payment step. The customer should land here after the short form, confirm the package, and continue to Stripe. After payment, they move into the supporting-document step.</p>
+
+      <div class="package-switcher" id="package-switcher">
+        <button class="package-option" type="button" data-package="essential">
+          <strong>Essential</strong>
+          <span>£149 · 2 platforms</span>
+        </button>
+        <button class="package-option" type="button" data-package="standard">
+          <strong>Standard</strong>
+          <span>£249 · 5 platforms</span>
+        </button>
+        <button class="package-option" type="button" data-package="estate">
+          <strong>Estate</strong>
+          <span>£399 · Unlimited</span>
+        </button>
+      </div>
 
       <div class="empty-state" id="empty-state">
         We could not find the saved intake details in this browser. Please start with the case form first at <a href="/start" style="color: inherit; font-weight: 700;">/start</a>.
@@ -239,12 +287,12 @@
           </div>
           <ul class="feature-list" id="package-features"></ul>
           <div class="cta-row">
-            <a class="btn-primary" id="payment-link" href="#">Continue to payment</a>
+            <a class="btn-primary" id="payment-link" href="#">Continue to secure payment in Stripe</a>
             <a class="btn-secondary" href="/start">Edit intake details</a>
           </div>
-          <p class="helper" id="payment-helper">After payment, we request the death certificate and proof of authority in the next step.</p>
+          <p class="helper" id="payment-helper">After Stripe payment, the customer moves to the document step where the death certificate and proof of authority are requested.</p>
           <div class="notice" id="payment-notice">
-            Stripe payment links are not configured in this page yet. The button will fall back to a pre-filled email until those links are added.
+            Stripe payment links are not configured on this page yet. For now, the button falls back to a pre-filled email. Once the real links are added, this becomes the live payment step.
           </div>
         </section>
 
@@ -323,60 +371,74 @@
     const intakeRaw = localStorage.getItem('departedDigitalIntake');
     const emptyState = document.getElementById('empty-state');
     const paymentLayout = document.getElementById('payment-layout');
+    const packageOptions = document.querySelectorAll('[data-package]');
 
     if (!intakeRaw) {
       emptyState.style.display = 'block';
       paymentLayout.style.display = 'none';
+      document.getElementById('package-switcher').style.display = 'none';
     } else {
       const intake = JSON.parse(intakeRaw);
-      const packageKey = PACKAGE_DETAILS[requestedPackage] ? requestedPackage : (PACKAGE_DETAILS[intake.selectedPackage] ? intake.selectedPackage : 'standard');
-      const details = PACKAGE_DETAILS[packageKey];
       const paymentLink = document.getElementById('payment-link');
       const paymentNotice = document.getElementById('payment-notice');
-      const configuredLink = PAYMENT_LINKS[packageKey];
-
-      document.getElementById('package-name').textContent = details.label;
-      document.getElementById('package-meta').textContent = details.meta;
-      document.getElementById('package-price').innerHTML = '<small>£</small>' + details.price;
-      document.getElementById('package-features').innerHTML = details.features.map((feature) => '<li>' + feature + '</li>').join('');
-
       const summaryItems = [
         ['Client', intake.clientName || 'Not provided'],
         ['Email', intake.clientEmail || 'Not provided'],
-        ['Phone', intake.clientPhone || 'Not provided'],
         ['Deceased', intake.deceasedName || 'Not provided'],
-        ['Relationship', intake.relationship || 'Not provided'],
-        ['Authority basis', intake.authorityBasis || 'Not provided'],
         ['Preferred outcome', intake.preferredOutcome || 'Not provided'],
         ['Known platforms', intake.knownPlatforms || 'Not provided'],
-        ['Profile URLs', intake.profileUrls || 'Not provided']
+        ['Profile URLs', intake.profileUrls || 'Not provided'],
+        ['Case notes', intake.caseNotes || 'Not provided']
       ];
 
       document.getElementById('summary-list').innerHTML = summaryItems.map(([label, value]) => '<li><strong>' + label + ':</strong> ' + value + '</li>').join('');
 
-      if (configuredLink) {
-        paymentLink.href = configuredLink;
-        paymentLink.textContent = 'Continue to secure payment';
-        paymentNotice.style.display = 'none';
-      } else {
-        const mailBody = [
-          'Package: ' + details.label,
-          'Client: ' + (intake.clientName || 'Not provided'),
-          'Email: ' + (intake.clientEmail || 'Not provided'),
-          'Phone: ' + (intake.clientPhone || 'Not provided'),
-          'Deceased: ' + (intake.deceasedName || 'Not provided'),
-          'Relationship: ' + (intake.relationship || 'Not provided'),
-          'Authority basis: ' + (intake.authorityBasis || 'Not provided'),
-          'Preferred outcome: ' + (intake.preferredOutcome || 'Not provided'),
-          'Known platforms: ' + (intake.knownPlatforms || 'Not provided'),
-          'Profile URLs: ' + (intake.profileUrls || 'Not provided'),
-          '',
-          'Please send the payment link for this case.'
-        ].join('\n');
+      function renderPackage(packageKey) {
+        const details = PACKAGE_DETAILS[packageKey];
+        const configuredLink = PAYMENT_LINKS[packageKey];
 
-        paymentLink.href = 'mailto:hello@departed.digital?subject=' + encodeURIComponent('Send payment link for ' + details.label + ' case') + '&body=' + encodeURIComponent(mailBody);
-        paymentLink.textContent = 'Email us for the payment link';
+        document.getElementById('package-name').textContent = details.label;
+        document.getElementById('package-meta').textContent = details.meta;
+        document.getElementById('package-price').innerHTML = '<small>£</small>' + details.price;
+        document.getElementById('package-features').innerHTML = details.features.map((feature) => '<li>' + feature + '</li>').join('');
+
+        packageOptions.forEach((option) => {
+          option.classList.toggle('active', option.getAttribute('data-package') === packageKey);
+        });
+
+        intake.selectedPackage = packageKey;
+        intake.packageLabel = details.label;
+        localStorage.setItem('departedDigitalIntake', JSON.stringify(intake));
+
+        if (configuredLink) {
+          paymentLink.href = configuredLink;
+          paymentLink.textContent = 'Continue to secure payment in Stripe';
+          paymentNotice.style.display = 'none';
+        } else {
+          const mailBody = [
+            'Package: ' + details.label,
+            'Client: ' + (intake.clientName || 'Not provided'),
+            'Email: ' + (intake.clientEmail || 'Not provided'),
+            'Deceased: ' + (intake.deceasedName || 'Not provided'),
+            'Preferred outcome: ' + (intake.preferredOutcome || 'Not provided'),
+            'Known platforms: ' + (intake.knownPlatforms || 'Not provided'),
+            'Profile URLs: ' + (intake.profileUrls || 'Not provided'),
+            'Case notes: ' + (intake.caseNotes || 'Not provided'),
+            '',
+            'Please send the payment link for this case.'
+          ].join('\n');
+
+          paymentLink.href = 'mailto:hello@departed.digital?subject=' + encodeURIComponent('Send payment link for ' + details.label + ' case') + '&body=' + encodeURIComponent(mailBody);
+          paymentLink.textContent = 'Email us for the payment link';
+          paymentNotice.style.display = 'block';
+        }
       }
+
+      packageOptions.forEach((option) => {
+        option.addEventListener('click', () => renderPackage(option.getAttribute('data-package')));
+      });
+
+      renderPackage(PACKAGE_DETAILS[requestedPackage] ? requestedPackage : (PACKAGE_DETAILS[intake.selectedPackage] ? intake.selectedPackage : 'standard'));
     }
   </script>
 </body>
