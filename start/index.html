@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Start a Case | Departed Digital</title>
+  <meta name="description" content="Start a Departed Digital case. Choose the right package, see what information to gather, and send a pre-filled case enquiry." />
+  <link rel="canonical" href="https://www.departed.digital/start" />
+  <meta name="robots" content="index, follow" />
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <link rel="manifest" href="/site.webmanifest" />
+  <meta name="theme-color" content="#1a2744" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy: #1a2744;
+      --navy-dark: #111b35;
+      --navy-light: #243660;
+      --gold: #c9a84c;
+      --gold-light: #e0c06a;
+      --cream: #f9f6f0;
+      --white: #ffffff;
+      --text: #2d3a4a;
+      --text-muted: #6b7a8d;
+      --border: #e4ddd0;
+      --shadow: 0 12px 48px rgba(26,39,68,0.12);
+      --radius: 20px;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--cream);
+      color: var(--text);
+      line-height: 1.7;
+    }
+    nav {
+      background: var(--navy-dark);
+      padding: 18px 24px;
+    }
+    .nav-inner, .container, .footer-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+    }
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+    .logo {
+      font-family: 'Playfair Display', serif;
+      color: var(--white);
+      text-decoration: none;
+      font-size: 1.2rem;
+    }
+    .logo span { color: var(--gold); }
+    .nav-link {
+      color: rgba(255,255,255,0.78);
+      text-decoration: none;
+      font-size: 0.92rem;
+    }
+    .nav-link:hover { color: var(--gold); }
+    .hero {
+      background: linear-gradient(160deg, var(--navy-dark) 0%, var(--navy) 100%);
+      color: var(--white);
+      padding: 88px 24px 72px;
+      overflow: hidden;
+      position: relative;
+    }
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(201,168,76,0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(201,168,76,0.08) 1px, transparent 1px);
+      background-size: 36px 36px;
+      opacity: 0.5;
+      pointer-events: none;
+    }
+    .hero-inner {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 36px;
+      align-items: center;
+    }
+    .eyebrow {
+      display: inline-block;
+      color: var(--gold-light);
+      font-size: 0.76rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    h1, h2, h3 {
+      font-family: 'Playfair Display', serif;
+      color: var(--navy);
+    }
+    .hero h1 {
+      color: var(--white);
+      font-size: clamp(2.3rem, 5vw, 4rem);
+      line-height: 1.12;
+      margin-bottom: 16px;
+      max-width: 680px;
+    }
+    .hero p {
+      color: rgba(255,255,255,0.8);
+      max-width: 640px;
+      font-size: 1.05rem;
+    }
+    .hero-panel {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      backdrop-filter: blur(12px);
+      border-radius: 24px;
+      padding: 28px;
+    }
+    .hero-panel h2 {
+      color: var(--white);
+      font-size: 1.55rem;
+      margin-bottom: 10px;
+    }
+    .hero-panel p {
+      font-size: 0.98rem;
+      margin-bottom: 16px;
+    }
+    .hero-panel ul {
+      list-style: none;
+      display: grid;
+      gap: 10px;
+      color: rgba(255,255,255,0.84);
+      font-size: 0.95rem;
+    }
+    .hero-panel li::before {
+      content: "•";
+      color: var(--gold-light);
+      margin-right: 8px;
+    }
+    main {
+      padding: 72px 24px 96px;
+    }
+    .section {
+      margin-bottom: 72px;
+    }
+    .section-label {
+      display: inline-block;
+      color: var(--gold);
+      font-size: 0.76rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .section-title {
+      font-size: clamp(2rem, 4vw, 3rem);
+      margin-bottom: 14px;
+    }
+    .section-sub {
+      max-width: 760px;
+      color: var(--text-muted);
+      margin-bottom: 32px;
+    }
+    .package-grid, .detail-grid, .steps {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 24px;
+    }
+    .package-card, .detail-card, .step {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+      box-shadow: var(--shadow);
+    }
+    .package-card.selected {
+      border-color: var(--gold);
+      box-shadow: 0 18px 56px rgba(26,39,68,0.16);
+      transform: translateY(-2px);
+    }
+    .package-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+    .package-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.45rem;
+      color: var(--navy);
+    }
+    .price {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--navy);
+      line-height: 1;
+    }
+    .price small {
+      font-size: 1rem;
+      vertical-align: top;
+    }
+    .package-meta {
+      color: var(--text-muted);
+      margin-bottom: 18px;
+    }
+    .package-card ul {
+      padding-left: 18px;
+      color: var(--text);
+      display: grid;
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+    .package-card button, .cta-primary, .cta-secondary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      border-radius: 999px;
+      padding: 14px 22px;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 0.95rem;
+    }
+    .package-card button, .cta-primary {
+      background: var(--gold);
+      color: var(--navy-dark);
+    }
+    .package-card button:hover, .cta-primary:hover {
+      background: var(--gold-light);
+    }
+    .cta-secondary {
+      background: transparent;
+      color: var(--white);
+      border: 1px solid rgba(255,255,255,0.22);
+    }
+    .cta-secondary:hover {
+      border-color: rgba(255,255,255,0.42);
+      background: rgba(255,255,255,0.06);
+    }
+    .cta-row {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-top: 24px;
+    }
+    .detail-card h3, .step h3 {
+      font-size: 1.35rem;
+      margin-bottom: 12px;
+    }
+    .detail-card p, .step p {
+      color: var(--text-muted);
+    }
+    .intake-layout {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 24px;
+      align-items: start;
+    }
+    .form-panel {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 32px;
+      box-shadow: var(--shadow);
+    }
+    .field-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+    .field {
+      display: grid;
+      gap: 8px;
+    }
+    .field.full {
+      grid-column: 1 / -1;
+    }
+    .field label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--navy);
+    }
+    .field input,
+    .field select,
+    .field textarea {
+      width: 100%;
+      padding: 13px 15px;
+      border-radius: 12px;
+      border: 1.5px solid var(--border);
+      background: var(--white);
+      color: var(--text);
+      font: inherit;
+      outline: none;
+      transition: border-color 0.2s ease;
+    }
+    .field textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+    .field input:focus,
+    .field select:focus,
+    .field textarea:focus {
+      border-color: var(--gold);
+    }
+    .helper {
+      color: var(--text-muted);
+      font-size: 0.88rem;
+      margin-top: 14px;
+    }
+    .note-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 28px;
+      box-shadow: var(--shadow);
+      display: grid;
+      gap: 18px;
+    }
+    .note-card h3 {
+      font-size: 1.4rem;
+    }
+    .note-card ul {
+      padding-left: 18px;
+      color: var(--text-muted);
+      display: grid;
+      gap: 10px;
+    }
+    .step-number {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(201,168,76,0.16);
+      color: var(--navy);
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+    .cta-panel {
+      background: linear-gradient(135deg, var(--navy-dark), var(--navy));
+      color: var(--white);
+      padding: 40px;
+      border-radius: 28px;
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 24px;
+      align-items: center;
+    }
+    .cta-panel h2 {
+      color: var(--white);
+      font-size: clamp(2rem, 4vw, 3rem);
+      margin-bottom: 14px;
+    }
+    .cta-panel p {
+      color: rgba(255,255,255,0.8);
+      max-width: 680px;
+    }
+    .cta-aside {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 22px;
+      padding: 24px;
+    }
+    .cta-aside strong {
+      display: block;
+      font-size: 1.05rem;
+      margin-bottom: 10px;
+    }
+    .cta-aside ul {
+      list-style: none;
+      display: grid;
+      gap: 8px;
+      color: rgba(255,255,255,0.82);
+      font-size: 0.94rem;
+    }
+    .cta-aside li::before {
+      content: "•";
+      color: var(--gold-light);
+      margin-right: 8px;
+    }
+    .selected-line {
+      color: var(--gold-light);
+      font-weight: 700;
+    }
+    footer {
+      background: var(--navy-dark);
+      color: rgba(255,255,255,0.58);
+      padding: 40px 24px;
+      text-align: center;
+    }
+    footer a {
+      color: rgba(255,255,255,0.78);
+      text-decoration: none;
+      margin: 0 10px;
+      font-size: 0.9rem;
+    }
+    footer a:hover { color: var(--gold); }
+    @media (max-width: 960px) {
+      .hero-inner, .cta-panel, .package-grid, .detail-grid, .steps {
+        grid-template-columns: 1fr;
+      }
+    }
+    @media (max-width: 720px) {
+      .nav-inner {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="nav-inner">
+      <a class="logo" href="/">Departed<span>.</span>Digital</a>
+      <div class="nav-links">
+        <a class="nav-link" href="/">Home</a>
+        <a class="nav-link" href="/blog">Resources</a>
+        <a class="nav-link" href="/#partners">Funeral Directors</a>
+      </div>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="nav-inner hero-inner">
+      <div>
+        <span class="eyebrow">Start a case</span>
+        <h1>A calmer way to begin the digital admin after a loss.</h1>
+        <p>Choose the package that fits the case, see what details to gather, and send a pre-filled enquiry. We review the case, confirm scope, and send your secure payment link before work begins.</p>
+      </div>
+      <div class="hero-panel">
+        <h2>What to expect</h2>
+        <p class="selected-line">Selected package: <span id="selected-package-name">Standard</span></p>
+        <ul>
+          <li>You do not need passwords for the deceased's accounts.</li>
+          <li>We work from platform processes, not risky login sharing.</li>
+          <li>If the case belongs in a different package, we tell you before payment.</li>
+          <li>Every case ends with a written outcome record.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <main>
+    <div class="container">
+      <section class="section">
+        <span class="section-label">Step 1</span>
+        <h2 class="section-title">Send the case basics first</h2>
+        <p class="section-sub">This first form is intentionally light. It gives us enough to scope the case and direct you to the right payment step without collecting highly sensitive documents too early.</p>
+        <div class="intake-layout">
+          <div class="form-panel">
+            <form id="intake-form">
+              <div class="field-grid">
+                <div class="field">
+                  <label for="client-name">Your Name</label>
+                  <input id="client-name" name="client_name" type="text" placeholder="Jane Smith" required />
+                </div>
+                <div class="field">
+                  <label for="client-email">Email Address</label>
+                  <input id="client-email" name="client_email" type="email" placeholder="you@example.com" required />
+                </div>
+                <div class="field">
+                  <label for="client-phone">Phone Number</label>
+                  <input id="client-phone" name="client_phone" type="tel" placeholder="+44 7..." />
+                </div>
+                <div class="field">
+                  <label for="relationship">Your Relationship</label>
+                  <input id="relationship" name="relationship" type="text" placeholder="Executor, daughter, son, spouse..." />
+                </div>
+                <div class="field">
+                  <label for="deceased-name">Deceased's Name</label>
+                  <input id="deceased-name" name="deceased_name" type="text" placeholder="Full name" required />
+                </div>
+                <div class="field">
+                  <label for="authority-basis">Authority Basis</label>
+                  <select id="authority-basis" name="authority_basis">
+                    <option value="">Select one</option>
+                    <option value="next_of_kin">Next of kin / family member</option>
+                    <option value="executor">Executor or estate administrator</option>
+                    <option value="lasting_power_of_attorney">Lasting power of attorney / formal authority</option>
+                    <option value="funeral_director">Funeral director referral</option>
+                    <option value="not_sure">Not sure yet</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="account-count">Approximate Number of Accounts</label>
+                  <select id="account-count" name="account_count">
+                    <option value="not_sure">Not sure yet</option>
+                    <option value="1_2">1 to 2</option>
+                    <option value="3_5">3 to 5</option>
+                    <option value="6_plus">6 or more</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="package-preference">Package Preference</label>
+                  <select id="package-preference" name="package_preference">
+                    <option value="not_sure">Not sure yet</option>
+                    <option value="essential">Essential</option>
+                    <option value="standard">Standard</option>
+                    <option value="estate">Estate</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="preferred-outcome">Preferred Outcome</label>
+                  <select id="preferred-outcome" name="preferred_outcome">
+                    <option value="not_sure">Not sure yet</option>
+                    <option value="delete">Delete accounts</option>
+                    <option value="memorialise">Memorialise where possible</option>
+                    <option value="mixed">A mix depending on the platform</option>
+                  </select>
+                </div>
+                <div class="field full">
+                  <label for="known-platforms">Known Platforms</label>
+                  <textarea id="known-platforms" name="known_platforms" placeholder="For example: Facebook, Instagram, TikTok, Apple ID, Gmail, LinkedIn..."></textarea>
+                </div>
+                <div class="field full">
+                  <label for="profile-urls">Profile URLs or Usernames</label>
+                  <textarea id="profile-urls" name="profile_urls" placeholder="Paste profile URLs, handles, or anything that helps us identify the accounts."></textarea>
+                </div>
+                <div class="field full">
+                  <label for="case-notes">Anything Else We Should Know</label>
+                  <textarea id="case-notes" name="case_notes" placeholder="Anything important about the case, urgency, or the platforms involved."></textarea>
+                </div>
+              </div>
+              <div class="cta-row">
+                <button type="submit" class="cta-primary">Save Details and Continue</button>
+                <a class="cta-secondary" href="/#pricing">Compare packages again</a>
+              </div>
+              <p class="helper">Next step: we take these details to the payment page, where the selected package can be confirmed before anything sensitive is requested.</p>
+            </form>
+          </div>
+          <aside class="note-card">
+            <div>
+              <span class="section-label" style="margin-bottom: 10px;">Why this first step</span>
+              <h3>We only collect what is needed to scope the case.</h3>
+            </div>
+            <ul>
+              <li>No death certificate upload in the first enquiry</li>
+              <li>No need to share passwords or direct access</li>
+              <li>Enough detail to recommend Essential, Standard, or Estate</li>
+              <li>Cleaner handoff into the payment and document steps</li>
+            </ul>
+          </aside>
+        </div>
+      </section>
+
+      <section class="section">
+        <span class="section-label">Packages</span>
+        <h2 class="section-title">How the site chooses the next payment step</h2>
+        <p class="section-sub">If the package is obvious, we send you straight to that payment page. If it is less clear, we still save your details first and you can review the options before paying.</p>
+        <div class="package-grid">
+          <div class="package-card" data-package="essential">
+            <div class="package-top">
+              <div class="package-name">Essential</div>
+              <div class="price"><small>£</small>149</div>
+            </div>
+            <p class="package-meta">2 platforms · 14 day target</p>
+            <ul>
+              <li>Best for simpler social account cases</li>
+              <li>Good fit for 1 to 2 known platforms</li>
+              <li>Written completion summary included</li>
+            </ul>
+            <button type="button" data-select-package="essential">Use Essential</button>
+          </div>
+          <div class="package-card" data-package="standard">
+            <div class="package-top">
+              <div class="package-name">Standard</div>
+              <div class="price"><small>£</small>249</div>
+            </div>
+            <p class="package-meta">5 platforms · 10 day target</p>
+            <ul>
+              <li>Best fit for most family cases</li>
+              <li>Good fit for 3 to 5 known platforms</li>
+              <li>Priority follow-up included</li>
+            </ul>
+            <button type="button" data-select-package="standard">Use Standard</button>
+          </div>
+          <div class="package-card" data-package="estate">
+            <div class="package-top">
+              <div class="package-name">Estate</div>
+              <div class="price"><small>£</small>399</div>
+            </div>
+            <p class="package-meta">Unlimited platforms · 7 day target</p>
+            <ul>
+              <li>Best for 6+ platforms or estate-led cases</li>
+              <li>Complex executor support and legal-grade documentation</li>
+              <li>Priority handling throughout</li>
+            </ul>
+            <button type="button" data-select-package="estate">Use Estate</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <span class="section-label">Checklist</span>
+        <h2 class="section-title">What to gather before you enquire</h2>
+        <p class="section-sub">You do not need to have everything ready. This list just makes the first conversation faster and clearer.</p>
+        <div class="detail-grid">
+          <div class="detail-card">
+            <h3>Who the case is for</h3>
+            <p>The full name of the deceased, your relationship to them, and whether you are acting as a family member, executor, or funeral director referral.</p>
+          </div>
+          <div class="detail-card">
+            <h3>Known platforms</h3>
+            <p>Any accounts you already know about such as Facebook, Instagram, TikTok, LinkedIn, Apple, Google, or email providers.</p>
+          </div>
+          <div class="detail-card">
+            <h3>Core documents</h3>
+            <p>A death certificate is usually needed. Some platforms also require proof of relationship or executor authority, which we will confirm before submission.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <span class="section-label">Next steps</span>
+        <h2 class="section-title">What happens after your enquiry</h2>
+        <p class="section-sub">This keeps the process honest and manageable: first we scope the case correctly, then we take payment, then we start work.</p>
+        <div class="steps">
+          <div class="step">
+            <div class="step-number">1</div>
+            <h3>You send the case details</h3>
+            <p>Use the pre-filled email below so we receive the package choice and the basics of the case in one place.</p>
+          </div>
+          <div class="step">
+            <div class="step-number">2</div>
+            <h3>We confirm scope</h3>
+            <p>We review the case, tell you whether the package is right, and confirm which supporting documents will likely be required.</p>
+          </div>
+          <div class="step">
+            <div class="step-number">3</div>
+            <h3>We send secure payment</h3>
+            <p>Once you are happy to proceed, we send the secure payment link and open the case for processing.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="cta-panel">
+          <div>
+            <span class="section-label" style="color: var(--gold-light);">After payment</span>
+            <h2>Sensitive documents are requested in the next step, not the first one.</h2>
+            <p>Once payment is confirmed, the case moves into the supporting-document stage. That is where we request the death certificate and proof of authority needed for the platforms involved.</p>
+          </div>
+          <div class="cta-aside">
+            <strong>Typical follow-up documents</strong>
+            <ul>
+              <li>Death certificate</li>
+              <li>Proof of relationship or executor authority</li>
+              <li>Any platform-specific evidence needed for the case</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <a href="/">Home</a>
+      <a href="/blog">Resources</a>
+      <a href="/privacy">Privacy</a>
+      <a href="/terms">Terms</a>
+      <a href="/cookies">Cookies</a>
+    </div>
+  </footer>
+
+  <script>
+    const packageCopy = {
+      essential: {
+        label: 'Essential',
+        subject: 'Start an Essential case',
+        body: 'Package: Essential\n\nRelationship to the deceased:\nKnown platforms (up to 2):\nPreferred outcome (delete or memorialise):\nAnything else we should know:\n'
+      },
+      standard: {
+        label: 'Standard',
+        subject: 'Start a Standard case',
+        body: 'Package: Standard\n\nRelationship to the deceased:\nKnown platforms (up to 5):\nPreferred outcome (delete or memorialise):\nAnything else we should know:\n'
+      },
+      estate: {
+        label: 'Estate',
+        subject: 'Start an Estate case',
+        body: 'Package: Estate\n\nRelationship to the deceased or estate:\nKnown platforms (unlimited case):\nPreferred outcome (delete or memorialise):\nAnything else we should know:\n'
+      }
+    };
+
+    const selectedName = document.getElementById('selected-package-name');
+    const packageCards = document.querySelectorAll('[data-package]');
+    const packageButtons = document.querySelectorAll('[data-select-package]');
+    const packagePreference = document.getElementById('package-preference');
+    const accountCount = document.getElementById('account-count');
+    const intakeForm = document.getElementById('intake-form');
+
+    function previewPackage(packageKey) {
+      const fallbackKey = packageCopy[packageKey] ? packageKey : 'standard';
+      const selected = packageCopy[fallbackKey];
+
+      selectedName.textContent = selected.label;
+
+      packageCards.forEach((card) => {
+        card.classList.toggle('selected', card.getAttribute('data-package') === fallbackKey);
+      });
+
+      const nextUrl = new URL(window.location.href);
+      nextUrl.searchParams.set('package', fallbackKey);
+      window.history.replaceState({}, '', nextUrl.pathname + nextUrl.search);
+    }
+
+    function setPackage(packageKey) {
+      packagePreference.value = packageKey;
+      previewPackage(packageKey);
+    }
+
+    function derivePackage() {
+      if (packageCopy[packagePreference.value]) {
+        return packagePreference.value;
+      }
+
+      if (accountCount.value === '1_2') return 'essential';
+      if (accountCount.value === '3_5') return 'standard';
+      if (accountCount.value === '6_plus') return 'estate';
+      return 'standard';
+    }
+
+    packageButtons.forEach((button) => {
+      button.addEventListener('click', () => setPackage(button.getAttribute('data-select-package')));
+    });
+
+    packagePreference.addEventListener('change', () => {
+      if (packageCopy[packagePreference.value]) {
+        previewPackage(packagePreference.value);
+      } else {
+        previewPackage(derivePackage());
+      }
+    });
+
+    accountCount.addEventListener('change', () => {
+      if (!packageCopy[packagePreference.value]) {
+        previewPackage(derivePackage());
+      }
+    });
+
+    intakeForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+
+      const packageKey = derivePackage();
+      const selected = packageCopy[packageKey];
+      const intakeData = {
+        clientName: document.getElementById('client-name').value,
+        clientEmail: document.getElementById('client-email').value,
+        clientPhone: document.getElementById('client-phone').value,
+        relationship: document.getElementById('relationship').value,
+        deceasedName: document.getElementById('deceased-name').value,
+        authorityBasis: document.getElementById('authority-basis').value,
+        accountCount: accountCount.value,
+        packagePreference: packagePreference.value,
+        selectedPackage: packageKey,
+        preferredOutcome: document.getElementById('preferred-outcome').value,
+        knownPlatforms: document.getElementById('known-platforms').value,
+        profileUrls: document.getElementById('profile-urls').value,
+        caseNotes: document.getElementById('case-notes').value,
+        packageLabel: selected.label
+      };
+
+      localStorage.setItem('departedDigitalIntake', JSON.stringify(intakeData));
+      window.location.href = '/payment?package=' + packageKey;
+    });
+
+    const params = new URLSearchParams(window.location.search);
+    setPackage(params.get('package') || 'standard');
+  </script>
+</body>
+</html>
