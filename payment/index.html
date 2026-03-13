@@ -96,6 +96,30 @@
       gap: 24px;
       align-items: start;
     }
+    .reassurance-strip {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .reassurance-card {
+      background: #fbf8f3;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 18px;
+    }
+    .reassurance-card strong {
+      display: block;
+      color: var(--navy);
+      margin-bottom: 6px;
+      font-size: 0.92rem;
+    }
+    .reassurance-card span {
+      display: block;
+      color: var(--text-muted);
+      font-size: 0.88rem;
+      line-height: 1.55;
+    }
     .package-switcher {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -262,6 +286,7 @@
     }
     footer a:hover { color: var(--gold); }
     @media (max-width: 920px) {
+      .reassurance-strip,
       .package-switcher,
       .layout {
         grid-template-columns: 1fr;
@@ -289,6 +314,7 @@
       <a href="/" class="logo">Departed<span>.</span>Digital</a>
       <div style="display:flex; gap:18px; flex-wrap:wrap;">
         <a class="nav-link" href="/start">Back to intake</a>
+        <a class="nav-link" id="status-nav-link" href="/case">Case status</a>
         <a class="nav-link" href="/blog">Resources</a>
       </div>
     </div>
@@ -298,7 +324,22 @@
     <div class="container">
       <span class="eyebrow">Step 2</span>
       <h1>Choose the right package and continue to secure payment.</h1>
-      <p class="intro">This is the decision step. After the short form, the customer confirms Essential, Standard, or Estate here and continues to Stripe. Supporting documents come after payment.</p>
+      <p class="intro">This is the decision step. Review the case, confirm the right package, and continue to payment. Supporting documents only come after payment has been confirmed.</p>
+
+      <div class="reassurance-strip">
+        <div class="reassurance-card">
+          <strong>Case already created</strong>
+          <span>Your details are already on record, so you do not need to start again.</span>
+        </div>
+        <div class="reassurance-card">
+          <strong>Documents come later</strong>
+          <span>We only ask for the death certificate and proof of authority after payment.</span>
+        </div>
+        <div class="reassurance-card">
+          <strong>No passwords required</strong>
+          <span>We work through platform processes rather than asking for account access.</span>
+        </div>
+      </div>
 
       <div class="package-switcher" id="package-switcher">
         <button class="package-option" type="button" data-package="essential">
@@ -330,12 +371,13 @@
           </div>
           <ul class="feature-list" id="package-features"></ul>
           <div class="cta-row">
-            <a class="btn-primary" id="payment-link" href="#" data-track="payment_cta" data-track-label="Payment continue secure payment">Continue to secure payment in Stripe</a>
+            <a class="btn-primary" id="payment-link" href="#" data-track="payment_cta" data-track-label="Payment continue secure payment">Continue to secure payment</a>
+            <a class="btn-secondary" id="status-link" href="/case">Open case status</a>
             <a class="btn-secondary" href="/start" data-track="payment_edit" data-track-label="Payment edit intake details">Edit intake details</a>
           </div>
           <p class="helper" id="payment-helper">After payment, we request the death certificate and proof of authority in the next step.</p>
           <div class="notice" id="payment-notice">
-            Stripe payment links are not configured on this page yet. For now, the button falls back to a pre-filled email. Once the real links are added, this becomes the live payment step.
+            Secure checkout will appear here once online payments are enabled. Until then, you can use the same case details to request the payment link by email.
           </div>
         </section>
 
@@ -360,9 +402,9 @@
   <div class="sticky-paybar" id="sticky-paybar">
     <div>
       <strong id="sticky-package">Standard · £249</strong>
-      <span>Continue to secure payment when ready</span>
+      <span>Continue when you are ready</span>
     </div>
-    <a class="btn-primary" id="sticky-payment-link" href="#" data-track="payment_cta_sticky" data-track-label="Payment sticky continue secure payment">Continue to secure payment</a>
+    <a class="btn-primary" id="sticky-payment-link" href="#" data-track="payment_cta_sticky" data-track-label="Payment sticky continue secure payment">Continue</a>
   </div>
 
   <footer>
@@ -424,6 +466,8 @@
     const stickyPackage = document.getElementById('sticky-package');
     const stickyPaymentLink = document.getElementById('sticky-payment-link');
     const paymentLink = document.getElementById('payment-link');
+    const statusLink = document.getElementById('status-link');
+    const statusNavLink = document.getElementById('status-nav-link');
     const paymentNotice = document.getElementById('payment-notice');
     const paymentHelper = document.getElementById('payment-helper');
     const summaryList = document.getElementById('summary-list');
@@ -458,6 +502,7 @@
         ['Relationship', caseData.relationshipToDeceased || 'Not provided'],
         ['Preferred outcome', caseData.preferredOutcome || 'Not provided'],
         ['Known platforms', caseData.knownPlatforms || 'Not provided'],
+        ['Platform workflow', (caseData.platformTasks || []).length ? caseData.platformTasks.map((task) => task.name + ' (' + task.status.replace(/_/g, ' ') + ')').join(', ') : 'Not yet created'],
         ['Profiles or handles', caseData.profileUrls || 'Not provided'],
         ['Case details', caseData.caseDetails || 'Not provided']
       ];
@@ -554,6 +599,11 @@
 
       paymentLink.href = configuredLink || fallbackHref;
       stickyPaymentLink.href = configuredLink || fallbackHref;
+      if (state.caseData && state.caseData.id && state.publicToken) {
+        const caseStatusHref = '/case?case=' + encodeURIComponent(state.caseData.id) + '&token=' + encodeURIComponent(state.publicToken);
+        statusLink.href = caseStatusHref;
+        statusNavLink.href = caseStatusHref;
+      }
 
       if (configuredLink) {
         paymentLink.textContent = 'Continue to secure payment in Stripe';
@@ -561,12 +611,13 @@
         paymentNotice.style.display = 'none';
         paymentHelper.textContent = 'After payment, we request the death certificate and proof of authority in the next step.';
       } else {
-        paymentLink.textContent = 'Email us for the payment link';
-        stickyPaymentLink.textContent = 'Email us for the payment link';
+        paymentLink.textContent = 'Request the secure payment link';
+        stickyPaymentLink.textContent = 'Request payment link';
         paymentNotice.style.display = 'block';
         paymentNotice.textContent = state.storageRequiresConfiguration
-          ? 'Backend storage needs its production environment variables before this becomes the live payment handoff. The page still keeps the case context and email fallback in place for testing.'
-          : 'Stripe payment links are not configured on this page yet. For now, the button falls back to a pre-filled email. Once the real links are added, this becomes the live payment step.';
+          ? 'The secure checkout handoff is temporarily unavailable, but your case details are still on record and the request link remains available.'
+          : 'Secure card checkout will appear here once online payments are enabled. Until then, you can use this page to request the payment link by email without re-entering the case details.';
+        paymentHelper.textContent = 'After payment is confirmed, the next step is the secure document upload page.';
       }
     }
 

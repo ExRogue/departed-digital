@@ -98,6 +98,31 @@
       border: 1px solid rgba(201,168,76,0.38);
       color: #6a5520;
     }
+    .prep-strip {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .prep-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: var(--shadow);
+    }
+    .prep-card strong {
+      display: block;
+      color: var(--navy);
+      margin-bottom: 6px;
+      font-size: 0.92rem;
+    }
+    .prep-card span {
+      display: block;
+      color: var(--text-muted);
+      font-size: 0.88rem;
+      line-height: 1.55;
+    }
     .layout {
       display: grid;
       grid-template-columns: 1.1fr 0.9fr;
@@ -189,7 +214,7 @@
     }
     footer a:hover { color: var(--gold); }
     @media (max-width: 920px) {
-      .layout, .field-grid {
+      .prep-strip, .layout, .field-grid {
         grid-template-columns: 1fr;
       }
     }
@@ -201,6 +226,7 @@
       <a href="/" class="logo">Departed<span>.</span>Digital</a>
       <div style="display:flex; gap:18px; flex-wrap:wrap;">
         <a class="nav-link" href="/payment">Back to payment</a>
+        <a class="nav-link" id="status-nav-link" href="/case">Case status</a>
         <a class="nav-link" href="/start">Start again</a>
       </div>
     </div>
@@ -211,6 +237,21 @@
       <span class="eyebrow">Step 3</span>
       <h1>Upload the supporting documents for this case.</h1>
       <p class="intro">This step comes after payment. Use it to send the death certificate, proof of authority, and any supporting files without relying on inbox attachments.</p>
+
+      <div class="prep-strip">
+        <div class="prep-card">
+          <strong>Private case file</strong>
+          <span>Everything uploaded here is attached to the case reference already on record.</span>
+        </div>
+        <div class="prep-card">
+          <strong>Typical first upload</strong>
+          <span>Usually the death certificate and one proof of relationship or authority.</span>
+        </div>
+        <div class="prep-card">
+          <strong>Accepted formats</strong>
+          <span>PDF and common image formats, plus extra supporting files when needed.</span>
+        </div>
+      </div>
 
       <div class="notice" id="storage-notice" style="display:none;">
         Secure production storage is not configured in this environment yet. The form still shows the right flow, but uploads will only work once the storage environment variables are added.
@@ -249,9 +290,10 @@
               <textarea id="document-notes" placeholder="Explain anything important about the documents supplied or anything we should know before platform submissions begin."></textarea>
             </div>
           </div>
-          <p class="disabled-note" id="document-helper">Upload the death certificate and proof of authority here once payment has been confirmed.</p>
+          <p class="disabled-note" id="document-helper">Upload the death certificate and proof of authority here once payment has been confirmed. We review the case file from this point onward.</p>
           <button class="button primary" type="submit" data-track="documents_upload" data-track-label="Documents upload supporting documents">Upload supporting documents</button>
           <a class="button secondary" href="/payment">Back to payment</a>
+          <a class="button secondary" id="status-link" href="/case">Case status</a>
           </form>
         </section>
 
@@ -294,6 +336,8 @@
     const helper = document.getElementById('document-helper');
     const summaryList = document.getElementById('document-summary');
     const storageNotice = document.getElementById('storage-notice');
+    const statusLink = document.getElementById('status-link');
+    const statusNavLink = document.getElementById('status-nav-link');
     const state = {
       caseData: null,
       publicToken: tokenFromUrl || '',
@@ -319,7 +363,8 @@
         ['Package', caseData.packageLabel || caseData.selectedPackage || 'Not provided'],
         ['Outcome', caseData.preferredOutcome || 'Not provided'],
         ['Relationship', caseData.relationshipToDeceased || 'Not provided'],
-        ['Known platforms', caseData.knownPlatforms || 'Not provided']
+        ['Known platforms', caseData.knownPlatforms || 'Not provided'],
+        ['Platform workflow', (caseData.platformTasks || []).length ? caseData.platformTasks.map((task) => task.name + ' (' + task.status.replace(/_/g, ' ') + ')').join(', ') : 'Not yet created']
       ];
 
       if (caseData.documents && caseData.documents.length) {
@@ -327,6 +372,11 @@
       }
 
       summaryList.innerHTML = summary.map(([label, value]) => '<li><strong>' + escapeHtml(label) + ':</strong> ' + escapeHtml(value) + '</li>').join('');
+      if (caseData.id && state.publicToken) {
+        const href = '/case?case=' + encodeURIComponent(caseData.id) + '&token=' + encodeURIComponent(state.publicToken);
+        statusLink.href = href;
+        statusNavLink.href = href;
+      }
     }
 
     async function readFileAsData(file, documentType) {

@@ -68,6 +68,28 @@ const PAYMENT_STATUSES = [
   'refunded'
 ];
 
+const CASE_PRIORITIES = [
+  'standard',
+  'priority',
+  'urgent'
+];
+
+const REFERRAL_FEE_STATUSES = [
+  'not_applicable',
+  'pending',
+  'approved',
+  'paid'
+];
+
+const PLATFORM_STATUSES = [
+  'not_started',
+  'queued',
+  'submitted',
+  'waiting',
+  'resolved',
+  'blocked'
+];
+
 const MAX_DOCUMENT_COUNT = 6;
 const MAX_DOCUMENT_SIZE_BYTES = 4 * 1024 * 1024;
 const MAX_ANALYTICS_EVENTS = 5000;
@@ -97,12 +119,15 @@ function getPublicConfig() {
 
 module.exports = {
   ADMIN_ENTRY_PATH,
+  CASE_PRIORITIES,
   CASE_STATUSES,
   MAX_ANALYTICS_EVENTS,
   MAX_DOCUMENT_COUNT,
   MAX_DOCUMENT_SIZE_BYTES,
   PACKAGE_CONFIG,
   PAYMENT_STATUSES,
+  PLATFORM_STATUSES,
+  REFERRAL_FEE_STATUSES,
   TRUST_SIGNALS,
   getPublicConfig
 };

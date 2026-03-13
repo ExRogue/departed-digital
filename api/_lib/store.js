@@ -4,10 +4,13 @@ const path = require('node:path');
 const { get, list, put } = require('@vercel/blob');
 
 const {
+  CASE_PRIORITIES,
   CASE_STATUSES,
   MAX_ANALYTICS_EVENTS,
   PACKAGE_CONFIG,
-  PAYMENT_STATUSES
+  PAYMENT_STATUSES,
+  PLATFORM_STATUSES,
+  REFERRAL_FEE_STATUSES
 } = require('./config');
 
 const DATA_ROOT = process.env.DEPARTED_DATA_ROOT
@@ -86,7 +89,168 @@ function makeReference(id, createdAt) {
   return `DD-${stamp}-${id.slice(0, 6).toUpperCase()}`;
 }
 
+function slugifyKey(value) {
+  return trimTo(value, 120)
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 50);
+}
+
+function inferPlatformName(value) {
+  const source = trimTo(value, 240).toLowerCase();
+
+  if (!source) {
+    return '';
+  }
+
+  const platformMatchers = [
+    ['Facebook', /facebook/],
+    ['Instagram', /instagram/],
+    ['TikTok', /tiktok/],
+    ['X', /(^|[^a-z])x\.com|twitter/],
+    ['LinkedIn', /linkedin/],
+    ['YouTube', /youtube/],
+    ['Google', /google/],
+    ['Gmail', /gmail/],
+    ['Apple', /apple|icloud/],
+    ['Microsoft', /outlook|hotmail|live\.com|microsoft/],
+    ['Snapchat', /snapchat/],
+    ['Pinterest', /pinterest/],
+    ['Reddit', /reddit/],
+    ['PayPal', /paypal/]
+  ];
+
+  const matched = platformMatchers.find(([, pattern]) => pattern.test(source));
+  return matched ? matched[0] : '';
+}
+
+function normalizePlatformTask(input, index = 0, fallbackOutcome = 'not_sure', fallbackTimestamp = new Date().toISOString()) {
+  const name = trimTo(input && input.name, 120) || `Platform ${index + 1}`;
+  const id = trimTo(input && input.id, 120) || `platform-${slugifyKey(name) || String(index + 1)}-${index + 1}`;
+
+  return {
+    id,
+    name,
+    profileOrHandle: trimTo(input && input.profileOrHandle, 500),
+    status: PLATFORM_STATUSES.includes(input && input.status) ? input.status : 'not_started',
+    outcomeRequested: trimTo(input && input.outcomeRequested, 60) || fallbackOutcome,
+    evidenceNeeded: trimTo(input && input.evidenceNeeded, 500),
+    notes: trimTo(input && input.notes, 2000),
+    submissionReference: trimTo(input && input.submissionReference, 180),
+    submittedAt: trimTo(input && input.submittedAt, 80),
+    resolvedAt: trimTo(input && input.resolvedAt, 80),
+    lastUpdatedAt: trimTo(input && input.lastUpdatedAt, 80) || fallbackTimestamp
+  };
+}
+
+function syncPlatformTasks(existingTasks, knownPlatformsValue, profileUrlsValue, preferredOutcome, timestamp) {
+  const knownPlatforms = formatList(knownPlatformsValue);
+  const profileUrls = formatList(profileUrlsValue);
+  const nextTimestamp = timestamp || new Date().toISOString();
+  const byName = new Map();
+  const urlsByName = new Map();
+
+  for (const task of ensureArray(existingTasks)) {
+    if (task && task.name) {
+      byName.set(task.name.toLowerCase(), normalizePlatformTask(task, 0, preferredOutcome, nextTimestamp));
+    }
+  }
+
+  for (const url of profileUrls) {
+    const inferredName = inferPlatformName(url);
+    if (!inferredName) {
+      continue;
+    }
+
+    const key = inferredName.toLowerCase();
+    const list = urlsByName.get(key) || [];
+    list.push(url);
+    urlsByName.set(key, list);
+  }
+
+  const orderedNames = [];
+
+  for (const name of knownPlatforms) {
+    const key = name.toLowerCase();
+    if (!orderedNames.includes(key)) {
+      orderedNames.push(key);
+    }
+  }
+
+  for (const [key] of urlsByName.entries()) {
+    if (!orderedNames.includes(key)) {
+      orderedNames.push(key);
+    }
+  }
+
+  const tasks = orderedNames.map((key, index) => {
+    const existing = byName.get(key);
+    const displayName = existing ? existing.name : (knownPlatforms.find((entry) => entry.toLowerCase() === key) || inferPlatformName((urlsByName.get(key) || [])[0]) || `Platform ${index + 1}`);
+    const profileOrHandle = existing && existing.profileOrHandle
+      ? existing.profileOrHandle
+      : (urlsByName.get(key) || []).join('\n');
+
+    return normalizePlatformTask({
+      ...existing,
+      id: existing && existing.id ? existing.id : `platform-${slugifyKey(displayName) || String(index + 1)}-${index + 1}`,
+      name: displayName,
+      profileOrHandle
+    }, index, preferredOutcome, nextTimestamp);
+  });
+
+  const preservedManualTasks = ensureArray(existingTasks)
+    .map((task, index) => normalizePlatformTask(task, index, preferredOutcome, nextTimestamp))
+    .filter((task) => !orderedNames.includes(task.name.toLowerCase()));
+
+  return [...tasks, ...preservedManualTasks];
+}
+
+function buildStatusTimeline(caseRecord) {
+  const timeline = [
+    {
+      key: 'case_created',
+      label: 'Case received',
+      description: 'We created the case record and captured the first details.',
+      completed: true,
+      completedAt: caseRecord.createdAt
+    },
+    {
+      key: 'payment',
+      label: 'Payment step',
+      description: 'The package and payment step is completed before sensitive document requests.',
+      completed: caseRecord.paymentStatus === 'paid',
+      completedAt: caseRecord.paymentStatus === 'paid' ? caseRecord.updatedAt : ''
+    },
+    {
+      key: 'documents',
+      label: 'Documents reviewed',
+      description: 'We request and review the death certificate and authority documents.',
+      completed: ensureArray(caseRecord.documents).length > 0,
+      completedAt: ensureArray(caseRecord.documents).length ? caseRecord.updatedAt : ''
+    },
+    {
+      key: 'submissions',
+      label: 'Platform submissions',
+      description: 'We begin the removal or memorialisation submissions for the listed platforms.',
+      completed: ['active', 'submitted', 'completed'].includes(caseRecord.status),
+      completedAt: ['active', 'submitted', 'completed'].includes(caseRecord.status) ? caseRecord.updatedAt : ''
+    },
+    {
+      key: 'completion',
+      label: 'Written completion record',
+      description: 'We send the written record once the case is complete.',
+      completed: caseRecord.status === 'completed',
+      completedAt: caseRecord.status === 'completed' ? caseRecord.updatedAt : ''
+    }
+  ];
+
+  return timeline;
+}
+
 function normalizeCaseSummary(caseRecord) {
+  const platformTasks = ensureArray(caseRecord.platformTasks);
+
   return {
     id: caseRecord.id,
     reference: caseRecord.reference,
@@ -96,8 +260,15 @@ function normalizeCaseSummary(caseRecord) {
     selectedPackage: caseRecord.selectedPackage,
     packageLabel: caseRecord.packageLabel,
     relationshipToDeceased: caseRecord.relationshipToDeceased || '',
+    assignedTo: caseRecord.assignedTo || '',
+    priority: caseRecord.priority || 'standard',
+    dueDate: caseRecord.dueDate || '',
+    referralPartnerName: caseRecord.referralPartnerName || '',
+    referralFeeStatus: caseRecord.referralFeeStatus || 'not_applicable',
     status: caseRecord.status,
     paymentStatus: caseRecord.paymentStatus,
+    platformCount: platformTasks.length,
+    resolvedPlatformCount: platformTasks.filter((task) => task.status === 'resolved').length,
     documentCount: ensureArray(caseRecord.documents).length,
     createdAt: caseRecord.createdAt,
     updatedAt: caseRecord.updatedAt
@@ -106,6 +277,7 @@ function normalizeCaseSummary(caseRecord) {
 
 function buildPublicCase(caseRecord) {
   const operational = buildOperationalKit(caseRecord);
+  const platformTasks = ensureArray(caseRecord.platformTasks);
 
   return {
     id: caseRecord.id,
@@ -123,8 +295,17 @@ function buildPublicCase(caseRecord) {
     packageLabel: caseRecord.packageLabel,
     status: caseRecord.status,
     paymentStatus: caseRecord.paymentStatus,
+    priority: caseRecord.priority || 'standard',
     authorityBasis: caseRecord.authorityBasis || '',
     documentNotes: caseRecord.documentNotes || '',
+    platformTasks: platformTasks.map((task) => ({
+      id: task.id,
+      name: task.name,
+      profileOrHandle: task.profileOrHandle || '',
+      status: task.status,
+      outcomeRequested: task.outcomeRequested || '',
+      evidenceNeeded: task.evidenceNeeded || ''
+    })),
     documents: ensureArray(caseRecord.documents).map((document) => ({
       id: document.id,
       fileName: document.fileName,
@@ -132,6 +313,7 @@ function buildPublicCase(caseRecord) {
       size: document.size,
       uploadedAt: document.uploadedAt
     })),
+    statusTimeline: buildStatusTimeline(caseRecord),
     operational,
     createdAt: caseRecord.createdAt,
     updatedAt: caseRecord.updatedAt
@@ -144,10 +326,21 @@ function buildAdminCase(caseRecord) {
     publicToken: caseRecord.publicToken,
     caseLinks: {
       payment: `/payment?case=${caseRecord.id}&token=${caseRecord.publicToken}&package=${caseRecord.selectedPackage}`,
-      documents: `/documents?case=${caseRecord.id}&token=${caseRecord.publicToken}`
+      documents: `/documents?case=${caseRecord.id}&token=${caseRecord.publicToken}`,
+      status: `/case?case=${caseRecord.id}&token=${caseRecord.publicToken}`
     },
     intakeSource: caseRecord.intakeSource,
     referralSource: caseRecord.referralSource,
+    assignedTo: caseRecord.assignedTo || '',
+    priority: caseRecord.priority || 'standard',
+    dueDate: caseRecord.dueDate || '',
+    referralPartnerType: caseRecord.referralPartnerType || 'direct',
+    referralPartnerName: caseRecord.referralPartnerName || '',
+    referralPartnerEmail: caseRecord.referralPartnerEmail || '',
+    referralPartnerPhone: caseRecord.referralPartnerPhone || '',
+    referralFeeStatus: caseRecord.referralFeeStatus || 'not_applicable',
+    referralNotes: caseRecord.referralNotes || '',
+    platformTasks: ensureArray(caseRecord.platformTasks),
     internalNotes: caseRecord.internalNotes || '',
     activity: ensureArray(caseRecord.activity)
   };
@@ -156,7 +349,11 @@ function buildAdminCase(caseRecord) {
 function buildOperationalKit(caseRecord) {
   const knownPlatforms = formatList(caseRecord.knownPlatforms);
   const profileUrls = formatList(caseRecord.profileUrls);
+  const platformTasks = ensureArray(caseRecord.platformTasks).map((task, index) => normalizePlatformTask(task, index, caseRecord.preferredOutcome, caseRecord.updatedAt || caseRecord.createdAt));
   const documentCount = ensureArray(caseRecord.documents).length;
+  const activePlatformTasks = platformTasks.filter((task) => task.status !== 'resolved');
+  const blockedPlatformTasks = platformTasks.filter((task) => task.status === 'blocked');
+  const resolvedPlatformTasks = platformTasks.filter((task) => task.status === 'resolved');
   const missingItems = [];
 
   if (!caseRecord.relationshipToDeceased) {
@@ -173,6 +370,22 @@ function buildOperationalKit(caseRecord) {
 
   if (!caseRecord.authorityBasis && documentCount === 0) {
     missingItems.push('Authority basis and documents still need to be collected.');
+  }
+
+  if (!caseRecord.assignedTo) {
+    missingItems.push('No case owner has been assigned yet.');
+  }
+
+  if (!caseRecord.dueDate) {
+    missingItems.push('A due date has not been set yet.');
+  }
+
+  if (!platformTasks.length) {
+    missingItems.push('No platform workflow has been created yet.');
+  }
+
+  if (caseRecord.referralPartnerType === 'funeral_director' && !caseRecord.referralPartnerName) {
+    missingItems.push('Funeral director referral details are still missing.');
   }
 
   let nextBestAction = 'Review the case and decide the next operational step.';
@@ -195,12 +408,29 @@ function buildOperationalKit(caseRecord) {
     nextBestAction = 'Resolve the blocker, request the missing information, and note the issue clearly for the next operator.';
   }
 
+  if (platformTasks.length && caseRecord.paymentStatus === 'paid' && documentCount > 0) {
+    const nextPendingPlatform = activePlatformTasks.find((task) => task.status === 'not_started' || task.status === 'queued');
+    if (nextPendingPlatform) {
+      nextBestAction = `Prepare and submit the ${nextPendingPlatform.name} request next, then log the submission reference.`;
+    }
+  }
+
+  if (blockedPlatformTasks.length) {
+    nextBestAction = `Resolve the blocker on ${blockedPlatformTasks[0].name}, then continue the remaining platform submissions.`;
+  }
+
   const agentChecklist = [
     `Case reference: ${caseRecord.reference}`,
     `Selected package: ${caseRecord.packageLabel}`,
     `Preferred outcome: ${toTitle(caseRecord.preferredOutcome || 'not_sure')}`,
+    `Priority: ${toTitle(caseRecord.priority || 'standard')}`,
+    `Assigned to: ${caseRecord.assignedTo || 'Unassigned'}`,
+    `Due date: ${caseRecord.dueDate || 'Not set'}`,
     knownPlatforms.length ? `Known platforms: ${knownPlatforms.join(', ')}` : 'Known platforms still need to be confirmed.',
     profileUrls.length ? `Known profiles/handles: ${profileUrls.join(', ')}` : 'No profile URLs or handles are recorded yet.',
+    platformTasks.length
+      ? `Platform workflow: ${platformTasks.map((task) => `${task.name} (${toTitle(task.status)})`).join(', ')}`
+      : 'Platform workflow has not been created yet.',
     `Next best action: ${nextBestAction}`
   ];
 
@@ -210,9 +440,13 @@ function buildOperationalKit(caseRecord) {
     `Deceased: ${caseRecord.deceasedName}.`,
     `Relationship: ${caseRecord.relationshipToDeceased || 'Not supplied yet'}.`,
     `Package: ${caseRecord.packageLabel}.`,
+    `Priority: ${toTitle(caseRecord.priority || 'standard')}.`,
+    `Assigned owner: ${caseRecord.assignedTo || 'Not assigned yet'}.`,
+    caseRecord.dueDate ? `Due date: ${caseRecord.dueDate}.` : '',
     `Outcome requested: ${toTitle(caseRecord.preferredOutcome || 'not_sure')}.`,
     knownPlatforms.length ? `Platforms: ${knownPlatforms.join(', ')}.` : 'Platforms: still to be confirmed.',
     profileUrls.length ? `Profiles or handles: ${profileUrls.join(', ')}.` : 'Profiles or handles: not yet supplied.',
+    platformTasks.length ? `Platform statuses: ${platformTasks.map((task) => `${task.name} ${toTitle(task.status)}`).join(', ')}.` : '',
     caseRecord.caseDetails ? `Case details: ${caseRecord.caseDetails}.` : '',
     `Current status: ${toTitle(caseRecord.status)} with payment ${toTitle(caseRecord.paymentStatus)}.`,
     `Next best action: ${nextBestAction}`
@@ -227,6 +461,7 @@ function buildOperationalKit(caseRecord) {
     '',
     `Current status: ${toTitle(caseRecord.status)}.`,
     `Current payment status: ${toTitle(caseRecord.paymentStatus)}.`,
+    platformTasks.length ? `Platforms in scope: ${platformTasks.map((task) => `${task.name} (${toTitle(task.status)})`).join(', ')}.` : '',
     '',
     nextBestAction,
     '',
@@ -244,6 +479,7 @@ function buildOperationalKit(caseRecord) {
     `Requested outcome: ${toTitle(caseRecord.preferredOutcome || 'not_sure')}`,
     knownPlatforms.length ? `Known platforms: ${knownPlatforms.join(', ')}` : 'Known platforms: not yet recorded',
     profileUrls.length ? `Profile URLs or handles: ${profileUrls.join(', ')}` : 'Profile URLs or handles: not yet recorded',
+    platformTasks.length ? `Platform workflow: ${platformTasks.map((task) => `${task.name} | ${toTitle(task.status)} | ${task.profileOrHandle || 'No URL captured'}`).join('\n')}` : 'Platform workflow: not yet created',
     caseRecord.caseDetails ? `Case notes: ${caseRecord.caseDetails}` : 'Case notes: none recorded yet',
     `Supporting documents received: ${documentCount}`
   ].join('\n');
@@ -253,6 +489,12 @@ function buildOperationalKit(caseRecord) {
     missingItems,
     knownPlatformsList: knownPlatforms,
     profileUrlsList: profileUrls,
+    platformSummary: {
+      total: platformTasks.length,
+      active: activePlatformTasks.length,
+      resolved: resolvedPlatformTasks.length,
+      blocked: blockedPlatformTasks.length
+    },
     agentChecklist,
     agentSummary,
     clientUpdateDraft,
@@ -416,6 +658,7 @@ async function createCase(input) {
   const id = crypto.randomUUID();
   const selectedPackage = PACKAGE_CONFIG[input.selectedPackage] ? input.selectedPackage : 'standard';
   const packageLabel = PACKAGE_CONFIG[selectedPackage].label;
+  const platformTasks = syncPlatformTasks([], input.knownPlatforms || '', input.profileUrls || '', input.preferredOutcome || 'not_sure', createdAt);
 
   const caseRecord = {
     id,
@@ -434,16 +677,27 @@ async function createCase(input) {
     packageLabel,
     status: 'awaiting_payment',
     paymentStatus: 'pending',
+    assignedTo: '',
+    priority: CASE_PRIORITIES.includes(input.priority) ? input.priority : 'standard',
+    dueDate: trimTo(input.dueDate, 40),
     intakeSource: input.intakeSource || 'website',
     referralSource: input.referralSource || '',
+    referralPartnerType: trimTo(input.referralPartnerType, 80) || 'direct',
+    referralPartnerName: trimTo(input.referralPartnerName, 180),
+    referralPartnerEmail: trimTo(input.referralPartnerEmail, 180),
+    referralPartnerPhone: trimTo(input.referralPartnerPhone, 80),
+    referralFeeStatus: REFERRAL_FEE_STATUSES.includes(input.referralFeeStatus) ? input.referralFeeStatus : 'not_applicable',
+    referralNotes: trimTo(input.referralNotes, 2000),
     authorityBasis: '',
     documentNotes: '',
+    platformTasks,
     documents: [],
     internalNotes: '',
     activity: [
       createActivityEntry('case_created', {
         selectedPackage,
-        intakeSource: input.intakeSource || 'website'
+        intakeSource: input.intakeSource || 'website',
+        platformCount: platformTasks.length
       }, 'public')
     ],
     createdAt,
@@ -510,12 +764,26 @@ async function updatePublicCase(id, publicToken, updates) {
       caseRecord.relationshipToDeceased = trimTo(updates.relationshipToDeceased, 140);
     }
 
+    if (typeof updates.referralSource === 'string') {
+      caseRecord.referralSource = trimTo(updates.referralSource, 180);
+    }
+
     if (typeof updates.knownPlatforms === 'string') {
       caseRecord.knownPlatforms = trimTo(updates.knownPlatforms, 1200);
     }
 
     if (typeof updates.profileUrls === 'string') {
       caseRecord.profileUrls = trimTo(updates.profileUrls, 2000);
+    }
+
+    if (typeof updates.knownPlatforms === 'string' || typeof updates.profileUrls === 'string') {
+      caseRecord.platformTasks = syncPlatformTasks(
+        caseRecord.platformTasks,
+        caseRecord.knownPlatforms,
+        caseRecord.profileUrls,
+        caseRecord.preferredOutcome,
+        new Date().toISOString()
+      );
     }
 
     if (updates.paymentStatus && PAYMENT_STATUSES.includes(updates.paymentStatus)) {
@@ -567,6 +835,56 @@ async function updateAdminCase(id, updates) {
 
     if (typeof updates.profileUrls === 'string') {
       caseRecord.profileUrls = trimTo(updates.profileUrls, 2000);
+    }
+
+    if (typeof updates.assignedTo === 'string') {
+      caseRecord.assignedTo = trimTo(updates.assignedTo, 140);
+    }
+
+    if (updates.priority && CASE_PRIORITIES.includes(updates.priority)) {
+      caseRecord.priority = updates.priority;
+    }
+
+    if (typeof updates.dueDate === 'string') {
+      caseRecord.dueDate = trimTo(updates.dueDate, 40);
+    }
+
+    if (typeof updates.referralPartnerType === 'string') {
+      caseRecord.referralPartnerType = trimTo(updates.referralPartnerType, 80) || caseRecord.referralPartnerType || 'direct';
+    }
+
+    if (typeof updates.referralPartnerName === 'string') {
+      caseRecord.referralPartnerName = trimTo(updates.referralPartnerName, 180);
+    }
+
+    if (typeof updates.referralPartnerEmail === 'string') {
+      caseRecord.referralPartnerEmail = trimTo(updates.referralPartnerEmail, 180);
+    }
+
+    if (typeof updates.referralPartnerPhone === 'string') {
+      caseRecord.referralPartnerPhone = trimTo(updates.referralPartnerPhone, 80);
+    }
+
+    if (updates.referralFeeStatus && REFERRAL_FEE_STATUSES.includes(updates.referralFeeStatus)) {
+      caseRecord.referralFeeStatus = updates.referralFeeStatus;
+    }
+
+    if (typeof updates.referralNotes === 'string') {
+      caseRecord.referralNotes = trimTo(updates.referralNotes, 2000);
+    }
+
+    if (Array.isArray(updates.platformTasks)) {
+      caseRecord.platformTasks = updates.platformTasks
+        .map((task, index) => normalizePlatformTask(task, index, caseRecord.preferredOutcome, new Date().toISOString()))
+        .filter((task) => task.name);
+    } else if (typeof updates.knownPlatforms === 'string' || typeof updates.profileUrls === 'string') {
+      caseRecord.platformTasks = syncPlatformTasks(
+        caseRecord.platformTasks,
+        caseRecord.knownPlatforms,
+        caseRecord.profileUrls,
+        caseRecord.preferredOutcome,
+        new Date().toISOString()
+      );
     }
 
     if (updates.activityEvent) {

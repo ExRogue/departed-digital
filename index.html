@@ -321,6 +321,33 @@
       margin: 0 auto 40px;
       font-weight: 300;
     }
+    .hero-trust {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 20px;
+    }
+    .hero-trust span {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.14);
+      background: rgba(255,255,255,0.08);
+      color: rgba(255,255,255,0.88);
+      font-size: 0.88rem;
+      letter-spacing: 0.01em;
+    }
+    .hero-trust span::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--gold-light);
+      box-shadow: 0 0 0 4px rgba(224,192,106,0.14);
+    }
     .hero-btns {
       display: flex;
       gap: 16px;
@@ -765,6 +792,56 @@
       align-items: center;
       gap: 14px;
     }
+    .founder-note {
+      background: linear-gradient(135deg, rgba(17,27,53,0.98), rgba(26,39,68,0.95));
+      color: var(--white);
+    }
+    .founder-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 28px;
+      align-items: start;
+    }
+    .founder-note .section-title {
+      color: var(--white);
+    }
+    .founder-note .section-sub {
+      color: rgba(255,255,255,0.74);
+    }
+    .founder-card {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 24px;
+      padding: 28px;
+      backdrop-filter: blur(10px);
+    }
+    .founder-card p {
+      color: rgba(255,255,255,0.82);
+      line-height: 1.8;
+    }
+    .founder-signoff {
+      margin-top: 18px;
+      color: var(--gold-light);
+      font-weight: 600;
+      letter-spacing: 0.04em;
+    }
+    .founder-points {
+      list-style: none;
+      display: grid;
+      gap: 12px;
+    }
+    .founder-points li {
+      padding: 16px 18px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.82);
+    }
+    .founder-points strong {
+      display: block;
+      color: var(--white);
+      margin-bottom: 6px;
+    }
     .author-avatar {
       width: 44px; height: 44px;
       border-radius: 50%;
@@ -1081,6 +1158,7 @@
 
     /* ── RESPONSIVE ── */
     @media (max-width: 900px) {
+      .founder-grid,
       .fd-inner { grid-template-columns: 1fr; gap: 40px; }
       .steps::before { display: none; }
     }
@@ -1142,7 +1220,11 @@
         <a href="/start" class="btn-primary" data-track="hero_cta" data-track-label="Homepage hero start">Start in Under a Minute</a>
         <a href="#pricing" class="btn-secondary" data-track="hero_secondary" data-track-label="Homepage see packages">See Packages</a>
       </div>
-      <p style="margin-top: 20px; color: rgba(255,255,255,0.76); font-size: 0.94rem;">No passwords needed. No death certificate in the first step. Clear written outcome at the end.</p>
+      <div class="hero-trust">
+        <span>No passwords needed</span>
+        <span>No death certificate in the first step</span>
+        <span>Clear written outcome at the end</span>
+      </div>
     </div>
     <div class="hero-scroll">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
@@ -1328,6 +1410,25 @@
     </div>
   </section>
 
+  <section class="founder-note">
+    <div class="container founder-grid">
+      <div>
+        <span class="section-label reveal">Founder note</span>
+        <h2 class="section-title reveal">This service is designed to reduce admin at the worst possible moment.</h2>
+        <p class="section-sub reveal">Families do not need another complicated queue, a long form, or a request to log into someone else’s accounts. The goal is a calmer route: short first step, clear package choice, documents later, and a written record at the end.</p>
+      </div>
+      <div class="founder-card reveal reveal-delay-1">
+        <p>Departed Digital is built around one idea: the digital admin after a death should feel supported, not chaotic. Every stage of the journey is there to lower friction, protect the family, and keep the case moving without unnecessary back-and-forth.</p>
+        <div class="founder-signoff">Departed Digital · London, UK</div>
+        <ul class="founder-points" style="margin-top: 22px;">
+          <li><strong>Compassion first</strong> Families can begin without having every detail to hand.</li>
+          <li><strong>Operationally clear</strong> The case is tracked, documented, and handled with a written outcome record.</li>
+          <li><strong>Built for handoff</strong> Families, funeral directors, and future case managers can all work from the same clean process.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
   <!-- FAQ -->
   <section class="faq" id="faq">
     <div class="container">
@@ -1507,7 +1608,7 @@
             <a href="/start" class="btn-primary" style="display:inline-flex; align-items:center; justify-content:center; min-width:220px;" data-track="contact_cta" data-track-label="Homepage contact start form">Start the Short Form</a>
             <a href="#pricing" class="btn-secondary" style="display:inline-flex; align-items:center; justify-content:center; min-width:220px;" data-track="contact_secondary" data-track-label="Homepage contact compare packages">Compare Packages First</a>
           </div>
-          <p style="text-align:center; font-size:0.86rem; color:var(--text-muted);">The goal is reassurance and clarity first. When backend storage is enabled, the short form creates a real case reference before payment.</p>
+          <p style="text-align:center; font-size:0.86rem; color:var(--text-muted);">The goal is reassurance and clarity first. The short form now creates a real case reference before payment, so the next steps stay joined up.</p>
         </div>
       </div>
     </div>

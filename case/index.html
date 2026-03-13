@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Case Status | Departed Digital</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <meta name="theme-color" content="#1a2744" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy: #1a2744;
+      --navy-dark: #111b35;
+      --gold: #c9a84c;
+      --gold-light: #e0c06a;
+      --cream: #f9f6f0;
+      --white: #ffffff;
+      --text: #2d3a4a;
+      --text-muted: #6b7a8d;
+      --border: #e4ddd0;
+      --shadow: 0 12px 48px rgba(26,39,68,0.12);
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--cream);
+      color: var(--text);
+      line-height: 1.7;
+    }
+    nav, footer {
+      background: var(--navy-dark);
+      padding: 18px 24px;
+    }
+    .nav-inner, .container, .footer-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+    }
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+    .logo {
+      font-family: 'Playfair Display', serif;
+      color: var(--white);
+      text-decoration: none;
+      font-size: 1.2rem;
+    }
+    .logo span { color: var(--gold); }
+    .nav-links {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+    .nav-links a {
+      color: rgba(255,255,255,0.78);
+      text-decoration: none;
+      font-size: 0.92rem;
+    }
+    main {
+      padding: 72px 24px 96px;
+    }
+    .eyebrow {
+      display: inline-block;
+      color: var(--gold);
+      font-size: 0.76rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    h1, h2, h3 {
+      font-family: 'Playfair Display', serif;
+      color: var(--navy);
+    }
+    h1 {
+      font-size: clamp(2.3rem, 5vw, 3.8rem);
+      line-height: 1.1;
+      margin-bottom: 14px;
+      max-width: 760px;
+    }
+    .intro {
+      max-width: 760px;
+      color: var(--text-muted);
+      margin-bottom: 30px;
+    }
+    .layout {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 24px;
+      align-items: start;
+    }
+    .panel {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 30px;
+      box-shadow: var(--shadow);
+    }
+    .status-strip {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .status-card {
+      padding: 18px;
+      border-radius: 18px;
+      background: #fbf8f3;
+      border: 1px solid var(--border);
+    }
+    .status-card strong {
+      display: block;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+    .status-card span {
+      font-family: 'Playfair Display', serif;
+      color: var(--navy);
+      font-size: 1.4rem;
+      line-height: 1.2;
+    }
+    .support-note {
+      margin-bottom: 24px;
+      padding: 18px;
+      border-radius: 18px;
+      background: #fbf8f3;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+    .timeline, .platform-list, .summary-list {
+      list-style: none;
+      display: grid;
+      gap: 12px;
+    }
+    .timeline li, .platform-list li {
+      padding: 16px 18px;
+      border-radius: 18px;
+      background: #fbf8f3;
+      border: 1px solid var(--border);
+    }
+    .timeline li strong, .platform-list li strong {
+      display: block;
+      color: var(--navy);
+      margin-bottom: 6px;
+    }
+    .helper {
+      color: var(--text-muted);
+      font-size: 0.94rem;
+    }
+    .cta-row {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-top: 24px;
+    }
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      padding: 14px 22px;
+      font-weight: 700;
+      text-decoration: none;
+      font-size: 0.95rem;
+    }
+    .button.primary {
+      background: var(--gold);
+      color: var(--navy-dark);
+    }
+    .button.secondary {
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--navy);
+    }
+    .empty-state {
+      display: none;
+      padding: 22px;
+      border-radius: 18px;
+      background: #fff8e7;
+      border: 1px solid rgba(201,168,76,0.38);
+      color: #6a5520;
+    }
+    footer {
+      text-align: center;
+      color: rgba(255,255,255,0.58);
+    }
+    footer a {
+      color: rgba(255,255,255,0.78);
+      text-decoration: none;
+      margin: 0 10px;
+      font-size: 0.9rem;
+    }
+    @media (max-width: 920px) {
+      .layout, .status-strip {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="nav-inner">
+      <a href="/" class="logo">Departed<span>.</span>Digital</a>
+      <div class="nav-links">
+        <a href="/payment">Payment step</a>
+        <a href="/documents">Documents</a>
+        <a href="/blog">Resources</a>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <div class="container">
+      <span class="eyebrow">Case status</span>
+      <h1>Track what is happening with this case.</h1>
+      <p class="intro">This private case page shows the current status, what happens next, and which platforms are already in progress. You do not need passwords for any of the steps shown here.</p>
+      <div class="support-note">This page is designed to reduce chasing and uncertainty. Use it to see the current stage, the next action, and whether anything else is needed from you.</div>
+
+      <div id="empty-state" class="empty-state">
+        We could not find this case in the current browser session. Use the private link from your Departed Digital email or return to the payment or documents step from the same device.
+      </div>
+
+      <div id="case-layout">
+        <div class="status-strip" id="status-strip"></div>
+
+        <div class="layout">
+          <section class="panel">
+            <span class="eyebrow" style="margin-bottom: 8px;">Progress</span>
+            <h2 style="font-size:1.8rem; margin-bottom:14px;">What happens next</h2>
+            <p class="helper" id="next-action" style="margin-bottom: 20px;">We are loading the case record.</p>
+            <ul id="status-timeline" class="timeline"></ul>
+
+            <div class="cta-row">
+              <a class="button secondary" id="payment-link" href="/payment">Open payment step</a>
+              <a class="button secondary" id="documents-link" href="/documents">Open documents step</a>
+            </div>
+          </section>
+
+          <aside class="panel">
+            <span class="eyebrow" style="margin-bottom: 8px;">Case summary</span>
+            <h2 style="font-size:1.8rem; margin-bottom:14px;">Details on record</h2>
+            <ul id="summary-list" class="summary-list"></ul>
+
+            <div style="margin-top: 28px;">
+              <span class="eyebrow" style="margin-bottom: 8px;">Platforms</span>
+              <h3 style="font-size:1.35rem; margin-bottom:12px;">Current platform workflow</h3>
+              <ul id="platform-list" class="platform-list"></ul>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <a href="/">Home</a>
+      <a href="/privacy">Privacy</a>
+      <a href="/terms">Terms</a>
+      <a href="/cookies">Cookies</a>
+    </div>
+  </footer>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const caseIdFromUrl = params.get('case') || '';
+    const tokenFromUrl = params.get('token') || '';
+    const emptyState = document.getElementById('empty-state');
+    const caseLayout = document.getElementById('case-layout');
+    const statusStrip = document.getElementById('status-strip');
+    const nextAction = document.getElementById('next-action');
+    const statusTimeline = document.getElementById('status-timeline');
+    const summaryList = document.getElementById('summary-list');
+    const platformList = document.getElementById('platform-list');
+    const paymentLink = document.getElementById('payment-link');
+    const documentsLink = document.getElementById('documents-link');
+
+    function escapeHtml(value) {
+      return String(value || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function titleize(value) {
+      return String(value || '')
+        .replace(/_/g, ' ')
+        .replace(/\b\w/g, (character) => character.toUpperCase());
+    }
+
+    function renderCase(caseData) {
+      statusStrip.innerHTML = [
+        ['Reference', caseData.reference || 'Pending'],
+        ['Status', titleize(caseData.status || 'pending')],
+        ['Payment', titleize(caseData.paymentStatus || 'pending')],
+        ['Documents', String((caseData.documents || []).length)]
+      ].map(([label, value]) => (
+        '<div class="status-card"><strong>' + escapeHtml(label) + '</strong><span>' + escapeHtml(value) + '</span></div>'
+      )).join('');
+
+      nextAction.textContent = (caseData.operational && caseData.operational.nextBestAction)
+        || 'We are reviewing the case and will confirm the next step shortly.';
+
+      summaryList.innerHTML = [
+        ['Client', caseData.clientName || 'Not provided'],
+        ['Email', caseData.clientEmail || 'Not provided'],
+        ['Deceased', caseData.deceasedName || 'Not provided'],
+        ['Package', caseData.packageLabel || 'Not provided'],
+        ['Requested outcome', titleize(caseData.preferredOutcome || 'not_sure')],
+        ['Known platforms', caseData.knownPlatforms || 'Not provided'],
+        ['Profiles or handles', caseData.profileUrls || 'Not provided']
+      ].map(([label, value]) => '<li><strong>' + escapeHtml(label) + ':</strong> ' + escapeHtml(value) + '</li>').join('');
+
+      statusTimeline.innerHTML = (caseData.statusTimeline || []).map((item) => (
+        '<li>' +
+          '<strong>' + escapeHtml(item.label) + (item.completed ? ' · complete' : ' · upcoming') + '</strong>' +
+          '<div class="helper">' + escapeHtml(item.description || '') + '</div>' +
+          (item.completedAt ? '<div class="helper" style="margin-top:6px;">Updated ' + escapeHtml(new Date(item.completedAt).toLocaleString('en-GB', { dateStyle: 'medium', timeStyle: 'short' })) + '</div>' : '') +
+        '</li>'
+      )).join('');
+
+      const platforms = caseData.platformTasks || [];
+      platformList.innerHTML = platforms.length
+        ? platforms.map((task) => (
+          '<li>' +
+            '<strong>' + escapeHtml(task.name) + ' · ' + escapeHtml(titleize(task.status)) + '</strong>' +
+            '<div class="helper">' + escapeHtml(task.profileOrHandle || 'No profile or handle captured yet.') + '</div>' +
+            (task.evidenceNeeded ? '<div class="helper" style="margin-top:6px;">Evidence needed: ' + escapeHtml(task.evidenceNeeded) + '</div>' : '') +
+          '</li>'
+        )).join('')
+        : '<li>No platform-specific workflow has been created yet.</li>';
+
+      if (caseData.id && tokenFromUrl) {
+        paymentLink.href = '/payment?case=' + encodeURIComponent(caseData.id) + '&token=' + encodeURIComponent(tokenFromUrl) + '&package=' + encodeURIComponent(caseData.selectedPackage || 'standard');
+        documentsLink.href = '/documents?case=' + encodeURIComponent(caseData.id) + '&token=' + encodeURIComponent(tokenFromUrl);
+      }
+    }
+
+    (async () => {
+      let caseData = null;
+
+      if (caseIdFromUrl && tokenFromUrl) {
+        try {
+          const response = await fetch('/api/cases?id=' + encodeURIComponent(caseIdFromUrl) + '&token=' + encodeURIComponent(tokenFromUrl));
+          const payload = await response.json();
+          if (response.ok && payload.ok) {
+            caseData = payload.case;
+            localStorage.setItem('departedDigitalIntake', JSON.stringify({
+              ...payload.case,
+              publicToken: tokenFromUrl
+            }));
+          }
+        } catch (error) {
+          // Fall back to local storage.
+        }
+      }
+
+      if (!caseData) {
+        const intakeRaw = localStorage.getItem('departedDigitalIntake');
+        if (intakeRaw) {
+          const intake = JSON.parse(intakeRaw);
+          if (intake.id && (intake.publicToken || tokenFromUrl)) {
+            caseData = intake;
+          }
+        }
+      }
+
+      if (!caseData) {
+        emptyState.style.display = 'block';
+        caseLayout.style.display = 'none';
+        return;
+      }
+
+      renderCase(caseData);
+    })();
+  </script>
+</body>
+</html>

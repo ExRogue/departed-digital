@@ -24,6 +24,7 @@ async function parseJsonBody(req) {
 function sendJson(res, statusCode, payload) {
   res.statusCode = statusCode;
   res.setHeader('Content-Type', 'application/json; charset=utf-8');
+  res.setHeader('Cache-Control', 'no-store, max-age=0');
   res.end(JSON.stringify(payload));
 }
 

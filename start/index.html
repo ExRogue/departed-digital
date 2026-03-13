@@ -123,6 +123,31 @@
       max-width: 640px;
       font-size: 1.05rem;
     }
+    .hero-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 24px;
+    }
+    .hero-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.14);
+      color: rgba(255,255,255,0.88);
+      font-size: 0.9rem;
+    }
+    .hero-chip::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--gold-light);
+      box-shadow: 0 0 0 4px rgba(224,192,106,0.15);
+    }
     .hero-panel {
       background: rgba(255,255,255,0.08);
       border: 1px solid rgba(255,255,255,0.12);
@@ -326,6 +351,58 @@
       font-size: 0.88rem;
       margin-top: 14px;
     }
+    details.optional-panel {
+      margin-top: 18px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: #fbf8f3;
+      overflow: hidden;
+    }
+    details.optional-panel summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 18px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      font-weight: 700;
+      color: var(--navy);
+    }
+    details.optional-panel summary::-webkit-details-marker {
+      display: none;
+    }
+    .optional-summary-copy {
+      display: grid;
+      gap: 4px;
+    }
+    .optional-summary-copy small {
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+    .optional-summary-icon {
+      width: 30px;
+      height: 30px;
+      border-radius: 999px;
+      background: rgba(201,168,76,0.18);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--navy);
+      font-size: 1rem;
+      flex-shrink: 0;
+      transition: transform 0.2s ease;
+    }
+    details.optional-panel[open] .optional-summary-icon {
+      transform: rotate(45deg);
+    }
+    details.optional-panel[open] {
+      background: var(--white);
+    }
+    .optional-panel-body {
+      padding: 0 20px 20px;
+      border-top: 1px solid var(--border);
+    }
     .note-card {
       background: var(--white);
       border: 1px solid var(--border);
@@ -446,6 +523,11 @@
         <span class="eyebrow">Start a case</span>
         <h1>A calmer way to begin the digital admin after a loss.</h1>
         <p>Start with a very short form. Then choose the package and continue to payment. We only ask for the death certificate and proof of authority after payment.</p>
+        <div class="hero-chips">
+          <div class="hero-chip">Usually about a minute</div>
+          <div class="hero-chip">No passwords required</div>
+          <div class="hero-chip">Case reference created immediately</div>
+        </div>
       </div>
       <div class="hero-panel">
         <h2>What to expect</h2>
@@ -490,28 +572,41 @@
                     <option value="mixed">A mix depending on the platform</option>
                   </select>
                 </div>
-                <div class="field full">
-                  <label for="relationship-to-deceased">Your Relationship to the Deceased <span style="font-weight:400; text-transform:none; letter-spacing:0; color: var(--text-muted);">(optional)</span></label>
-                  <input id="relationship-to-deceased" name="relationship_to_deceased" type="text" placeholder="Executor, daughter, son, spouse, solicitor..." />
-                </div>
-                <div class="field full">
-                  <label for="known-platforms">Known Platforms <span style="font-weight:400; text-transform:none; letter-spacing:0; color: var(--text-muted);">(optional)</span></label>
-                  <textarea id="known-platforms" name="known_platforms" placeholder="Facebook, Instagram, TikTok, Apple, Gmail, LinkedIn..."></textarea>
-                </div>
-                <div class="field full">
-                  <label for="profile-urls">Profile URLs or Usernames <span style="font-weight:400; text-transform:none; letter-spacing:0; color: var(--text-muted);">(optional)</span></label>
-                  <textarea id="profile-urls" name="profile_urls" placeholder="Paste profile links, usernames, or anything that helps us identify the accounts quickly."></textarea>
-                </div>
-                <div class="field full">
-                  <label for="case-details">Anything Else We Should Know <span style="font-weight:400; text-transform:none; letter-spacing:0; color: var(--text-muted);">(optional)</span></label>
-                  <textarea id="case-details" name="case_details" placeholder="Urgency, family context, whether a funeral director referred you, or anything that would help us handle the case well."></textarea>
-                </div>
               </div>
+              <details class="optional-panel">
+                <summary>
+                  <div class="optional-summary-copy">
+                    <span>Add optional details if you already have them</span>
+                    <small>Helpful for Meta, Google, or platform submissions later, but not required to begin.</small>
+                  </div>
+                  <span class="optional-summary-icon">+</span>
+                </summary>
+                <div class="optional-panel-body">
+                  <div class="field-grid" style="padding-top: 18px;">
+                    <div class="field full">
+                      <label for="relationship-to-deceased">Your Relationship to the Deceased <span style="font-weight:400; text-transform:none; letter-spacing:0; color: var(--text-muted);">(optional)</span></label>
+                      <input id="relationship-to-deceased" name="relationship_to_deceased" type="text" placeholder="Executor, daughter, son, spouse, solicitor..." />
+                    </div>
+                    <div class="field full">
+                      <label for="known-platforms">Known Platforms <span style="font-weight:400; text-transform:none; letter-spacing:0; color: var(--text-muted);">(optional)</span></label>
+                      <textarea id="known-platforms" name="known_platforms" placeholder="Facebook, Instagram, TikTok, Apple, Gmail, LinkedIn..."></textarea>
+                    </div>
+                    <div class="field full">
+                      <label for="profile-urls">Profile URLs or Usernames <span style="font-weight:400; text-transform:none; letter-spacing:0; color: var(--text-muted);">(optional)</span></label>
+                      <textarea id="profile-urls" name="profile_urls" placeholder="Paste profile links, usernames, or anything that helps us identify the accounts quickly."></textarea>
+                    </div>
+                    <div class="field full">
+                      <label for="case-details">Anything Else We Should Know <span style="font-weight:400; text-transform:none; letter-spacing:0; color: var(--text-muted);">(optional)</span></label>
+                      <textarea id="case-details" name="case_details" placeholder="Urgency, family context, whether a funeral director referred you, or anything that would help us handle the case well."></textarea>
+                    </div>
+                  </div>
+                </div>
+              </details>
               <div class="cta-row">
                 <button type="submit" class="cta-primary" data-track="start_submit" data-track-label="Start form continue">Continue to Package and Payment</button>
                 <a class="cta-secondary" href="/#pricing">Compare packages again</a>
               </div>
-              <p class="helper" id="intake-helper">Next step: package selection and Stripe. No sensitive documents yet.</p>
+              <p class="helper" id="intake-helper">Next step: package selection and payment. No sensitive documents yet.</p>
             </form>
           </div>
           <aside class="note-card">
@@ -523,7 +618,7 @@
               <li>No death certificate upload in the first enquiry</li>
               <li>No need to share passwords or direct access</li>
               <li>Optional platform details make later Meta or Google submissions easier</li>
-              <li>A real case reference is created before payment when backend storage is available</li>
+              <li>A real case reference is created before payment</li>
             </ul>
           </aside>
         </div>
@@ -620,7 +715,7 @@
         return;
       } catch (error) {
         localStorage.setItem('departedDigitalIntake', JSON.stringify(intakeData));
-        intakeHelper.textContent = 'The backend is not live in this environment yet, so we are using the browser fallback for this test.';
+        intakeHelper.textContent = 'We could not reach the live case system just now, so we saved your details in this browser and moved you to the next step.';
         trackIntakeEvent('intake_submitted', {
           label: 'Start form submitted with fallback',
           packageKey: intakeData.selectedPackage || 'standard'

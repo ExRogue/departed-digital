@@ -107,9 +107,14 @@
     }
     .access-grid {
       display: grid;
-      grid-template-columns: 1fr auto auto;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.1fr) auto auto;
       gap: 14px;
       align-items: end;
+    }
+    .session-note {
+      margin-top: 12px;
+      color: var(--text-muted);
+      font-size: 0.92rem;
     }
     label {
       display: block;
@@ -314,6 +319,39 @@
       font-size: 1.18rem;
       margin-bottom: 10px;
     }
+    .section-card {
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      background: #fbf8f3;
+      padding: 18px;
+    }
+    .platform-editor {
+      display: grid;
+      gap: 14px;
+    }
+    .platform-task {
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      background: #fff;
+      padding: 18px;
+      display: grid;
+      gap: 14px;
+    }
+    .platform-task-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+    .platform-task-head strong {
+      color: var(--navy);
+      font-size: 1rem;
+    }
+    .platform-mini {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
     .template-card pre {
       white-space: pre-wrap;
       font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
@@ -350,7 +388,7 @@
       }
     }
     @media (max-width: 900px) {
-      .cases-toolbar, .access-grid, .field-grid, .detail-summary {
+      .cases-toolbar, .access-grid, .field-grid, .detail-summary, .platform-mini {
         grid-template-columns: 1fr;
       }
     }
@@ -378,13 +416,18 @@
       <section class="panel access-panel">
         <div class="access-grid">
           <div>
-            <label for="admin-token">Admin access token</label>
-            <input id="admin-token" type="password" placeholder="Paste ADMIN_ACCESS_TOKEN" />
-            <p class="helper" id="admin-helper">Load the dashboard with the same token configured in Vercel. This page is not linked publicly, and the alias path is <code>/studio</code>.</p>
+            <label for="admin-username">Admin username</label>
+            <input id="admin-username" type="text" autocomplete="username" placeholder="admin" />
           </div>
-          <button class="secondary" id="clear-dashboard" type="button">Clear token</button>
-          <button class="primary" id="load-dashboard" type="button">Load dashboard</button>
+          <div>
+            <label for="admin-password">Password</label>
+            <input id="admin-password" type="password" autocomplete="current-password" placeholder="Enter password" />
+          </div>
+          <button class="secondary" id="logout-dashboard" type="button">Sign out</button>
+          <button class="primary" id="login-dashboard" type="button">Sign in</button>
         </div>
+        <p class="helper" id="admin-helper">Sign in to open the operations dashboard. This page is not linked publicly, and the alias path is <code>/studio</code>.</p>
+        <p class="session-note" id="session-note">No active admin session.</p>
       </section>
 
       <section class="stats-grid" id="stats-grid">
@@ -447,10 +490,12 @@
   </main>
 
   <script>
-    const adminTokenInput = document.getElementById('admin-token');
+    const adminUsernameInput = document.getElementById('admin-username');
+    const adminPasswordInput = document.getElementById('admin-password');
     const adminHelper = document.getElementById('admin-helper');
-    const loadDashboardButton = document.getElementById('load-dashboard');
-    const clearDashboardButton = document.getElementById('clear-dashboard');
+    const sessionNote = document.getElementById('session-note');
+    const loginDashboardButton = document.getElementById('login-dashboard');
+    const logoutDashboardButton = document.getElementById('logout-dashboard');
     const statsGrid = document.getElementById('stats-grid');
     const analyticsLayout = document.getElementById('analytics-layout');
     const casesTableWrap = document.getElementById('cases-table-wrap');
@@ -460,14 +505,14 @@
     const caseSearch = document.getElementById('case-search');
 
     const state = {
-      token: sessionStorage.getItem('departedDigitalAdminToken') || '',
+      authenticated: false,
+      username: 'admin',
+      sessionExpiresAt: '',
       stats: null,
       cases: [],
       selectedCaseId: '',
       filteredCases: []
     };
-
-    adminTokenInput.value = state.token;
 
     function escapeHtml(value) {
       return String(value || '')
@@ -480,8 +525,7 @@
 
     function getHeaders() {
       return {
-        'Content-Type': 'application/json',
-        'X-Admin-Key': state.token
+        'Content-Type': 'application/json'
       };
     }
 
@@ -495,6 +539,31 @@
 
     function formatTextArea(value) {
       return escapeHtml(value || '').replace(/\n/g, '<br />');
+    }
+
+    function resetDashboardView() {
+      state.stats = null;
+      state.cases = [];
+      state.selectedCaseId = '';
+      state.filteredCases = [];
+      statsGrid.innerHTML = '<div class="panel stat-card"><strong>Total cases</strong><span>0</span><p class="helper">Sign in to see live case metrics.</p></div><div class="panel stat-card"><strong>Awaiting payment</strong><span>0</span><p class="helper">Cases still waiting for the payment step.</p></div><div class="panel stat-card"><strong>Unique visitors</strong><span>0</span><p class="helper">Sessions tracked across the website.</p></div><div class="panel stat-card"><strong>CTA clicks</strong><span>0</span><p class="helper">Tracked conversion intent across key buttons.</p></div>';
+      analyticsLayout.innerHTML = '<div class="mini-card"><h3>Top pages</h3><p class="empty">Sign in to see analytics.</p></div><div class="mini-card"><h3>Top clicks</h3><p class="empty">Sign in to see analytics.</p></div><div class="mini-card"><h3>Funnel snapshot</h3><p class="empty">Sign in to see analytics.</p></div><div class="mini-card"><h3>Latest events</h3><p class="empty">Sign in to see analytics.</p></div>';
+      casesTableWrap.innerHTML = '<p class="empty">Sign in to see cases.</p>';
+      caseDetail.innerHTML = 'Choose a case from the inbox to review the full record, exports, and next action.';
+    }
+
+    function updateSessionNote() {
+      if (!state.authenticated) {
+        sessionNote.textContent = 'No active admin session.';
+        logoutDashboardButton.disabled = true;
+        return;
+      }
+
+      const expiryText = state.sessionExpiresAt
+        ? ' Session expires ' + formatDate(state.sessionExpiresAt) + '.'
+        : '';
+      sessionNote.textContent = 'Signed in as ' + state.username + '.' + expiryText;
+      logoutDashboardButton.disabled = false;
     }
 
     async function copyText(value, label, helperId) {
@@ -516,8 +585,102 @@
       return state.cases.find((entry) => entry.id === state.selectedCaseId) || null;
     }
 
+    function titleize(value) {
+      return String(value || '')
+        .replace(/_/g, ' ')
+        .replace(/\b\w/g, (character) => character.toUpperCase());
+    }
+
+    function createPlatformTaskMarkup(task, index) {
+      return (
+        '<div class="platform-task" data-platform-index="' + escapeHtml(index) + '">' +
+          '<div class="platform-task-head">' +
+            '<strong>' + escapeHtml(task.name || ('Platform ' + (index + 1))) + '</strong>' +
+            '<button class="secondary remove-platform-task" type="button">Remove</button>' +
+          '</div>' +
+          '<div class="field-grid">' +
+            '<div class="field">' +
+              '<label>Platform name</label>' +
+              '<input type="text" data-platform-field="name" value="' + escapeHtml(task.name || '') + '" />' +
+            '</div>' +
+            '<div class="field">' +
+              '<label>Status</label>' +
+              '<select data-platform-field="status">' +
+                '<option value="not_started">Not started</option>' +
+                '<option value="queued">Queued</option>' +
+                '<option value="submitted">Submitted</option>' +
+                '<option value="waiting">Waiting</option>' +
+                '<option value="resolved">Resolved</option>' +
+                '<option value="blocked">Blocked</option>' +
+              '</select>' +
+            '</div>' +
+            '<div class="field full">' +
+              '<label>Profile URL or handle</label>' +
+              '<textarea data-platform-field="profileOrHandle">' + escapeHtml(task.profileOrHandle || '') + '</textarea>' +
+            '</div>' +
+            '<div class="field">' +
+              '<label>Requested outcome</label>' +
+              '<input type="text" data-platform-field="outcomeRequested" value="' + escapeHtml(task.outcomeRequested || '') + '" />' +
+            '</div>' +
+            '<div class="field">' +
+              '<label>Submission reference</label>' +
+              '<input type="text" data-platform-field="submissionReference" value="' + escapeHtml(task.submissionReference || '') + '" />' +
+            '</div>' +
+            '<div class="field full">' +
+              '<label>Evidence needed</label>' +
+              '<input type="text" data-platform-field="evidenceNeeded" value="' + escapeHtml(task.evidenceNeeded || '') + '" />' +
+            '</div>' +
+            '<div class="field full">' +
+              '<label>Operator notes</label>' +
+              '<textarea data-platform-field="notes">' + escapeHtml(task.notes || '') + '</textarea>' +
+            '</div>' +
+            '<div class="field">' +
+              '<label>Submitted at</label>' +
+              '<input type="text" data-platform-field="submittedAt" value="' + escapeHtml(task.submittedAt || '') + '" placeholder="Optional date or note" />' +
+            '</div>' +
+            '<div class="field">' +
+              '<label>Resolved at</label>' +
+              '<input type="text" data-platform-field="resolvedAt" value="' + escapeHtml(task.resolvedAt || '') + '" placeholder="Optional date or note" />' +
+            '</div>' +
+          '</div>' +
+        '</div>'
+      );
+    }
+
+    function collectPlatformTasks() {
+      return Array.from(document.querySelectorAll('.platform-task')).map((node) => {
+        const field = (name) => {
+          const input = node.querySelector('[data-platform-field="' + name + '"]');
+          return input ? input.value : '';
+        };
+
+        return {
+          name: field('name'),
+          status: field('status'),
+          profileOrHandle: field('profileOrHandle'),
+          outcomeRequested: field('outcomeRequested'),
+          evidenceNeeded: field('evidenceNeeded'),
+          notes: field('notes'),
+          submissionReference: field('submissionReference'),
+          submittedAt: field('submittedAt'),
+          resolvedAt: field('resolvedAt')
+        };
+      }).filter((task) => task.name.trim());
+    }
+
+    function bindPlatformTaskButtons() {
+      document.querySelectorAll('.remove-platform-task').forEach((button) => {
+        button.onclick = function () {
+          const task = button.closest('.platform-task');
+          if (task) {
+            task.remove();
+          }
+        };
+      });
+    }
+
     function renderStats() {
-      const stats = state.stats || { totalCases: 0, awaitingPayment: 0, activeCases: 0, documentsStored: 0, analytics: {} };
+      const stats = state.stats || { totalCases: 0, awaitingPayment: 0, activeCases: 0, documentsStored: 0, analytics: {}, email: {} };
       const analytics = stats.analytics || {};
 
       statsGrid.innerHTML = [
@@ -525,6 +688,9 @@
         ['Awaiting payment', stats.awaitingPayment, 'Cases where the next job is payment follow-up.'],
         ['Active cases', stats.activeCases, 'Cases already in handling or submission work.'],
         ['Documents stored', stats.documentsStored, 'Supporting files currently attached to cases.'],
+        ['Urgent cases', stats.urgentCases || 0, 'Cases flagged for faster handling.'],
+        ['Unassigned cases', stats.unassignedCases || 0, 'Cases that still need an owner.'],
+        ['Funeral director cases', stats.partnerCases || 0, 'Cases tied to referral partners.'],
         ['Unique visitors', analytics.uniqueSessions || 0, 'Sessions recorded by the first-party analytics layer.'],
         ['Page views', analytics.pageViews || 0, 'All tracked page views across the site.'],
         ['CTA clicks', analytics.ctaClicks || 0, 'Tracked button and link clicks from the marketing site.'],
@@ -585,7 +751,9 @@
           entry.reference,
           entry.clientName,
           entry.clientEmail,
-          entry.deceasedName
+          entry.deceasedName,
+          entry.assignedTo,
+          entry.referralPartnerName
         ].join(' ').toLowerCase();
         const matchesSearch = !search || haystack.includes(search);
         return matchesStatus && matchesPackage && matchesSearch;
@@ -602,18 +770,18 @@
 
       const rows = state.filteredCases.map((entry) => (
         '<tr class="case-row' + (entry.id === state.selectedCaseId ? ' active' : '') + '" data-id="' + escapeHtml(entry.id) + '">' +
-          '<td><strong>' + escapeHtml(entry.reference) + '</strong><br /><span style="color:#6b7a8d;">' + escapeHtml(entry.packageLabel) + '</span></td>' +
+          '<td><strong>' + escapeHtml(entry.reference) + '</strong><br /><span style="color:#6b7a8d;">' + escapeHtml(entry.packageLabel) + ' · ' + escapeHtml(titleize(entry.priority || 'standard')) + '</span></td>' +
           '<td>' + escapeHtml(entry.clientName) + '<br /><span style="color:#6b7a8d;">' + escapeHtml(entry.clientEmail) + '</span></td>' +
-          '<td>' + escapeHtml(entry.deceasedName) + '</td>' +
+          '<td>' + escapeHtml(entry.deceasedName) + '<br /><span style="color:#6b7a8d;">' + escapeHtml(entry.assignedTo || 'Unassigned') + '</span></td>' +
           '<td><span class="badge">' + escapeHtml(entry.status.replace(/_/g, ' ')) + '</span></td>' +
           '<td>' + escapeHtml(entry.paymentStatus.replace(/_/g, ' ')) + '</td>' +
-          '<td>' + escapeHtml(entry.documentCount || 0) + '</td>' +
+          '<td>' + escapeHtml(entry.documentCount || 0) + ' · ' + escapeHtml(entry.platformCount || 0) + ' platforms</td>' +
         '</tr>'
       )).join('');
 
       casesTableWrap.innerHTML = (
         '<table>' +
-          '<thead><tr><th>Case</th><th>Client</th><th>Deceased</th><th>Status</th><th>Payment</th><th>Docs</th></tr></thead>' +
+          '<thead><tr><th>Case</th><th>Client</th><th>Deceased / owner</th><th>Status</th><th>Payment</th><th>Docs / platforms</th></tr></thead>' +
           '<tbody>' + rows + '</tbody>' +
         '</table>'
       );
@@ -662,6 +830,23 @@
           escapeHtml(formatDate(event.createdAt)) + '</li>'
         )).join('') + '</ul>'
         : '<p class="empty">No activity logged yet.</p>';
+      const emailHealth = (state.stats && state.stats.email) || {};
+      const emailEnabled = Boolean(emailHealth.enabled);
+      const opsEmailEnabled = Boolean(emailHealth.enabled && emailHealth.hasOperationsAlertEmail);
+      const defaultClientSubject = 'Update on case ' + selected.reference;
+      const defaultOpsSubject = 'Operations note for ' + selected.reference;
+      const defaultClientMessage = operational.clientUpdateDraft || '';
+      const defaultOpsMessage = operational.agentSummary || '';
+      const sendDisabledAttr = emailEnabled ? '' : ' disabled';
+      const opsDisabledAttr = opsEmailEnabled ? '' : ' disabled';
+      const emailStatusHelper = emailEnabled
+        ? 'Send a client update or an internal ops note from the case record.'
+        : 'Email delivery is off until RESEND_API_KEY and EMAIL_FROM are configured in Vercel.';
+      const opsStatusHelper = opsEmailEnabled
+        ? 'Operations alerts are ready.'
+        : 'Set OPERATIONS_ALERT_EMAIL in Vercel to send internal ops emails.';
+      const platformTasks = selected.platformTasks || [];
+      const platformSummary = operational.platformSummary || {};
 
       caseDetail.innerHTML = (
         '<div class="detail-grid">' +
@@ -673,7 +858,12 @@
             '<div><strong>Deceased:</strong> ' + escapeHtml(selected.deceasedName) + '</div>' +
             '<div><strong>Outcome:</strong> ' + escapeHtml(selected.preferredOutcome || 'Not set') + '</div>' +
             '<div><strong>Relationship:</strong> ' + escapeHtml(selected.relationshipToDeceased || 'Not supplied') + '</div>' +
+            '<div><strong>Owner:</strong> ' + escapeHtml(selected.assignedTo || 'Unassigned') + '</div>' +
+            '<div><strong>Priority:</strong> ' + escapeHtml(titleize(selected.priority || 'standard')) + '</div>' +
+            '<div><strong>Due date:</strong> ' + escapeHtml(selected.dueDate || 'Not set') + '</div>' +
             '<div><strong>Referral source:</strong> ' + escapeHtml(selected.referralSource || 'None recorded') + '</div>' +
+            '<div><strong>Referral partner:</strong> ' + escapeHtml(selected.referralPartnerName || 'None recorded') + '</div>' +
+            '<div><strong>Referral fee:</strong> ' + escapeHtml(titleize(selected.referralFeeStatus || 'not_applicable')) + '</div>' +
           '</div>' +
 
           '<div class="signal-grid">' +
@@ -689,15 +879,56 @@
             '</div>' +
           '</div>' +
 
+          '<div class="signal-grid">' +
+            '<div class="signal-card">' +
+              '<h3>Platform summary</h3>' +
+              '<ul>' +
+                '<li><strong>Total platforms:</strong> ' + escapeHtml(platformSummary.total || 0) + '</li>' +
+                '<li><strong>Active or pending:</strong> ' + escapeHtml(platformSummary.active || 0) + '</li>' +
+                '<li><strong>Resolved:</strong> ' + escapeHtml(platformSummary.resolved || 0) + '</li>' +
+                '<li><strong>Blocked:</strong> ' + escapeHtml(platformSummary.blocked || 0) + '</li>' +
+              '</ul>' +
+            '</div>' +
+            '<div class="signal-card">' +
+              '<h3>Private case links</h3>' +
+              '<ul>' +
+                '<li><a href="' + escapeHtml(selected.caseLinks.status) + '" target="_blank" rel="noreferrer">Open client status page</a></li>' +
+                '<li><a href="' + escapeHtml(selected.caseLinks.payment) + '" target="_blank" rel="noreferrer">Open payment page</a></li>' +
+                '<li><a href="' + escapeHtml(selected.caseLinks.documents) + '" target="_blank" rel="noreferrer">Open documents page</a></li>' +
+              '</ul>' +
+            '</div>' +
+          '</div>' +
+
           '<div class="quick-actions">' +
             '<button class="secondary" type="button" id="quick-payment-link">Set payment link sent</button>' +
             '<button class="secondary" type="button" id="quick-paid">Set paid</button>' +
             '<button class="secondary" type="button" id="quick-awaiting-docs">Awaiting documents</button>' +
             '<button class="secondary" type="button" id="quick-active">Set active</button>' +
+            '<button class="secondary" type="button" id="quick-complete">Set completed</button>' +
             '<a class="button-link secondary" href="' + escapeHtml(selected.caseLinks.documents) + '" target="_blank" rel="noreferrer">Open documents flow</a>' +
           '</div>' +
 
           '<div class="field-grid">' +
+            '<div class="field">' +
+              '<label for="detail-assigned-to">Case owner</label>' +
+              '<input id="detail-assigned-to" type="text" value="' + escapeHtml(selected.assignedTo || '') + '" placeholder="Steven, VA name, agent name" />' +
+            '</div>' +
+            '<div class="field">' +
+              '<label for="detail-priority">Priority</label>' +
+              '<select id="detail-priority">' +
+                '<option value="standard">Standard</option>' +
+                '<option value="priority">Priority</option>' +
+                '<option value="urgent">Urgent</option>' +
+              '</select>' +
+            '</div>' +
+            '<div class="field">' +
+              '<label for="detail-due-date">Due date</label>' +
+              '<input id="detail-due-date" type="date" value="' + escapeHtml(selected.dueDate || '') + '" />' +
+            '</div>' +
+            '<div class="field">' +
+              '<label for="detail-referral-source">Referral source</label>' +
+              '<input id="detail-referral-source" type="text" value="' + escapeHtml(selected.referralSource || '') + '" />' +
+            '</div>' +
             '<div class="field">' +
               '<label for="detail-status">Case status</label>' +
               '<select id="detail-status">' +
@@ -728,6 +959,40 @@
               '<label for="detail-authority">Authority basis</label>' +
               '<input id="detail-authority" type="text" value="' + escapeHtml(selected.authorityBasis || '') + '" />' +
             '</div>' +
+            '<div class="field">' +
+              '<label for="detail-referral-type">Referral partner type</label>' +
+              '<select id="detail-referral-type">' +
+                '<option value="direct">Direct</option>' +
+                '<option value="funeral_director">Funeral director</option>' +
+                '<option value="solicitor">Solicitor</option>' +
+                '<option value="other">Other</option>' +
+              '</select>' +
+            '</div>' +
+            '<div class="field">' +
+              '<label for="detail-referral-fee-status">Referral fee status</label>' +
+              '<select id="detail-referral-fee-status">' +
+                '<option value="not_applicable">Not applicable</option>' +
+                '<option value="pending">Pending</option>' +
+                '<option value="approved">Approved</option>' +
+                '<option value="paid">Paid</option>' +
+              '</select>' +
+            '</div>' +
+            '<div class="field">' +
+              '<label for="detail-referral-name">Partner name</label>' +
+              '<input id="detail-referral-name" type="text" value="' + escapeHtml(selected.referralPartnerName || '') + '" />' +
+            '</div>' +
+            '<div class="field">' +
+              '<label for="detail-referral-email">Partner email</label>' +
+              '<input id="detail-referral-email" type="email" value="' + escapeHtml(selected.referralPartnerEmail || '') + '" />' +
+            '</div>' +
+            '<div class="field full">' +
+              '<label for="detail-referral-phone">Partner phone</label>' +
+              '<input id="detail-referral-phone" type="text" value="' + escapeHtml(selected.referralPartnerPhone || '') + '" />' +
+            '</div>' +
+            '<div class="field full">' +
+              '<label for="detail-referral-notes">Referral notes</label>' +
+              '<textarea id="detail-referral-notes">' + escapeHtml(selected.referralNotes || '') + '</textarea>' +
+            '</div>' +
             '<div class="field full">' +
               '<label for="detail-known-platforms">Known platforms</label>' +
               '<textarea id="detail-known-platforms">' + escapeHtml(selected.knownPlatforms || '') + '</textarea>' +
@@ -742,6 +1007,31 @@
             '</div>' +
           '</div>' +
 
+          '<div class="section-card">' +
+            '<span class="eyebrow" style="margin-bottom:8px;">Workflow</span>' +
+            '<h3 style="font-size:1.28rem; margin-bottom:12px;">Platform-by-platform tracking</h3>' +
+            '<p class="helper" style="margin-bottom:14px;">Track each platform separately so a VA, operator, or AI agent can see what has been submitted, what is blocked, and what still needs evidence.</p>' +
+            '<div class="platform-editor" id="platform-editor">' +
+              (platformTasks.length
+                ? platformTasks.map((task, index) => createPlatformTaskMarkup(task, index)).join('')
+                : createPlatformTaskMarkup({
+                    name: '',
+                    status: 'not_started',
+                    profileOrHandle: '',
+                    outcomeRequested: selected.preferredOutcome || '',
+                    evidenceNeeded: '',
+                    notes: '',
+                    submissionReference: '',
+                    submittedAt: '',
+                    resolvedAt: ''
+                  }, 0)) +
+            '</div>' +
+            '<div class="action-row" style="margin-top:14px;">' +
+              '<button class="secondary" id="add-platform-task" type="button">Add platform</button>' +
+              '<button class="secondary" id="load-platforms-from-intake" type="button">Refresh from intake fields</button>' +
+            '</div>' +
+          '</div>' +
+
           '<div class="action-row">' +
             '<button class="primary" id="save-case" type="button">Save case update</button>' +
             '<button class="secondary" id="copy-agent-brief" type="button">Copy agent brief</button>' +
@@ -749,6 +1039,28 @@
             '<button class="secondary" id="copy-platform-brief" type="button">Copy platform brief</button>' +
           '</div>' +
           '<p class="helper" id="save-helper">Use the copy buttons to hand the case to a VA, live operator, or AI agent without rewriting the context each time.</p>' +
+
+          '<div class="template-card">' +
+            '<h3>Email updates</h3>' +
+            '<p class="helper" id="email-helper">' + escapeHtml(emailStatusHelper + ' ' + opsStatusHelper) + '</p>' +
+            '<div class="field-grid" style="margin-top:14px;">' +
+              '<div class="field full">' +
+                '<label for="detail-email-subject">Email subject</label>' +
+                '<input id="detail-email-subject" type="text" value="' + escapeHtml(defaultClientSubject) + '" />' +
+              '</div>' +
+              '<div class="field full">' +
+                '<label for="detail-email-message">Email message</label>' +
+                '<textarea id="detail-email-message" style="min-height:180px;">' + escapeHtml(defaultClientMessage) + '</textarea>' +
+              '</div>' +
+            '</div>' +
+            '<div class="action-row">' +
+              '<button class="secondary" id="load-client-email" type="button">Load client draft</button>' +
+              '<button class="secondary" id="load-ops-email" type="button">Load ops brief</button>' +
+              '<button class="secondary" id="send-client-email" type="button"' + sendDisabledAttr + '>Email client update</button>' +
+              '<button class="secondary" id="send-ops-email" type="button"' + opsDisabledAttr + '>Email ops summary</button>' +
+            '</div>' +
+            '<p class="helper">Client draft uses the reassurance copy. Ops brief uses the internal agent summary.</p>' +
+          '</div>' +
 
           '<div class="templates-grid">' +
             '<div class="template-card">' +
@@ -779,8 +1091,11 @@
         '</div>'
       );
 
+      document.getElementById('detail-priority').value = selected.priority || 'standard';
       document.getElementById('detail-status').value = selected.status || 'awaiting_payment';
       document.getElementById('detail-payment-status').value = selected.paymentStatus || 'pending';
+      document.getElementById('detail-referral-type').value = selected.referralPartnerType || 'direct';
+      document.getElementById('detail-referral-fee-status').value = selected.referralFeeStatus || 'not_applicable';
 
       document.getElementById('quick-payment-link').addEventListener('click', function () {
         quickSet('awaiting_payment', 'payment_link_sent');
@@ -794,6 +1109,48 @@
       document.getElementById('quick-active').addEventListener('click', function () {
         quickSet('active', 'paid');
       });
+      document.getElementById('quick-complete').addEventListener('click', function () {
+        quickSet('completed', 'paid');
+      });
+      document.getElementById('add-platform-task').addEventListener('click', function () {
+        const editor = document.getElementById('platform-editor');
+        editor.insertAdjacentHTML('beforeend', createPlatformTaskMarkup({
+          name: '',
+          status: 'not_started',
+          profileOrHandle: '',
+          outcomeRequested: selected.preferredOutcome || '',
+          evidenceNeeded: '',
+          notes: '',
+          submissionReference: '',
+          submittedAt: '',
+          resolvedAt: ''
+        }, editor.querySelectorAll('.platform-task').length));
+        bindPlatformTaskButtons();
+      });
+      document.getElementById('load-platforms-from-intake').addEventListener('click', function () {
+        const editor = document.getElementById('platform-editor');
+        const knownPlatforms = (document.getElementById('detail-known-platforms').value || '')
+          .split(/\n|,/)
+          .map((value) => value.trim())
+          .filter(Boolean);
+        const profileUrls = (document.getElementById('detail-profile-urls').value || '')
+          .split(/\n/)
+          .map((value) => value.trim())
+          .filter(Boolean);
+        const tasks = knownPlatforms.length ? knownPlatforms : [''];
+        editor.innerHTML = tasks.map((name, index) => createPlatformTaskMarkup({
+          name,
+          status: 'not_started',
+          profileOrHandle: profileUrls[index] || '',
+          outcomeRequested: selected.preferredOutcome || '',
+          evidenceNeeded: '',
+          notes: '',
+          submissionReference: '',
+          submittedAt: '',
+          resolvedAt: ''
+        }, index)).join('');
+        bindPlatformTaskButtons();
+      });
       document.getElementById('save-case').addEventListener('click', saveSelectedCase);
       document.getElementById('copy-agent-brief').addEventListener('click', function () {
         copyText(operational.agentSummary || '', 'Agent brief', 'save-helper');
@@ -804,6 +1161,25 @@
       document.getElementById('copy-platform-brief').addEventListener('click', function () {
         copyText(operational.platformSubmissionBrief || '', 'Platform brief', 'save-helper');
       });
+      document.getElementById('load-client-email').addEventListener('click', function () {
+        document.getElementById('detail-email-subject').value = defaultClientSubject;
+        document.getElementById('detail-email-message').value = defaultClientMessage;
+        document.getElementById('email-helper').textContent = 'Client draft loaded.';
+      });
+      document.getElementById('load-ops-email').addEventListener('click', function () {
+        document.getElementById('detail-email-subject').value = defaultOpsSubject;
+        document.getElementById('detail-email-message').value = defaultOpsMessage;
+        document.getElementById('email-helper').textContent = opsEmailEnabled
+          ? 'Ops brief loaded.'
+          : 'Operations email is not configured yet.';
+      });
+      document.getElementById('send-client-email').addEventListener('click', function () {
+        sendCaseEmail('client_update');
+      });
+      document.getElementById('send-ops-email').addEventListener('click', function () {
+        sendCaseEmail('operations_summary');
+      });
+      bindPlatformTaskButtons();
     }
 
     async function saveSelectedCase() {
@@ -823,14 +1199,26 @@
         const response = await fetch('/api/admin/cases', {
           method: 'PATCH',
           headers: getHeaders(),
+          credentials: 'same-origin',
           body: JSON.stringify({
             id: selected.id,
+            assignedTo: document.getElementById('detail-assigned-to').value,
+            priority: document.getElementById('detail-priority').value,
+            dueDate: document.getElementById('detail-due-date').value,
+            referralSource: document.getElementById('detail-referral-source').value,
             status: document.getElementById('detail-status').value,
             paymentStatus: document.getElementById('detail-payment-status').value,
             relationshipToDeceased: document.getElementById('detail-relationship').value,
             authorityBasis: document.getElementById('detail-authority').value,
+            referralPartnerType: document.getElementById('detail-referral-type').value,
+            referralPartnerName: document.getElementById('detail-referral-name').value,
+            referralPartnerEmail: document.getElementById('detail-referral-email').value,
+            referralPartnerPhone: document.getElementById('detail-referral-phone').value,
+            referralFeeStatus: document.getElementById('detail-referral-fee-status').value,
+            referralNotes: document.getElementById('detail-referral-notes').value,
             knownPlatforms: document.getElementById('detail-known-platforms').value,
             profileUrls: document.getElementById('detail-profile-urls').value,
+            platformTasks: collectPlatformTasks(),
             internalNotes: document.getElementById('detail-internal-notes').value
           })
         });
@@ -851,9 +1239,54 @@
       }
     }
 
+    async function sendCaseEmail(kind) {
+      const selected = getSelectedCase();
+      const helper = document.getElementById('email-helper');
+      const subjectField = document.getElementById('detail-email-subject');
+      const messageField = document.getElementById('detail-email-message');
+      const buttonId = kind === 'operations_summary' ? 'send-ops-email' : 'send-client-email';
+      const sendButton = document.getElementById(buttonId);
+
+      if (!selected || !subjectField || !messageField || !sendButton) {
+        return;
+      }
+
+      sendButton.disabled = true;
+      helper.textContent = 'Sending email...';
+
+      try {
+        const response = await fetch('/api/admin/notifications', {
+          method: 'POST',
+          headers: getHeaders(),
+          credentials: 'same-origin',
+          body: JSON.stringify({
+            id: selected.id,
+            kind,
+            subject: subjectField.value,
+            message: messageField.value
+          })
+        });
+
+        const payload = await response.json();
+
+        if (!response.ok || !payload.ok) {
+          throw new Error(payload.error || 'Could not send the email.');
+        }
+
+        helper.textContent = kind === 'operations_summary'
+          ? 'Operations email sent.'
+          : 'Client update sent.';
+        await loadDashboard();
+      } catch (error) {
+        helper.textContent = error.message || 'Could not send the email.';
+      } finally {
+        sendButton.disabled = false;
+      }
+    }
+
     async function loadDashboard() {
-      if (!state.token) {
-        adminHelper.textContent = 'Add the admin token first so the dashboard can load.';
+      if (!state.authenticated) {
+        adminHelper.textContent = 'Sign in first so the dashboard can load.';
         return;
       }
 
@@ -861,8 +1294,8 @@
 
       try {
         const [statsResponse, casesResponse] = await Promise.all([
-          fetch('/api/admin/stats', { headers: getHeaders() }),
-          fetch('/api/admin/cases', { headers: getHeaders() })
+          fetch('/api/admin/stats', { headers: getHeaders(), credentials: 'same-origin' }),
+          fetch('/api/admin/cases', { headers: getHeaders(), credentials: 'same-origin' })
         ]);
 
         const statsPayload = await statsResponse.json();
@@ -892,23 +1325,124 @@
         }
 
         renderDetail();
-        adminHelper.textContent = 'Dashboard loaded.';
+        adminHelper.textContent = (state.stats.email && state.stats.email.enabled)
+          ? 'Dashboard loaded. Email delivery is configured.'
+          : 'Dashboard loaded. Email delivery still needs configuration.';
       } catch (error) {
+        if (String(error.message || '').includes('Admin login required')) {
+          state.authenticated = false;
+          state.sessionExpiresAt = '';
+          updateSessionNote();
+          resetDashboardView();
+        }
         adminHelper.textContent = error.message || 'We could not load the dashboard.';
       }
     }
 
-    loadDashboardButton.addEventListener('click', async function () {
-      state.token = adminTokenInput.value.trim();
-      sessionStorage.setItem('departedDigitalAdminToken', state.token);
-      await loadDashboard();
+    async function hydrateSession() {
+      try {
+        const response = await fetch('/api/admin/session', {
+          method: 'GET',
+          credentials: 'same-origin'
+        });
+        const payload = await response.json();
+
+        if (!response.ok || !payload.ok) {
+          throw new Error(payload.error || 'Could not load the admin session.');
+        }
+
+        if (payload.username) {
+          state.username = payload.username;
+          adminUsernameInput.value = payload.username;
+        }
+
+        state.authenticated = Boolean(payload.authenticated);
+        state.sessionExpiresAt = payload.session && payload.session.expiresAt ? payload.session.expiresAt : '';
+        updateSessionNote();
+
+        if (state.authenticated) {
+          adminPasswordInput.value = '';
+          await loadDashboard();
+        } else {
+          resetDashboardView();
+        }
+      } catch (error) {
+        adminHelper.textContent = error.message || 'We could not check the admin session.';
+      }
+    }
+
+    loginDashboardButton.addEventListener('click', async function () {
+      const username = adminUsernameInput.value.trim();
+      const password = adminPasswordInput.value;
+
+      if (!username || !password) {
+        adminHelper.textContent = 'Enter the admin username and password to continue.';
+        return;
+      }
+
+      loginDashboardButton.disabled = true;
+      adminHelper.textContent = 'Signing in...';
+
+      try {
+        const response = await fetch('/api/admin/session', {
+          method: 'POST',
+          headers: getHeaders(),
+          credentials: 'same-origin',
+          body: JSON.stringify({
+            username,
+            password
+          })
+        });
+        const payload = await response.json();
+
+        if (!response.ok || !payload.ok) {
+          throw new Error(payload.error || 'We could not sign you in.');
+        }
+
+        state.authenticated = true;
+        state.username = payload.session.username;
+        state.sessionExpiresAt = payload.session.expiresAt || '';
+        adminPasswordInput.value = '';
+        updateSessionNote();
+        await loadDashboard();
+      } catch (error) {
+        adminHelper.textContent = error.message || 'We could not sign you in.';
+      } finally {
+        loginDashboardButton.disabled = false;
+      }
     });
 
-    clearDashboardButton.addEventListener('click', function () {
-      state.token = '';
-      adminTokenInput.value = '';
-      sessionStorage.removeItem('departedDigitalAdminToken');
-      adminHelper.textContent = 'Admin token cleared.';
+    logoutDashboardButton.addEventListener('click', async function () {
+      logoutDashboardButton.disabled = true;
+      adminHelper.textContent = 'Signing out...';
+
+      try {
+        await fetch('/api/admin/session', {
+          method: 'DELETE',
+          credentials: 'same-origin'
+        });
+      } catch (error) {
+        // Still clear local state.
+      }
+
+      state.authenticated = false;
+      state.sessionExpiresAt = '';
+      state.cases = [];
+      state.selectedCaseId = '';
+      adminPasswordInput.value = '';
+      updateSessionNote();
+      resetDashboardView();
+      adminHelper.textContent = 'Signed out.';
+      logoutDashboardButton.disabled = false;
+    });
+
+    adminPasswordInput.addEventListener('keydown', async function (event) {
+      if (event.key !== 'Enter') {
+        return;
+      }
+
+      event.preventDefault();
+      loginDashboardButton.click();
     });
 
     statusFilter.addEventListener('change', function () {
@@ -934,6 +1468,10 @@
       }
       renderDetail();
     });
+
+    updateSessionNote();
+    resetDashboardView();
+    hydrateSession();
   </script>
 </body>
 </html>

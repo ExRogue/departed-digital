@@ -1,4 +1,5 @@
 const { PACKAGE_CONFIG } = require('./_lib/config');
+const { sendCaseCreatedEmails } = require('./_lib/email');
 const { allowCors, methodNotAllowed, parseJsonBody, sendError, sendJson } = require('./_lib/http');
 const {
   StoreConfigurationError,
@@ -86,6 +87,10 @@ module.exports = async function handler(req, res) {
       }
 
       const caseRecord = await createCase(validation.value);
+
+      sendCaseCreatedEmails(caseRecord).catch((error) => {
+        console.error('case_created_email_failed', error);
+      });
 
       sendJson(res, 201, {
         ok: true,

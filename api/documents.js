@@ -1,4 +1,5 @@
 const { MAX_DOCUMENT_COUNT, MAX_DOCUMENT_SIZE_BYTES } = require('./_lib/config');
+const { sendDocumentsUploadedEmails } = require('./_lib/email');
 const { allowCors, methodNotAllowed, parseJsonBody, sendError, sendJson } = require('./_lib/http');
 const { StoreConfigurationError, buildPublicCase, getCaseForPublic, uploadDocuments } = require('./_lib/store');
 
@@ -61,6 +62,10 @@ module.exports = async function handler(req, res) {
       sendError(res, 404, 'Case not found.');
       return;
     }
+
+    sendDocumentsUploadedEmails(updated, files.length).catch((error) => {
+      console.error('documents_uploaded_email_failed', error);
+    });
 
     sendJson(res, 200, {
       ok: true,

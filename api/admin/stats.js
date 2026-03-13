@@ -1,5 +1,6 @@
+const { getEmailHealth } = require('../_lib/email');
 const { allowCors, methodNotAllowed, sendError, sendJson } = require('../_lib/http');
-const { requireAdminKey } = require('../_lib/security');
+const { requireAdminAccess } = require('../_lib/security');
 const { getAnalyticsSummary, getDocumentInventory, getStorageHealth, listAdminCases } = require('../_lib/store');
 
 module.exports = async function handler(req, res) {
@@ -16,7 +17,7 @@ module.exports = async function handler(req, res) {
     return;
   }
 
-  const adminCheck = requireAdminKey(req);
+  const adminCheck = requireAdminAccess(req);
 
   if (!adminCheck.ok) {
     sendError(res, adminCheck.statusCode, adminCheck.message);
@@ -28,6 +29,7 @@ module.exports = async function handler(req, res) {
     const blobs = await getDocumentInventory();
     const storage = getStorageHealth();
     const analytics = await getAnalyticsSummary();
+    const email = getEmailHealth();
 
     const stats = {
       totalCases: cases.length,
@@ -37,8 +39,12 @@ module.exports = async function handler(req, res) {
       completedCases: cases.filter((entry) => entry.status === 'completed').length,
       paidCases: cases.filter((entry) => entry.paymentStatus === 'paid').length,
       documentsStored: blobs.length,
+      urgentCases: cases.filter((entry) => entry.priority === 'urgent').length,
+      partnerCases: cases.filter((entry) => entry.referralPartnerType === 'funeral_director').length,
+      unassignedCases: cases.filter((entry) => !entry.assignedTo).length,
       storage,
-      analytics
+      analytics,
+      email
     };
 
     sendJson(res, 200, { ok: true, stats });

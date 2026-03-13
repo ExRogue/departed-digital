@@ -69,7 +69,13 @@ The platform needs to support:
 
 - `BLOB_READ_WRITE_TOKEN`
 
-### Required for the admin dashboard
+### Required for the admin dashboard login
+
+- `ADMIN_USERNAME`
+- `ADMIN_PASSWORD`
+- `ADMIN_SESSION_SECRET`
+
+### Optional fallback for direct API access
 
 - `ADMIN_ACCESS_TOKEN`
 
@@ -78,6 +84,17 @@ The platform needs to support:
 - `STRIPE_PAYMENT_LINK_ESSENTIAL`
 - `STRIPE_PAYMENT_LINK_STANDARD`
 - `STRIPE_PAYMENT_LINK_ESTATE`
+
+### Required for Resend email delivery
+
+- `RESEND_API_KEY`
+- `EMAIL_FROM`
+
+### Recommended for operations emails
+
+- `OPERATIONS_ALERT_EMAIL`
+- `EMAIL_REPLY_TO`
+- `PUBLIC_SITE_URL`
 
 ### Optional for local smoke testing
 
@@ -103,6 +120,16 @@ Current implementation:
 - first-party analytics are already wired into the site and surfaced in the admin dashboard
 - top pages, top CTA clicks, and funnel signals can now be viewed without a third-party dashboard
 - durable analytics still benefit from `BLOB_READ_WRITE_TOKEN`, even though a temporary fallback can run before that is configured
+
+### Email operations
+
+- Resend is the recommended transactional provider for this stack
+- automated emails can now be triggered for:
+  - new case received
+  - supporting documents uploaded
+- manual emails can now be sent from the admin dashboard for:
+  - client updates
+  - internal ops summaries
 
 ## Core data model
 
@@ -243,7 +270,7 @@ Result:
 ## Immediate implementation priorities
 
 1. Add `BLOB_READ_WRITE_TOKEN` in Vercel so case storage and uploads become durable in production
-2. Add `ADMIN_ACCESS_TOKEN` so `/admin` can be used safely live
+2. Add `ADMIN_USERNAME`, `ADMIN_PASSWORD`, and `ADMIN_SESSION_SECRET` so `/admin` uses a normal login session
 3. Add Stripe payment links and bind the package CTAs on `/payment` through `/api/public-config`
 4. Capture referral source from funeral director handoffs more explicitly in the public flow
 5. Move case storage from JSON/blob documents into Postgres when the reporting/admin needs outgrow file-style records
