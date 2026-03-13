@@ -405,19 +405,21 @@
     }
     .stat-number {
       font-family: 'Playfair Display', serif;
-      font-size: 2.6rem;
+      font-size: 1.45rem;
       color: var(--navy);
       font-weight: 600;
-      line-height: 1;
+      line-height: 1.2;
     }
-    .stat-number .suffix { font-size: 1.6rem; }
     .stat-label {
-      font-size: 0.82rem;
+      font-size: 0.92rem;
       color: var(--text-muted);
-      margin-top: 6px;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      font-weight: 500;
+      margin-top: 10px;
+      letter-spacing: 0;
+      font-weight: 400;
+      line-height: 1.6;
+      max-width: 220px;
+      margin-left: auto;
+      margin-right: auto;
     }
 
     /* ── SECTIONS COMMON ── */
@@ -557,7 +559,7 @@
     .steps::before {
       content: '';
       position: absolute;
-      top: 40px; left: calc(12.5% + 40px); right: calc(12.5% + 40px);
+      top: 40px; left: calc(16% + 36px); right: calc(16% + 36px);
       height: 2px;
       background: linear-gradient(90deg, var(--gold), var(--gold-light), var(--gold));
       opacity: 0.4;
@@ -1133,13 +1135,14 @@
     <div class="hero-grid"></div>
     <div class="hero-glow"></div>
     <div class="hero-content">
-      <div class="hero-badge">UK service · Documentation led · Done for you</div>
-      <h1>When a loved one passes,<br /><em>their digital life lives on.</em></h1>
-      <p>Departed Digital handles the removal and memorialisation of social media and digital accounts for bereaved families across the UK, with clear paperwork, thoughtful communication, and written completion records.</p>
+      <div class="hero-badge">For UK families after a loss</div>
+      <h1>We handle the digital admin you should not have to face alone.</h1>
+      <p>Departed Digital closes or memorialises social media and digital accounts for bereaved families across the UK. You start with a short form, choose the right package, and only share sensitive documents after payment.</p>
       <div class="hero-btns">
-        <a href="/start" class="btn-primary">Start a Case</a>
-        <a href="#pricing" class="btn-secondary">View Packages</a>
+        <a href="/start" class="btn-primary">Start in Under a Minute</a>
+        <a href="#pricing" class="btn-secondary">See Packages</a>
       </div>
+      <p style="margin-top: 20px; color: rgba(255,255,255,0.76); font-size: 0.94rem;">No passwords needed. No death certificate in the first step. Clear written outcome at the end.</p>
     </div>
     <div class="hero-scroll">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
@@ -1151,20 +1154,20 @@
   <div class="stats-bar">
     <div class="stats-inner">
       <div class="stat-item reveal">
-        <div class="stat-number"><span data-target="2">0</span></div>
-        <div class="stat-label">Platforms in Essential</div>
+        <div class="stat-number">No passwords</div>
+        <div class="stat-label">We work through platform procedures, not account access.</div>
       </div>
       <div class="stat-item reveal reveal-delay-1">
-        <div class="stat-number"><span data-target="5">0</span></div>
-        <div class="stat-label">Platforms in Standard</div>
+        <div class="stat-number">Short first step</div>
+        <div class="stat-label">The case starts with a simple form, not a long admin process.</div>
       </div>
       <div class="stat-item reveal reveal-delay-2">
-        <div class="stat-number"><span data-target="7">0</span><span class="suffix"> days</span></div>
-        <div class="stat-label">Estate target completion</div>
+        <div class="stat-number">Documents later</div>
+        <div class="stat-label">Sensitive documents are requested after payment, not before.</div>
       </div>
       <div class="stat-item reveal reveal-delay-3">
-        <div class="stat-number"><sup>£</sup><span data-target="50">0</span></div>
-        <div class="stat-label">Funeral director referral fee</div>
+        <div class="stat-number">Clear records</div>
+        <div class="stat-label">Every case ends with a written outcome record for your files.</div>
       </div>
     </div>
   </div>
@@ -1173,28 +1176,28 @@
   <section class="what-we-do" id="services">
     <div class="container">
       <span class="section-label reveal">What we do</span>
-      <h2 class="section-title reveal">One less thing to worry about</h2>
-      <p class="section-sub reveal">Social media removal after bereavement is an exhausting, bureaucratic process. We navigate every platform on your behalf.</p>
+      <h2 class="section-title reveal">What families usually need in this moment</h2>
+      <p class="section-sub reveal">Not another complicated process. Not another support queue. Just a calm, done-for-you way to deal with the accounts that are still active after a death.</p>
       <div class="services-grid">
         <div class="service-card reveal reveal-delay-1">
           <div class="service-icon">🔒</div>
           <h3>Account Removal</h3>
-          <p>We formally request deletion of your loved one's accounts across Facebook, Instagram, Twitter/X, TikTok, LinkedIn, and more — leaving no trace behind.</p>
+          <p>We submit formal removal requests to Facebook, Instagram, X, TikTok, LinkedIn, and other platforms so you do not have to keep chasing them yourself.</p>
         </div>
         <div class="service-card reveal reveal-delay-2">
           <div class="service-icon">🕊️</div>
           <h3>Memorialisation</h3>
-          <p>Prefer to preserve their presence? We convert Facebook and Instagram profiles into memorial pages, keeping memories alive while protecting the account.</p>
+          <p>If you want to preserve the profile rather than remove it, we handle memorialisation where the platform allows it.</p>
         </div>
         <div class="service-card reveal reveal-delay-3">
           <div class="service-icon">📋</div>
           <h3>Full Documentation</h3>
-          <p>We handle all platform specific forms, death certificate uploads, and correspondence — you simply provide the details, we do everything else.</p>
+          <p>We manage the forms, the document requirements, and the correspondence, then keep a clear record of what was submitted and resolved.</p>
         </div>
         <div class="service-card reveal reveal-delay-4">
           <div class="service-icon">💬</div>
           <h3>Ongoing Support</h3>
-          <p>Our team is available to guide you through every step. We chase platforms that are slow to respond and keep you updated throughout the process.</p>
+          <p>When platforms are slow or unclear, we follow up and keep the case moving instead of leaving you to do the emotional admin alone.</p>
         </div>
       </div>
     </div>
@@ -1228,27 +1231,22 @@
   <section class="how-it-works" id="how">
     <div class="container">
       <span class="section-label reveal">Process</span>
-      <h2 class="section-title reveal">Four simple steps</h2>
+      <h2 class="section-title reveal">Three simple steps</h2>
       <div class="steps">
         <div class="step reveal reveal-delay-1">
           <div class="step-num">1</div>
-          <h3>Choose a package</h3>
-          <p>Select Essential, Standard, or Estate based on how many accounts need handling and how quickly you want the case turned around.</p>
+          <h3>Start with the short form</h3>
+          <p>Tell us who the case is for, the deceased's name, and any accounts or profile links you already know about.</p>
         </div>
         <div class="step reveal reveal-delay-2">
           <div class="step-num">2</div>
-          <h3>Share the case details</h3>
-          <p>Tell us who the deceased is, which platforms you know about, and whether you want deletion or memorialisation where available.</p>
+          <h3>Choose the package and pay securely</h3>
+          <p>Pick Essential, Standard, or Estate on the payment screen and continue to secure payment when you are ready.</p>
         </div>
         <div class="step reveal reveal-delay-3">
           <div class="step-num">3</div>
-          <h3>We confirm scope and payment</h3>
-          <p>We review the case, confirm the right package, and send your secure payment link before work begins.</p>
-        </div>
-        <div class="step reveal reveal-delay-4">
-          <div class="step-num">4</div>
-          <h3>We manage every submission</h3>
-          <p>We handle platform forms, follow-up, and written outcome records so you are not left chasing responses.</p>
+          <h3>Send the documents and let us take over</h3>
+          <p>After payment, we request the death certificate and proof of authority needed for the case, then manage the submissions and follow-up.</p>
         </div>
       </div>
     </div>
@@ -1258,8 +1256,8 @@
   <section class="pricing" id="pricing">
     <div class="container">
       <span class="section-label reveal">Transparent pricing</span>
-      <h2 class="section-title reveal">Simple, compassionate pricing</h2>
-      <p class="section-sub reveal">One payment per case. We confirm the right package before taking payment, then handle the submissions and follow-up on your behalf.</p>
+      <h2 class="section-title reveal">Choose the level of support you need</h2>
+      <p class="section-sub reveal">One payment per case. Start with the short form, then choose the package that matches the number of accounts and the complexity of the case.</p>
       <div class="pricing-grid">
         <div class="price-card reveal">
           <div class="price-tier">Essential</div>
@@ -1312,19 +1310,19 @@
   <section class="testimonials" id="testimonials">
     <div class="container">
       <span class="section-label reveal">Why this works</span>
-      <h2 class="section-title reveal">Built for a difficult moment, not a generic support queue</h2>
+      <h2 class="section-title reveal">Designed to feel simple at a difficult time</h2>
       <div class="testimonials-grid">
         <div class="testimonial-card reveal reveal-delay-1">
           <div class="stars">Before work begins</div>
-          <p class="testimonial-text">We review what you already know, confirm the right package, and tell you which documents are likely to be needed before anything is submitted.</p>
+          <p class="testimonial-text">The process begins with a short form, not a wall of questions, so families can get started without feeling overwhelmed.</p>
         </div>
         <div class="testimonial-card reveal reveal-delay-2">
           <div class="stars">During the case</div>
-          <p class="testimonial-text">We handle the platform forms, document uploads, and chaser emails so you are not stuck repeating the same admin during bereavement.</p>
+          <p class="testimonial-text">The payment step is separate and clear, so customers know exactly what they are buying before any sensitive documents are requested.</p>
         </div>
         <div class="testimonial-card reveal reveal-delay-3">
           <div class="stars">At completion</div>
-          <p class="testimonial-text">You receive a clear written outcome for your records, including what was removed, memorialised, or still awaiting a platform response.</p>
+          <p class="testimonial-text">At the end, you have a clear written record of what was removed, memorialised, or still awaiting a platform response.</p>
         </div>
       </div>
     </div>
@@ -1456,32 +1454,32 @@
     <div class="container">
       <div class="contact-box reveal">
         <span class="section-label">Start a case</span>
-        <h2 class="section-title">A short first step, then package and payment.</h2>
-        <p class="section-sub">We do not ask for the death certificate or proof of authority up front. First, we collect the basics. Next, you choose the package and continue to Stripe. After payment, we request the supporting documents securely.</p>
+        <h2 class="section-title">A calm, simple route from enquiry to completion.</h2>
+        <p class="section-sub">Start with the short form. Choose the package on the next screen. Pay securely. Then send the supporting documents once you are ready.</p>
 
         <div style="max-width: 720px; margin: 36px auto 0; display: grid; gap: 18px;">
           <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; text-align:left;">
             <div style="background: var(--white); border: 1px solid var(--border); border-radius: 16px; padding: 20px;">
               <div style="font-size: 0.76rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); margin-bottom: 8px;">Step 1</div>
               <strong style="display:block; color: var(--navy); margin-bottom: 8px;">Short intake</strong>
-              <p style="font-size: 0.92rem; color: var(--text-muted);">Name, email, deceased's name, and any known platforms or profile links.</p>
+              <p style="font-size: 0.92rem; color: var(--text-muted);">A very short first step so families can start without feeling overwhelmed.</p>
             </div>
             <div style="background: var(--white); border: 1px solid var(--border); border-radius: 16px; padding: 20px;">
               <div style="font-size: 0.76rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); margin-bottom: 8px;">Step 2</div>
-              <strong style="display:block; color: var(--navy); margin-bottom: 8px;">Package and Stripe</strong>
-              <p style="font-size: 0.92rem; color: var(--text-muted);">Choose Essential, Standard, or Estate and continue to the payment step.</p>
+              <strong style="display:block; color: var(--navy); margin-bottom: 8px;">Package and payment</strong>
+              <p style="font-size: 0.92rem; color: var(--text-muted);">Choose Essential, Standard, or Estate and continue to the secure payment step.</p>
             </div>
             <div style="background: var(--white); border: 1px solid var(--border); border-radius: 16px; padding: 20px;">
               <div style="font-size: 0.76rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); margin-bottom: 8px;">Step 3</div>
               <strong style="display:block; color: var(--navy); margin-bottom: 8px;">Documents after payment</strong>
-              <p style="font-size: 0.92rem; color: var(--text-muted);">Only after payment do we request the death certificate and proof of authority.</p>
+              <p style="font-size: 0.92rem; color: var(--text-muted);">Sensitive documents only come later, once the customer is committed and ready.</p>
             </div>
           </div>
           <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:14px; margin-top: 8px;">
             <a href="/start" class="btn-primary" style="display:inline-flex; align-items:center; justify-content:center; min-width:220px;">Start the Short Form</a>
             <a href="#pricing" class="btn-secondary" style="display:inline-flex; align-items:center; justify-content:center; min-width:220px;">Compare Packages First</a>
           </div>
-          <p style="text-align:center; font-size:0.86rem; color:var(--text-muted);">The Stripe button belongs on the next step, after the short form, not on this homepage section.</p>
+          <p style="text-align:center; font-size:0.86rem; color:var(--text-muted);">The goal of this page is reassurance and clarity. The payment step comes next, when the customer is ready to commit.</p>
         </div>
       </div>
     </div>
@@ -1564,27 +1562,6 @@
       });
     }, { threshold: 0.12 });
     reveals.forEach(el => observer.observe(el));
-
-    // ── Counter animation
-    function animateCounter(el) {
-      const target = parseInt(el.getAttribute('data-target'), 10);
-      let current = 0;
-      const step = Math.ceil(target / 40);
-      const timer = setInterval(() => {
-        current = Math.min(current + step, target);
-        el.textContent = current;
-        if (current >= target) clearInterval(timer);
-      }, 35);
-    }
-    const counterObserver = new IntersectionObserver((entries) => {
-      entries.forEach(e => {
-        if (e.isIntersecting) {
-          e.target.querySelectorAll('[data-target]').forEach(animateCounter);
-          counterObserver.unobserve(e.target);
-        }
-      });
-    }, { threshold: 0.3 });
-    document.querySelectorAll('.stats-inner').forEach(el => counterObserver.observe(el));
 
     // ── FAQ accordion
     document.querySelectorAll('.faq-q').forEach(btn => {

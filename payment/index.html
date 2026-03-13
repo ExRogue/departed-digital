@@ -297,8 +297,8 @@
   <main>
     <div class="container">
       <span class="eyebrow">Step 2</span>
-      <h1>Review the case and continue to the right payment.</h1>
-      <p class="intro">This is the package-and-payment step. The customer should land here after the short form, confirm the package, and continue to Stripe. After payment, they move into the supporting-document step.</p>
+      <h1>Choose the right package and continue to secure payment.</h1>
+      <p class="intro">This is the decision step. After the short form, the customer confirms Essential, Standard, or Estate here and continues to Stripe. Supporting documents come after payment.</p>
 
       <div class="package-switcher" id="package-switcher">
         <button class="package-option" type="button" data-package="essential">
@@ -333,15 +333,15 @@
             <a class="btn-primary" id="payment-link" href="#">Continue to secure payment in Stripe</a>
             <a class="btn-secondary" href="/start">Edit intake details</a>
           </div>
-          <p class="helper" id="payment-helper">After Stripe payment, the customer moves to the document step where the death certificate and proof of authority are requested.</p>
+          <p class="helper" id="payment-helper">After payment, we request the death certificate and proof of authority in the next step.</p>
           <div class="notice" id="payment-notice">
             Stripe payment links are not configured on this page yet. For now, the button falls back to a pre-filled email. Once the real links are added, this becomes the live payment step.
           </div>
         </section>
 
         <aside class="panel">
-          <span class="eyebrow" style="margin-bottom: 10px;">Intake summary</span>
-          <h3 style="font-size:1.45rem; margin-bottom: 14px;">What we have so far</h3>
+          <span class="eyebrow" style="margin-bottom: 10px;">Case summary</span>
+          <h3 style="font-size:1.45rem; margin-bottom: 14px;">Details from the first step</h3>
           <ul class="summary-list" id="summary-list"></ul>
 
           <div style="margin-top: 28px;">
