@@ -204,6 +204,34 @@
       gap: 18px;
       margin-top: 18px;
     }
+    .queue-board {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 18px;
+    }
+    .queue-card {
+      background: #fbf8f3;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 18px;
+      display: grid;
+      gap: 12px;
+    }
+    .queue-card h3 {
+      font-size: 1.15rem;
+      margin-bottom: 4px;
+    }
+    .queue-card strong {
+      color: var(--navy);
+    }
+    .queue-card ul {
+      list-style: none;
+      display: grid;
+      gap: 10px;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
     .mini-card {
       background: #fbf8f3;
       border: 1px solid var(--border);
@@ -258,6 +286,14 @@
       font-weight: 700;
       background: rgba(26,39,68,0.08);
       color: var(--navy);
+    }
+    .badge.alert {
+      background: rgba(185, 69, 69, 0.12);
+      color: #8d2f2f;
+    }
+    .badge.good {
+      background: rgba(47, 125, 81, 0.12);
+      color: #2d7048;
     }
     .detail-grid {
       display: grid;
@@ -383,7 +419,7 @@
       padding: 18px 0;
     }
     @media (max-width: 1180px) {
-      .dashboard-grid, .stats-grid, .analytics-layout, .signal-grid {
+      .dashboard-grid, .stats-grid, .analytics-layout, .signal-grid, .queue-board {
         grid-template-columns: 1fr;
       }
     }
@@ -451,11 +487,31 @@
             </div>
           </section>
 
+          <section class="panel analytics-panel" style="margin-top: 24px;">
+            <span class="eyebrow" style="margin-bottom: 8px;">Workflow engine</span>
+            <h2 style="font-size: 1.9rem;">Operational queues</h2>
+            <p class="helper">These queues surface where cases are getting stuck so the next action can be taken without scanning every record.</p>
+            <div class="queue-board" id="queue-board">
+              <div class="queue-card"><h3>Needs attention</h3><p class="empty">Sign in to see the queue.</p></div>
+              <div class="queue-card"><h3>Waiting on client</h3><p class="empty">Sign in to see the queue.</p></div>
+              <div class="queue-card"><h3>Ready to submit</h3><p class="empty">Sign in to see the queue.</p></div>
+              <div class="queue-card"><h3>Blocked or overdue</h3><p class="empty">Sign in to see the queue.</p></div>
+            </div>
+          </section>
+
           <section class="panel cases-panel" style="margin-top: 24px;">
             <span class="eyebrow" style="margin-bottom: 8px;">Cases</span>
             <h2 style="font-size: 1.9rem;">Case inbox</h2>
             <div class="cases-toolbar">
               <input id="case-search" type="search" placeholder="Search by reference, client, email, or deceased name" />
+              <select id="queue-filter">
+                <option value="all">All queues</option>
+                <option value="attention">Needs attention</option>
+                <option value="waiting_on_client">Waiting on client</option>
+                <option value="submission_queue">Ready to submit</option>
+                <option value="blocked">Blocked</option>
+                <option value="overdue">Overdue</option>
+              </select>
               <select id="status-filter">
                 <option value="all">All statuses</option>
                 <option value="awaiting_payment">Awaiting payment</option>
@@ -498,8 +554,10 @@
     const logoutDashboardButton = document.getElementById('logout-dashboard');
     const statsGrid = document.getElementById('stats-grid');
     const analyticsLayout = document.getElementById('analytics-layout');
+    const queueBoard = document.getElementById('queue-board');
     const casesTableWrap = document.getElementById('cases-table-wrap');
     const caseDetail = document.getElementById('case-detail');
+    const queueFilter = document.getElementById('queue-filter');
     const statusFilter = document.getElementById('status-filter');
     const packageFilter = document.getElementById('package-filter');
     const caseSearch = document.getElementById('case-search');
@@ -548,6 +606,7 @@
       state.filteredCases = [];
       statsGrid.innerHTML = '<div class="panel stat-card"><strong>Total cases</strong><span>0</span><p class="helper">Sign in to see live case metrics.</p></div><div class="panel stat-card"><strong>Awaiting payment</strong><span>0</span><p class="helper">Cases still waiting for the payment step.</p></div><div class="panel stat-card"><strong>Unique visitors</strong><span>0</span><p class="helper">Sessions tracked across the website.</p></div><div class="panel stat-card"><strong>CTA clicks</strong><span>0</span><p class="helper">Tracked conversion intent across key buttons.</p></div>';
       analyticsLayout.innerHTML = '<div class="mini-card"><h3>Top pages</h3><p class="empty">Sign in to see analytics.</p></div><div class="mini-card"><h3>Top clicks</h3><p class="empty">Sign in to see analytics.</p></div><div class="mini-card"><h3>Funnel snapshot</h3><p class="empty">Sign in to see analytics.</p></div><div class="mini-card"><h3>Latest events</h3><p class="empty">Sign in to see analytics.</p></div>';
+      queueBoard.innerHTML = '<div class="queue-card"><h3>Needs attention</h3><p class="empty">Sign in to see the queue.</p></div><div class="queue-card"><h3>Waiting on client</h3><p class="empty">Sign in to see the queue.</p></div><div class="queue-card"><h3>Ready to submit</h3><p class="empty">Sign in to see the queue.</p></div><div class="queue-card"><h3>Blocked or overdue</h3><p class="empty">Sign in to see the queue.</p></div>';
       casesTableWrap.innerHTML = '<p class="empty">Sign in to see cases.</p>';
       caseDetail.innerHTML = 'Choose a case from the inbox to review the full record, exports, and next action.';
     }
@@ -690,6 +749,10 @@
         ['Documents stored', stats.documentsStored, 'Supporting files currently attached to cases.'],
         ['Urgent cases', stats.urgentCases || 0, 'Cases flagged for faster handling.'],
         ['Unassigned cases', stats.unassignedCases || 0, 'Cases that still need an owner.'],
+        ['Needs attention', stats.attentionCases || 0, 'Cases with follow-up pressure, missing owner, or workflow risk.'],
+        ['Overdue cases', stats.overdueCases || 0, 'Cases that have passed the current service target date.'],
+        ['Waiting on client', stats.waitingOnClientCases || 0, 'Cases waiting on payment or supporting documents.'],
+        ['Ready to submit', stats.readyForSubmissionCases || 0, 'Cases ready for the next platform submission.'],
         ['Funeral director cases', stats.partnerCases || 0, 'Cases tied to referral partners.'],
         ['Unique visitors', analytics.uniqueSessions || 0, 'Sessions recorded by the first-party analytics layer.'],
         ['Page views', analytics.pageViews || 0, 'All tracked page views across the site.'],
@@ -700,6 +763,45 @@
           '<strong>' + escapeHtml(label) + '</strong>' +
           '<span>' + escapeHtml(value) + '</span>' +
           '<p class="helper">' + escapeHtml(helper) + '</p>' +
+        '</div>'
+      )).join('');
+    }
+
+    function renderQueueBoard() {
+      const queueSets = [
+        {
+          title: 'Needs attention',
+          items: state.cases.filter((entry) => entry.workflow && entry.workflow.needsAttention),
+          empty: 'No urgent internal follow-ups right now.'
+        },
+        {
+          title: 'Waiting on client',
+          items: state.cases.filter((entry) => entry.workflow && (entry.workflow.waitingOn === 'client_payment' || entry.workflow.waitingOn === 'client_documents')),
+          empty: 'No cases are currently waiting on the client.'
+        },
+        {
+          title: 'Ready to submit',
+          items: state.cases.filter((entry) => entry.workflow && entry.workflow.queueKey === 'submission_queue'),
+          empty: 'No cases are queued for the next platform submission.'
+        },
+        {
+          title: 'Blocked or overdue',
+          items: state.cases.filter((entry) => entry.workflow && (entry.workflow.queueKey === 'blocked' || entry.workflow.overdue)),
+          empty: 'No blocked or overdue cases right now.'
+        }
+      ];
+
+      queueBoard.innerHTML = queueSets.map((queue) => (
+        '<div class="queue-card">' +
+          '<h3>' + escapeHtml(queue.title) + '</h3>' +
+          (queue.items.length
+            ? '<ul>' + queue.items.slice(0, 4).map((entry) => (
+              '<li><strong>' + escapeHtml(entry.reference) + '</strong><br />' +
+              escapeHtml(entry.deceasedName) + ' · ' + escapeHtml((entry.workflow && entry.workflow.queueLabel) || 'Workflow review') +
+              ((entry.workflow && entry.workflow.followUpDate) ? '<br />Follow-up ' + escapeHtml(entry.workflow.followUpDate) : '') +
+              '</li>'
+            )).join('') + '</ul>'
+            : '<p class="empty">' + escapeHtml(queue.empty) + '</p>') +
         '</div>'
       )).join('');
     }
@@ -745,18 +847,27 @@
       const search = caseSearch.value.trim().toLowerCase();
 
       return state.cases.filter((entry) => {
+        const workflow = entry.workflow || {};
         const matchesStatus = statusFilter.value === 'all' || entry.status === statusFilter.value;
         const matchesPackage = packageFilter.value === 'all' || entry.selectedPackage === packageFilter.value;
+        const matchesQueue = queueFilter.value === 'all'
+          || (queueFilter.value === 'attention' && workflow.needsAttention)
+          || (queueFilter.value === 'waiting_on_client' && (workflow.waitingOn === 'client_payment' || workflow.waitingOn === 'client_documents'))
+          || (queueFilter.value === 'submission_queue' && workflow.queueKey === 'submission_queue')
+          || (queueFilter.value === 'blocked' && workflow.queueKey === 'blocked')
+          || (queueFilter.value === 'overdue' && workflow.overdue);
         const haystack = [
           entry.reference,
           entry.clientName,
           entry.clientEmail,
           entry.deceasedName,
           entry.assignedTo,
-          entry.referralPartnerName
+          entry.referralPartnerName,
+          workflow.queueLabel || '',
+          workflow.stageLabel || ''
         ].join(' ').toLowerCase();
         const matchesSearch = !search || haystack.includes(search);
-        return matchesStatus && matchesPackage && matchesSearch;
+        return matchesStatus && matchesPackage && matchesQueue && matchesSearch;
       });
     }
 
@@ -775,7 +886,9 @@
           '<td>' + escapeHtml(entry.deceasedName) + '<br /><span style="color:#6b7a8d;">' + escapeHtml(entry.assignedTo || 'Unassigned') + '</span></td>' +
           '<td><span class="badge">' + escapeHtml(entry.status.replace(/_/g, ' ')) + '</span></td>' +
           '<td>' + escapeHtml(entry.paymentStatus.replace(/_/g, ' ')) + '</td>' +
-          '<td>' + escapeHtml(entry.documentCount || 0) + ' · ' + escapeHtml(entry.platformCount || 0) + ' platforms</td>' +
+          '<td>' + escapeHtml(entry.documentCount || 0) + ' · ' + escapeHtml(entry.platformCount || 0) + ' platforms' +
+            '<br /><span class="badge' + ((entry.workflow && (entry.workflow.overdue || entry.workflow.queueKey === 'blocked')) ? ' alert' : ((entry.workflow && !entry.workflow.needsAttention) ? ' good' : '')) + '" style="margin-top:8px;">' + escapeHtml((entry.workflow && entry.workflow.queueLabel) || 'Workflow review') + '</span>' +
+          '</td>' +
         '</tr>'
       )).join('');
 
@@ -806,6 +919,42 @@
       if (paymentField && paymentStatus) {
         paymentField.value = paymentStatus;
       }
+    }
+
+    function applyWorkflowDefaults(selected) {
+      const workflow = selected.workflow || {};
+      const dueDateField = document.getElementById('detail-due-date');
+      const operatorLaneField = document.getElementById('detail-operator-lane');
+      const nextFollowUpField = document.getElementById('detail-next-follow-up');
+      const priorityField = document.getElementById('detail-priority');
+
+      if (dueDateField && !dueDateField.value && workflow.serviceTargetDate) {
+        dueDateField.value = workflow.serviceTargetDate;
+      }
+
+      if (operatorLaneField && workflow.recommendedLane) {
+        operatorLaneField.value = workflow.recommendedLane;
+      }
+
+      if (nextFollowUpField && workflow.followUpDate) {
+        nextFollowUpField.value = workflow.followUpDate;
+      }
+
+      if (priorityField && priorityField.value === 'standard' && selected.selectedPackage === 'estate') {
+        priorityField.value = 'priority';
+      }
+    }
+
+    function setFollowUpDate(days) {
+      const nextFollowUpField = document.getElementById('detail-next-follow-up');
+
+      if (!nextFollowUpField) {
+        return;
+      }
+
+      const date = new Date();
+      date.setUTCDate(date.getUTCDate() + days);
+      nextFollowUpField.value = date.toISOString().slice(0, 10);
     }
 
     function renderDetail() {
@@ -847,6 +996,8 @@
         : 'Set OPERATIONS_ALERT_EMAIL in Vercel to send internal ops emails.';
       const platformTasks = selected.platformTasks || [];
       const platformSummary = operational.platformSummary || {};
+      const workflow = selected.workflow || {};
+      const automationTasks = workflow.automationTasks || [];
 
       caseDetail.innerHTML = (
         '<div class="detail-grid">' +
@@ -861,6 +1012,8 @@
             '<div><strong>Owner:</strong> ' + escapeHtml(selected.assignedTo || 'Unassigned') + '</div>' +
             '<div><strong>Priority:</strong> ' + escapeHtml(titleize(selected.priority || 'standard')) + '</div>' +
             '<div><strong>Due date:</strong> ' + escapeHtml(selected.dueDate || 'Not set') + '</div>' +
+            '<div><strong>Workflow queue:</strong> ' + escapeHtml(workflow.queueLabel || 'Not set') + '</div>' +
+            '<div><strong>Waiting on:</strong> ' + escapeHtml(titleize(workflow.waitingOn || 'operator')) + '</div>' +
             '<div><strong>Referral source:</strong> ' + escapeHtml(selected.referralSource || 'None recorded') + '</div>' +
             '<div><strong>Referral partner:</strong> ' + escapeHtml(selected.referralPartnerName || 'None recorded') + '</div>' +
             '<div><strong>Referral fee:</strong> ' + escapeHtml(titleize(selected.referralFeeStatus || 'not_applicable')) + '</div>' +
@@ -890,11 +1043,14 @@
               '</ul>' +
             '</div>' +
             '<div class="signal-card">' +
-              '<h3>Private case links</h3>' +
+              '<h3>Workflow engine</h3>' +
               '<ul>' +
-                '<li><a href="' + escapeHtml(selected.caseLinks.status) + '" target="_blank" rel="noreferrer">Open client status page</a></li>' +
-                '<li><a href="' + escapeHtml(selected.caseLinks.payment) + '" target="_blank" rel="noreferrer">Open payment page</a></li>' +
-                '<li><a href="' + escapeHtml(selected.caseLinks.documents) + '" target="_blank" rel="noreferrer">Open documents page</a></li>' +
+                '<li><strong>Stage:</strong> ' + escapeHtml(workflow.stageLabel || 'Workflow review') + '</li>' +
+                '<li><strong>Health:</strong> ' + escapeHtml(titleize(workflow.healthStatus || 'on_track')) + '</li>' +
+                '<li><strong>Service target:</strong> ' + escapeHtml(workflow.serviceTargetDate || 'Not set') + '</li>' +
+                '<li><strong>Next follow-up:</strong> ' + escapeHtml(workflow.followUpDate || 'Not set') + '</li>' +
+                '<li><strong>Recommended lane:</strong> ' + escapeHtml(titleize(workflow.recommendedLane || 'intake_desk')) + '</li>' +
+                '<li><strong>Progress:</strong> ' + escapeHtml(workflow.progressPercent || 0) + '%</li>' +
               '</ul>' +
             '</div>' +
           '</div>' +
@@ -905,6 +1061,8 @@
             '<button class="secondary" type="button" id="quick-awaiting-docs">Awaiting documents</button>' +
             '<button class="secondary" type="button" id="quick-active">Set active</button>' +
             '<button class="secondary" type="button" id="quick-complete">Set completed</button>' +
+            '<button class="secondary" type="button" id="quick-apply-workflow">Apply workflow defaults</button>' +
+            '<button class="secondary" type="button" id="quick-follow-up">Follow up tomorrow</button>' +
             '<a class="button-link secondary" href="' + escapeHtml(selected.caseLinks.documents) + '" target="_blank" rel="noreferrer">Open documents flow</a>' +
           '</div>' +
 
@@ -926,8 +1084,16 @@
               '<input id="detail-due-date" type="date" value="' + escapeHtml(selected.dueDate || '') + '" />' +
             '</div>' +
             '<div class="field">' +
+              '<label for="detail-next-follow-up">Next follow-up date</label>' +
+              '<input id="detail-next-follow-up" type="date" value="' + escapeHtml(selected.nextFollowUpAt || '') + '" />' +
+            '</div>' +
+            '<div class="field">' +
               '<label for="detail-referral-source">Referral source</label>' +
               '<input id="detail-referral-source" type="text" value="' + escapeHtml(selected.referralSource || '') + '" />' +
+            '</div>' +
+            '<div class="field">' +
+              '<label for="detail-operator-lane">Operator lane</label>' +
+              '<input id="detail-operator-lane" type="text" value="' + escapeHtml(selected.operatorLane || '') + '" placeholder="intake_desk, document_desk, platform_desk..." />' +
             '</div>' +
             '<div class="field">' +
               '<label for="detail-status">Case status</label>' +
@@ -994,6 +1160,10 @@
               '<textarea id="detail-referral-notes">' + escapeHtml(selected.referralNotes || '') + '</textarea>' +
             '</div>' +
             '<div class="field full">' +
+              '<label for="detail-blocker-reason">Blocker reason</label>' +
+              '<textarea id="detail-blocker-reason" placeholder="Use this when the case or a platform task is blocked.">' + escapeHtml(selected.blockerReason || '') + '</textarea>' +
+            '</div>' +
+            '<div class="field full">' +
               '<label for="detail-known-platforms">Known platforms</label>' +
               '<textarea id="detail-known-platforms">' + escapeHtml(selected.knownPlatforms || '') + '</textarea>' +
             '</div>' +
@@ -1005,6 +1175,22 @@
               '<label for="detail-internal-notes">Internal notes</label>' +
               '<textarea id="detail-internal-notes">' + escapeHtml(selected.internalNotes || '') + '</textarea>' +
             '</div>' +
+          '</div>' +
+
+          '<div class="section-card">' +
+            '<span class="eyebrow" style="margin-bottom:8px;">Automation</span>' +
+            '<h3 style="font-size:1.28rem; margin-bottom:12px;">Open automation tasks</h3>' +
+            (
+              automationTasks.length
+                ? '<ul class="documents-list">' + automationTasks.map((task) => (
+                  '<li><strong>' + escapeHtml(task.label) + '</strong>' +
+                  escapeHtml(task.reason || '') +
+                  '<br />Due ' + escapeHtml(task.dueDate || 'today') +
+                  ' · Lane ' + escapeHtml(titleize(task.ownerLane || 'intake_desk')) +
+                  '</li>'
+                )).join('') + '</ul>'
+                : '<p class="empty">No automatic tasks are currently open on this case.</p>'
+            ) +
           '</div>' +
 
           '<div class="section-card">' +
@@ -1112,6 +1298,12 @@
       document.getElementById('quick-complete').addEventListener('click', function () {
         quickSet('completed', 'paid');
       });
+      document.getElementById('quick-apply-workflow').addEventListener('click', function () {
+        applyWorkflowDefaults(selected);
+      });
+      document.getElementById('quick-follow-up').addEventListener('click', function () {
+        setFollowUpDate(1);
+      });
       document.getElementById('add-platform-task').addEventListener('click', function () {
         const editor = document.getElementById('platform-editor');
         editor.insertAdjacentHTML('beforeend', createPlatformTaskMarkup({
@@ -1203,8 +1395,10 @@
           body: JSON.stringify({
             id: selected.id,
             assignedTo: document.getElementById('detail-assigned-to').value,
+            operatorLane: document.getElementById('detail-operator-lane').value,
             priority: document.getElementById('detail-priority').value,
             dueDate: document.getElementById('detail-due-date').value,
+            nextFollowUpAt: document.getElementById('detail-next-follow-up').value,
             referralSource: document.getElementById('detail-referral-source').value,
             status: document.getElementById('detail-status').value,
             paymentStatus: document.getElementById('detail-payment-status').value,
@@ -1216,6 +1410,7 @@
             referralPartnerPhone: document.getElementById('detail-referral-phone').value,
             referralFeeStatus: document.getElementById('detail-referral-fee-status').value,
             referralNotes: document.getElementById('detail-referral-notes').value,
+            blockerReason: document.getElementById('detail-blocker-reason').value,
             knownPlatforms: document.getElementById('detail-known-platforms').value,
             profileUrls: document.getElementById('detail-profile-urls').value,
             platformTasks: collectPlatformTasks(),
@@ -1318,6 +1513,7 @@
 
         renderStats();
         renderAnalytics();
+        renderQueueBoard();
         renderCases();
 
         if (!getSelectedCase() && state.filteredCases.length) {
@@ -1454,6 +1650,14 @@
     });
 
     packageFilter.addEventListener('change', function () {
+      renderCases();
+      if (!getSelectedCase() && state.filteredCases.length) {
+        state.selectedCaseId = state.filteredCases[0].id;
+      }
+      renderDetail();
+    });
+
+    queueFilter.addEventListener('change', function () {
       renderCases();
       if (!getSelectedCase() && state.filteredCases.length) {
         state.selectedCaseId = state.filteredCases[0].id;

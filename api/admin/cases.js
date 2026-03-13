@@ -75,8 +75,13 @@ module.exports = async function handler(req, res) {
         knownPlatforms: normalizeString(body.knownPlatforms, 1200),
         profileUrls: normalizeString(body.profileUrls, 2000),
         assignedTo: normalizeString(body.assignedTo, 140),
+        operatorLane: normalizeString(body.operatorLane, 80),
         priority: CASE_PRIORITIES.includes(body.priority) ? body.priority : '',
         dueDate: normalizeString(body.dueDate, 40),
+        nextFollowUpAt: normalizeString(body.nextFollowUpAt, 40),
+        blockerReason: normalizeString(body.blockerReason, 2000),
+        lastClientUpdateAt: normalizeString(body.lastClientUpdateAt, 80),
+        lastOperatorActionAt: normalizeString(body.lastOperatorActionAt, 80),
         referralPartnerType: normalizeString(body.referralPartnerType, 80),
         referralPartnerName: normalizeString(body.referralPartnerName, 180),
         referralPartnerEmail: normalizeString(body.referralPartnerEmail, 180),
@@ -90,7 +95,9 @@ module.exports = async function handler(req, res) {
           status: body.status || '',
           paymentStatus: body.paymentStatus || '',
           assignedTo: body.assignedTo || '',
-          priority: body.priority || ''
+          priority: body.priority || '',
+          operatorLane: body.operatorLane || '',
+          nextFollowUpAt: body.nextFollowUpAt || ''
         }
       });
 

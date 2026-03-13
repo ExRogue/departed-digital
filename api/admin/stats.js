@@ -42,6 +42,10 @@ module.exports = async function handler(req, res) {
       urgentCases: cases.filter((entry) => entry.priority === 'urgent').length,
       partnerCases: cases.filter((entry) => entry.referralPartnerType === 'funeral_director').length,
       unassignedCases: cases.filter((entry) => !entry.assignedTo).length,
+      overdueCases: cases.filter((entry) => entry.workflow && entry.workflow.overdue).length,
+      attentionCases: cases.filter((entry) => entry.workflow && entry.workflow.needsAttention).length,
+      waitingOnClientCases: cases.filter((entry) => entry.workflow && (entry.workflow.waitingOn === 'client_payment' || entry.workflow.waitingOn === 'client_documents')).length,
+      readyForSubmissionCases: cases.filter((entry) => entry.workflow && entry.workflow.queueKey === 'submission_queue').length,
       storage,
       analytics,
       email

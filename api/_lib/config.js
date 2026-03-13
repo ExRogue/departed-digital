@@ -4,6 +4,7 @@ const PACKAGE_CONFIG = {
     label: 'Essential',
     price: 149,
     priceLabel: '£149',
+    targetDays: 14,
     platformsLabel: '2 platforms',
     turnaroundLabel: '14 day target',
     features: [
@@ -18,6 +19,7 @@ const PACKAGE_CONFIG = {
     label: 'Standard',
     price: 249,
     priceLabel: '£249',
+    targetDays: 10,
     platformsLabel: '5 platforms',
     turnaroundLabel: '10 day target',
     features: [
@@ -32,6 +34,7 @@ const PACKAGE_CONFIG = {
     label: 'Estate',
     price: 399,
     priceLabel: '£399',
+    targetDays: 7,
     platformsLabel: 'Unlimited platforms',
     turnaroundLabel: '7 day target',
     features: [

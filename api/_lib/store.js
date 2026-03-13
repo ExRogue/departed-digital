@@ -248,6 +248,253 @@ function buildStatusTimeline(caseRecord) {
   return timeline;
 }
 
+function dateOnlyFrom(value) {
+  const date = value ? new Date(value) : new Date();
+
+  if (Number.isNaN(date.getTime())) {
+    return '';
+  }
+
+  return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()))
+    .toISOString()
+    .slice(0, 10);
+}
+
+function addDays(value, days) {
+  const date = value ? new Date(value) : new Date();
+
+  if (Number.isNaN(date.getTime())) {
+    return '';
+  }
+
+  date.setUTCDate(date.getUTCDate() + Number(days || 0));
+  return dateOnlyFrom(date);
+}
+
+function isPastDate(value) {
+  if (!value) {
+    return false;
+  }
+
+  const target = new Date(value + 'T00:00:00.000Z');
+  const today = new Date();
+  const todayUtc = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate()));
+
+  return target.getTime() < todayUtc.getTime();
+}
+
+function buildWorkflowKit(caseRecord) {
+  const packageConfig = PACKAGE_CONFIG[caseRecord.selectedPackage] || PACKAGE_CONFIG.standard;
+  const targetDate = caseRecord.dueDate || addDays(caseRecord.createdAt, packageConfig.targetDays || 10);
+  const documentCount = ensureArray(caseRecord.documents).length;
+  const platformTasks = ensureArray(caseRecord.platformTasks).map((task, index) => normalizePlatformTask(task, index, caseRecord.preferredOutcome, caseRecord.updatedAt || caseRecord.createdAt));
+  const blockedTasks = platformTasks.filter((task) => task.status === 'blocked');
+  const pendingSubmissionTasks = platformTasks.filter((task) => task.status === 'not_started' || task.status === 'queued');
+  const inFlightTasks = platformTasks.filter((task) => task.status === 'submitted' || task.status === 'waiting');
+  const resolvedTasks = platformTasks.filter((task) => task.status === 'resolved');
+  const isCompleted = caseRecord.status === 'completed';
+  const isBlocked = caseRecord.status === 'blocked' || blockedTasks.length > 0;
+  const overdue = !isCompleted && isPastDate(targetDate);
+  let queueKey = 'intake_queue';
+  let queueLabel = 'Intake queue';
+  let waitingOn = 'operator';
+  let stageKey = 'intake';
+  let stageLabel = 'Intake review';
+  let recommendedLane = 'intake_desk';
+  let followUpDate = caseRecord.nextFollowUpAt || '';
+
+  if (caseRecord.paymentStatus === 'pending' || caseRecord.paymentStatus === 'payment_link_sent') {
+    queueKey = 'payment_follow_up';
+    queueLabel = 'Payment follow-up';
+    waitingOn = 'client_payment';
+    stageKey = 'payment';
+    stageLabel = 'Payment handoff';
+    recommendedLane = caseRecord.selectedPackage === 'estate' || caseRecord.priority === 'urgent'
+      ? 'founder_review'
+      : 'intake_desk';
+    followUpDate = followUpDate || addDays(caseRecord.updatedAt || caseRecord.createdAt, caseRecord.paymentStatus === 'payment_link_sent' ? 2 : 1);
+  } else if (caseRecord.paymentStatus === 'paid' && documentCount === 0) {
+    queueKey = 'document_chase';
+    queueLabel = 'Document chase';
+    waitingOn = 'client_documents';
+    stageKey = 'document_collection';
+    stageLabel = 'Collect supporting documents';
+    recommendedLane = 'document_desk';
+    followUpDate = followUpDate || addDays(caseRecord.updatedAt || caseRecord.createdAt, 2);
+  } else if (documentCount > 0 && (caseRecord.status === 'documents_received' || caseRecord.status === 'awaiting_documents')) {
+    queueKey = 'document_review';
+    queueLabel = 'Document review';
+    waitingOn = 'operator';
+    stageKey = 'document_review';
+    stageLabel = 'Review uploaded documents';
+    recommendedLane = 'document_desk';
+    followUpDate = followUpDate || dateOnlyFrom(new Date());
+  } else if (pendingSubmissionTasks.length && ['active', 'submitted', 'paid', 'documents_received'].includes(caseRecord.status)) {
+    queueKey = 'submission_queue';
+    queueLabel = 'Ready for submission';
+    waitingOn = 'operator';
+    stageKey = 'submission';
+    stageLabel = 'Prepare platform submissions';
+    recommendedLane = 'platform_desk';
+    followUpDate = followUpDate || dateOnlyFrom(new Date());
+  } else if (inFlightTasks.length || caseRecord.status === 'submitted') {
+    queueKey = 'platform_waiting';
+    queueLabel = 'Platform waiting';
+    waitingOn = 'platform_response';
+    stageKey = 'platform_waiting';
+    stageLabel = 'Waiting on platform responses';
+    recommendedLane = 'platform_desk';
+    followUpDate = followUpDate || addDays(caseRecord.updatedAt || caseRecord.createdAt, 2);
+  } else if (isCompleted) {
+    queueKey = 'completion';
+    queueLabel = 'Completion';
+    waitingOn = 'none';
+    stageKey = 'completion';
+    stageLabel = 'Completion and archive';
+    recommendedLane = 'completion_desk';
+    followUpDate = '';
+  }
+
+  if (isBlocked) {
+    queueKey = 'blocked';
+    queueLabel = 'Blocked cases';
+    waitingOn = caseRecord.blockerReason ? 'resolved_blocker' : 'operator';
+    stageKey = 'blocked';
+    stageLabel = 'Resolve blocker';
+    recommendedLane = 'founder_review';
+    followUpDate = followUpDate || dateOnlyFrom(new Date());
+  }
+
+  if (caseRecord.referralPartnerType === 'funeral_director' && !isCompleted && !isBlocked && queueKey === 'completion') {
+    recommendedLane = 'partner_desk';
+  }
+
+  const followUpOverdue = Boolean(followUpDate && isPastDate(followUpDate));
+  const needsAttention = Boolean(
+    overdue
+    || isBlocked
+    || !caseRecord.assignedTo
+    || followUpOverdue
+    || (caseRecord.paymentStatus === 'payment_link_sent')
+    || (caseRecord.paymentStatus === 'paid' && documentCount === 0)
+  );
+
+  const healthStatus = isCompleted
+    ? 'complete'
+    : (isBlocked || overdue ? 'critical' : (needsAttention ? 'attention' : 'on_track'));
+
+  const progressPercent = isCompleted
+    ? 100
+    : Math.min(95, Math.round((((resolvedTasks.length * 2) + (documentCount ? 1 : 0) + (caseRecord.paymentStatus === 'paid' ? 1 : 0)) / Math.max((platformTasks.length * 2) + 2, 4)) * 100));
+
+  const automationTasks = [];
+
+  if (!caseRecord.assignedTo) {
+    automationTasks.push({
+      key: 'assign_owner',
+      label: 'Assign a case owner',
+      state: 'open',
+      dueDate: dateOnlyFrom(new Date()),
+      ownerLane: recommendedLane,
+      reason: 'Unassigned cases are harder to progress consistently.'
+    });
+  }
+
+  if (!caseRecord.dueDate) {
+    automationTasks.push({
+      key: 'set_due_date',
+      label: 'Confirm the service target date',
+      state: 'open',
+      dueDate: targetDate,
+      ownerLane: recommendedLane,
+      reason: packageConfig.turnaroundLabel + ' should be reflected in the case record.'
+    });
+  }
+
+  if (caseRecord.paymentStatus === 'payment_link_sent') {
+    automationTasks.push({
+      key: 'payment_follow_up',
+      label: 'Follow up on the payment link',
+      state: 'open',
+      dueDate: followUpDate,
+      ownerLane: 'intake_desk',
+      reason: 'The payment link has been sent and needs a follow-up check.'
+    });
+  }
+
+  if (caseRecord.paymentStatus === 'paid' && documentCount === 0) {
+    automationTasks.push({
+      key: 'request_documents',
+      label: 'Request supporting documents',
+      state: 'open',
+      dueDate: followUpDate,
+      ownerLane: 'document_desk',
+      reason: 'Payment is confirmed but the death certificate and authority proof are still missing.'
+    });
+  }
+
+  if (documentCount > 0 && (caseRecord.status === 'documents_received' || caseRecord.status === 'awaiting_documents')) {
+    automationTasks.push({
+      key: 'review_documents',
+      label: 'Review uploaded documents',
+      state: 'open',
+      dueDate: followUpDate || dateOnlyFrom(new Date()),
+      ownerLane: 'document_desk',
+      reason: 'Documents are in the file and ready for review.'
+    });
+  }
+
+  if (pendingSubmissionTasks.length) {
+    automationTasks.push({
+      key: 'submit_next_platform',
+      label: 'Submit the next platform request',
+      state: 'open',
+      dueDate: followUpDate || dateOnlyFrom(new Date()),
+      ownerLane: 'platform_desk',
+      reason: `${pendingSubmissionTasks[0].name} is ready to move from queued into submission.`
+    });
+  }
+
+  if (blockedTasks.length) {
+    automationTasks.push({
+      key: 'clear_blocker',
+      label: 'Clear the active blocker',
+      state: 'open',
+      dueDate: followUpDate || dateOnlyFrom(new Date()),
+      ownerLane: 'founder_review',
+      reason: `${blockedTasks[0].name} is blocked and needs intervention before the case can progress.`
+    });
+  }
+
+  if (isCompleted && caseRecord.referralPartnerType === 'funeral_director' && ['pending', 'approved'].includes(caseRecord.referralFeeStatus)) {
+    automationTasks.push({
+      key: 'partner_payout',
+      label: 'Review funeral director referral payout',
+      state: 'open',
+      dueDate: addDays(caseRecord.updatedAt || caseRecord.createdAt, 7),
+      ownerLane: 'partner_desk',
+      reason: 'The case is complete and the partner fee workflow should be closed out.'
+    });
+  }
+
+  return {
+    stageKey,
+    stageLabel,
+    queueKey,
+    queueLabel,
+    waitingOn,
+    recommendedLane,
+    serviceTargetDate: targetDate,
+    followUpDate,
+    overdue,
+    followUpOverdue,
+    needsAttention,
+    healthStatus,
+    progressPercent,
+    automationTasks
+  };
+}
+
 function normalizeCaseSummary(caseRecord) {
   const platformTasks = ensureArray(caseRecord.platformTasks);
 
@@ -277,6 +524,7 @@ function normalizeCaseSummary(caseRecord) {
 
 function buildPublicCase(caseRecord) {
   const operational = buildOperationalKit(caseRecord);
+  const workflow = buildWorkflowKit(caseRecord);
   const platformTasks = ensureArray(caseRecord.platformTasks);
 
   return {
@@ -315,14 +563,24 @@ function buildPublicCase(caseRecord) {
     })),
     statusTimeline: buildStatusTimeline(caseRecord),
     operational,
+    workflow: {
+      stageLabel: workflow.stageLabel,
+      queueLabel: workflow.queueLabel,
+      waitingOn: workflow.waitingOn,
+      serviceTargetDate: workflow.serviceTargetDate,
+      progressPercent: workflow.progressPercent
+    },
     createdAt: caseRecord.createdAt,
     updatedAt: caseRecord.updatedAt
   };
 }
 
 function buildAdminCase(caseRecord) {
+  const workflow = buildWorkflowKit(caseRecord);
+
   return {
     ...buildPublicCase(caseRecord),
+    workflow,
     publicToken: caseRecord.publicToken,
     caseLinks: {
       payment: `/payment?case=${caseRecord.id}&token=${caseRecord.publicToken}&package=${caseRecord.selectedPackage}`,
@@ -340,6 +598,11 @@ function buildAdminCase(caseRecord) {
     referralPartnerPhone: caseRecord.referralPartnerPhone || '',
     referralFeeStatus: caseRecord.referralFeeStatus || 'not_applicable',
     referralNotes: caseRecord.referralNotes || '',
+    operatorLane: caseRecord.operatorLane || '',
+    nextFollowUpAt: caseRecord.nextFollowUpAt || '',
+    blockerReason: caseRecord.blockerReason || '',
+    lastClientUpdateAt: caseRecord.lastClientUpdateAt || '',
+    lastOperatorActionAt: caseRecord.lastOperatorActionAt || '',
     platformTasks: ensureArray(caseRecord.platformTasks),
     internalNotes: caseRecord.internalNotes || '',
     activity: ensureArray(caseRecord.activity)
@@ -350,6 +613,7 @@ function buildOperationalKit(caseRecord) {
   const knownPlatforms = formatList(caseRecord.knownPlatforms);
   const profileUrls = formatList(caseRecord.profileUrls);
   const platformTasks = ensureArray(caseRecord.platformTasks).map((task, index) => normalizePlatformTask(task, index, caseRecord.preferredOutcome, caseRecord.updatedAt || caseRecord.createdAt));
+  const workflow = buildWorkflowKit(caseRecord);
   const documentCount = ensureArray(caseRecord.documents).length;
   const activePlatformTasks = platformTasks.filter((task) => task.status !== 'resolved');
   const blockedPlatformTasks = platformTasks.filter((task) => task.status === 'blocked');
@@ -443,6 +707,8 @@ function buildOperationalKit(caseRecord) {
     `Priority: ${toTitle(caseRecord.priority || 'standard')}.`,
     `Assigned owner: ${caseRecord.assignedTo || 'Not assigned yet'}.`,
     caseRecord.dueDate ? `Due date: ${caseRecord.dueDate}.` : '',
+    `Workflow queue: ${toTitle(workflow.queueLabel)}.`,
+    workflow.followUpDate ? `Follow-up due: ${workflow.followUpDate}.` : '',
     `Outcome requested: ${toTitle(caseRecord.preferredOutcome || 'not_sure')}.`,
     knownPlatforms.length ? `Platforms: ${knownPlatforms.join(', ')}.` : 'Platforms: still to be confirmed.',
     profileUrls.length ? `Profiles or handles: ${profileUrls.join(', ')}.` : 'Profiles or handles: not yet supplied.',
@@ -464,6 +730,7 @@ function buildOperationalKit(caseRecord) {
     platformTasks.length ? `Platforms in scope: ${platformTasks.map((task) => `${task.name} (${toTitle(task.status)})`).join(', ')}.` : '',
     '',
     nextBestAction,
+    workflow.followUpDate ? `Next review date: ${workflow.followUpDate}.` : '',
     '',
     'We will keep the record updated and confirm the next step as soon as anything changes.',
     '',
@@ -495,6 +762,7 @@ function buildOperationalKit(caseRecord) {
       resolved: resolvedPlatformTasks.length,
       blocked: blockedPlatformTasks.length
     },
+    workflow,
     agentChecklist,
     agentSummary,
     clientUpdateDraft,
@@ -688,6 +956,11 @@ async function createCase(input) {
     referralPartnerPhone: trimTo(input.referralPartnerPhone, 80),
     referralFeeStatus: REFERRAL_FEE_STATUSES.includes(input.referralFeeStatus) ? input.referralFeeStatus : 'not_applicable',
     referralNotes: trimTo(input.referralNotes, 2000),
+    operatorLane: '',
+    nextFollowUpAt: '',
+    blockerReason: '',
+    lastClientUpdateAt: createdAt,
+    lastOperatorActionAt: '',
     authorityBasis: '',
     documentNotes: '',
     platformTasks,
@@ -755,6 +1028,8 @@ async function updatePublicCase(id, publicToken, updates) {
       return caseRecord;
     }
 
+    const updateStamp = new Date().toISOString();
+
     if (updates.selectedPackage && PACKAGE_CONFIG[updates.selectedPackage]) {
       caseRecord.selectedPackage = updates.selectedPackage;
       caseRecord.packageLabel = PACKAGE_CONFIG[updates.selectedPackage].label;
@@ -798,12 +1073,16 @@ async function updatePublicCase(id, publicToken, updates) {
       caseRecord.activity.unshift(createActivityEntry(updates.activityEvent, updates.activityMetadata, 'public'));
     }
 
+    caseRecord.lastClientUpdateAt = updateStamp;
+
     return caseRecord;
   });
 }
 
 async function updateAdminCase(id, updates) {
   return updateCase(id, async (caseRecord) => {
+    const updateStamp = new Date().toISOString();
+
     if (updates.selectedPackage && PACKAGE_CONFIG[updates.selectedPackage]) {
       caseRecord.selectedPackage = updates.selectedPackage;
       caseRecord.packageLabel = PACKAGE_CONFIG[updates.selectedPackage].label;
@@ -841,12 +1120,32 @@ async function updateAdminCase(id, updates) {
       caseRecord.assignedTo = trimTo(updates.assignedTo, 140);
     }
 
+    if (typeof updates.operatorLane === 'string') {
+      caseRecord.operatorLane = trimTo(updates.operatorLane, 80);
+    }
+
     if (updates.priority && CASE_PRIORITIES.includes(updates.priority)) {
       caseRecord.priority = updates.priority;
     }
 
     if (typeof updates.dueDate === 'string') {
       caseRecord.dueDate = trimTo(updates.dueDate, 40);
+    }
+
+    if (typeof updates.nextFollowUpAt === 'string') {
+      caseRecord.nextFollowUpAt = trimTo(updates.nextFollowUpAt, 40);
+    }
+
+    if (typeof updates.blockerReason === 'string') {
+      caseRecord.blockerReason = trimTo(updates.blockerReason, 2000);
+    }
+
+    if (typeof updates.lastClientUpdateAt === 'string') {
+      caseRecord.lastClientUpdateAt = trimTo(updates.lastClientUpdateAt, 80);
+    }
+
+    if (typeof updates.lastOperatorActionAt === 'string') {
+      caseRecord.lastOperatorActionAt = trimTo(updates.lastOperatorActionAt, 80);
     }
 
     if (typeof updates.referralPartnerType === 'string') {
@@ -889,6 +1188,10 @@ async function updateAdminCase(id, updates) {
 
     if (updates.activityEvent) {
       caseRecord.activity.unshift(createActivityEntry(updates.activityEvent, updates.activityMetadata, 'admin'));
+    }
+
+    if (!updates.lastOperatorActionAt) {
+      caseRecord.lastOperatorActionAt = updateStamp;
     }
 
     return caseRecord;
@@ -1054,6 +1357,7 @@ async function uploadDocuments(id, publicToken, payload) {
     existingCase.documentNotes = payload.notes || '';
     existingCase.documents = [...uploadedDocuments, ...ensureArray(existingCase.documents)];
     existingCase.status = 'documents_received';
+    existingCase.lastClientUpdateAt = new Date().toISOString();
     existingCase.activity.unshift(createActivityEntry('documents_uploaded', {
       count: uploadedDocuments.length,
       authorityBasis: payload.authorityBasis || ''
