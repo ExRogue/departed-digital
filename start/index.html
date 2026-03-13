@@ -499,7 +499,7 @@
                 <button type="submit" class="cta-primary">Continue to Package and Payment</button>
                 <a class="cta-secondary" href="/#pricing">Compare packages again</a>
               </div>
-              <p class="helper">Next step: package selection and Stripe. No sensitive documents yet.</p>
+              <p class="helper" id="intake-helper">Next step: package selection and Stripe. No sensitive documents yet.</p>
             </form>
           </div>
           <aside class="note-card">
@@ -510,8 +510,8 @@
             <ul>
               <li>No death certificate upload in the first enquiry</li>
               <li>No need to share passwords or direct access</li>
-              <li>Only 4 core fields plus one helpful details box</li>
-              <li>Cleaner handoff into package selection and payment</li>
+              <li>A real case reference is created before payment when backend storage is available</li>
+              <li>Secure document upload happens after payment, not before</li>
             </ul>
           </aside>
         </div>
@@ -531,20 +531,63 @@
 
   <script>
     const intakeForm = document.getElementById('intake-form');
+    const intakeHelper = document.getElementById('intake-helper');
+    const submitButton = intakeForm.querySelector('button[type="submit"]');
+    const params = new URLSearchParams(window.location.search);
 
-    intakeForm.addEventListener('submit', (event) => {
+    intakeForm.addEventListener('submit', async (event) => {
       event.preventDefault();
 
       const intakeData = {
-        clientName: document.getElementById('client-name').value,
-        clientEmail: document.getElementById('client-email').value,
-        deceasedName: document.getElementById('deceased-name').value,
+        clientName: document.getElementById('client-name').value.trim(),
+        clientEmail: document.getElementById('client-email').value.trim(),
+        deceasedName: document.getElementById('deceased-name').value.trim(),
         preferredOutcome: document.getElementById('preferred-outcome').value,
-        caseDetails: document.getElementById('case-details').value
+        caseDetails: document.getElementById('case-details').value.trim(),
+        selectedPackage: params.get('package') || 'standard',
+        referralSource: params.get('ref') || ''
       };
 
-      localStorage.setItem('departedDigitalIntake', JSON.stringify(intakeData));
-      window.location.href = '/payment';
+      submitButton.disabled = true;
+      submitButton.textContent = 'Preparing your case...';
+      intakeHelper.textContent = 'Creating your case reference...';
+
+      try {
+        const response = await fetch('/api/cases', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(intakeData)
+        });
+
+        const payload = await response.json();
+
+        if (!response.ok || !payload.ok) {
+          throw new Error(payload.error || 'Backend storage is not configured yet.');
+        }
+
+        const caseData = {
+          ...payload.case,
+          publicToken: payload.publicToken
+        };
+
+        localStorage.setItem('departedDigitalIntake', JSON.stringify(caseData));
+
+        const nextUrl = new URL('/payment', window.location.origin);
+        nextUrl.searchParams.set('case', payload.case.id);
+        nextUrl.searchParams.set('token', payload.publicToken);
+        nextUrl.searchParams.set('package', payload.case.selectedPackage || intakeData.selectedPackage);
+        window.location.href = nextUrl.toString();
+        return;
+      } catch (error) {
+        localStorage.setItem('departedDigitalIntake', JSON.stringify(intakeData));
+        intakeHelper.textContent = 'The backend is not live in this environment yet, so we are using the browser fallback for this test.';
+        window.location.href = '/payment?package=' + encodeURIComponent(intakeData.selectedPackage || 'standard');
+      } finally {
+        submitButton.disabled = false;
+        submitButton.textContent = 'Continue to Package and Payment';
+      }
     });
   </script>
 </body>

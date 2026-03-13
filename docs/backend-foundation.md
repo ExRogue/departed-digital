@@ -4,6 +4,19 @@
 
 Evolve Departed Digital from a static marketing site into an operational platform without throwing away the current site, URLs, or SEO gains.
 
+## Current implementation status
+
+The site now includes a first backend foundation inside the repo:
+
+- `/api/cases` for case creation, public case lookup, and package updates
+- `/api/events` for public funnel events such as package selection and payment CTA clicks
+- `/api/documents` for supporting document uploads tied to a case
+- `/api/public-config` for payment link and package config exposure
+- `/api/admin/cases` and `/api/admin/stats` for the internal dashboard
+- `/admin` as the first operations dashboard for Steven and the VA
+
+This means the front end no longer has to stay browser-only forever. The intake, payment, and document steps are ready to talk to a real store.
+
 The platform needs to support:
 
 - secure case intake
@@ -48,6 +61,28 @@ The platform needs to support:
 - Store uploaded documents in encrypted object storage
 - Do not rely on email as the long-term source of truth for death certificates or executor documents
 - Use signed upload URLs and short-lived access URLs
+
+## Environment variables to add in Vercel
+
+### Required for production storage
+
+- `BLOB_READ_WRITE_TOKEN`
+
+### Required for the admin dashboard
+
+- `ADMIN_ACCESS_TOKEN`
+
+### Optional for live Stripe handoff
+
+- `STRIPE_PAYMENT_LINK_ESSENTIAL`
+- `STRIPE_PAYMENT_LINK_STANDARD`
+- `STRIPE_PAYMENT_LINK_ESTATE`
+
+### Optional for local smoke testing
+
+- `DEPARTED_DATA_ROOT`
+
+If `BLOB_READ_WRITE_TOKEN` is missing on Vercel, the APIs now return a clear configuration error instead of pretending the backend is live.
 
 ### Analytics
 
@@ -158,6 +193,12 @@ Result:
 - the website becomes genuinely purchase-ready
 - every enquiry becomes structured data
 
+Status:
+
+- Partially complete
+- Real intake API and admin dashboard are now in the repo
+- Stripe still needs real payment links
+
 ## Phase 2: case operations
 
 Ship next:
@@ -171,6 +212,12 @@ Ship next:
 Result:
 
 - fulfilment becomes manageable without inbox chaos
+
+Status:
+
+- In progress
+- Dashboard and uploads now exist in code
+- Production storage still depends on Vercel Blob being configured
 
 ## Phase 3: customer portal
 
@@ -188,12 +235,12 @@ Result:
 
 ## Immediate implementation priorities
 
-1. Replace the current browser-only `/start -> /payment -> /documents` flow with a real intake endpoint
-2. Add Stripe payment links and bind the package CTAs on `/payment` to them
-3. Turn `/documents` into a genuine secure upload step backed by encrypted storage
-4. Capture referral source in the intake flow
-5. Store every enquiry and case in Postgres
-6. Add simple analytics events around package selection, payment-link clicks, and enquiry submission
+1. Add `BLOB_READ_WRITE_TOKEN` in Vercel so case storage and uploads become durable in production
+2. Add `ADMIN_ACCESS_TOKEN` so `/admin` can be used safely live
+3. Add Stripe payment links and bind the package CTAs on `/payment` through `/api/public-config`
+4. Capture referral source from funeral director handoffs more explicitly in the public flow
+5. Move case storage from JSON/blob documents into Postgres when the reporting/admin needs outgrow file-style records
+6. Add server-side analytics events around payment completion and case completion
 
 ## Important constraints
 

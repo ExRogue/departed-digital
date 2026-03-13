@@ -209,37 +209,50 @@
   <main>
     <div class="container">
       <span class="eyebrow">Step 3</span>
-      <h1>Supporting documents are requested after payment, not in the first enquiry.</h1>
-      <p class="intro">This page is the document-collection step for the future secure upload flow. It is intentionally not live for uploads yet, because the actual secure storage backend still needs to be connected.</p>
+      <h1>Upload the supporting documents for this case.</h1>
+      <p class="intro">This step comes after payment. Use it to send the death certificate, proof of authority, and any supporting files without relying on inbox attachments.</p>
 
-      <div class="notice">
-        Only request or upload sensitive documents here once the secure upload backend is connected. Until then, this page acts as the checklist and UI shell for the document stage.
+      <div class="notice" id="storage-notice" style="display:none;">
+        Secure production storage is not configured in this environment yet. The form still shows the right flow, but uploads will only work once the storage environment variables are added.
       </div>
 
       <div class="layout">
         <section class="panel">
-          <h2 style="font-size:1.7rem; margin-bottom: 16px;">Document request form</h2>
+          <h2 style="font-size:1.7rem; margin-bottom: 16px;">Secure document upload</h2>
+          <form id="document-form">
           <div class="field-grid">
-            <div class="field">
-              <label>Death Certificate</label>
-              <input type="file" disabled />
+            <div class="field full">
+              <label for="authority-basis">Your relationship or authority</label>
+              <select id="authority-basis" required>
+                <option value="">Select one</option>
+                <option value="executor">Executor or administrator</option>
+                <option value="next_of_kin">Next of kin or close family member</option>
+                <option value="solicitor">Solicitor or probate professional</option>
+                <option value="funeral_director">Funeral director or staff member</option>
+                <option value="other">Other authorised representative</option>
+              </select>
             </div>
             <div class="field">
-              <label>Proof of Relationship or Authority</label>
-              <input type="file" disabled />
+              <label for="death-certificate">Death Certificate</label>
+              <input id="death-certificate" type="file" accept=".pdf,image/*" />
+            </div>
+            <div class="field">
+              <label for="authority-proof">Proof of Relationship or Authority</label>
+              <input id="authority-proof" type="file" accept=".pdf,image/*" />
             </div>
             <div class="field full">
-              <label>Additional Supporting Files</label>
-              <input type="file" multiple disabled />
+              <label for="supporting-files">Additional Supporting Files</label>
+              <input id="supporting-files" type="file" multiple accept=".pdf,image/*,.doc,.docx" />
             </div>
             <div class="field full">
-              <label>Notes About the Documents</label>
-              <textarea disabled placeholder="Explain anything important about the documents supplied."></textarea>
+              <label for="document-notes">Notes About the Documents</label>
+              <textarea id="document-notes" placeholder="Explain anything important about the documents supplied or anything we should know before platform submissions begin."></textarea>
             </div>
           </div>
-          <p class="disabled-note">Upload controls are intentionally disabled until secure storage and form handling are connected.</p>
-          <a class="button primary" href="/payment">Back to payment</a>
-          <a class="button secondary" href="/start">Edit intake</a>
+          <p class="disabled-note" id="document-helper">Upload the death certificate and proof of authority here once payment has been confirmed.</p>
+          <button class="button primary" type="submit">Upload supporting documents</button>
+          <a class="button secondary" href="/payment">Back to payment</a>
+          </form>
         </section>
 
         <aside class="panel">
@@ -273,20 +286,217 @@
   </footer>
 
   <script>
-    const intakeRaw = localStorage.getItem('departedDigitalIntake');
-    if (intakeRaw) {
-      const intake = JSON.parse(intakeRaw);
+    const params = new URLSearchParams(window.location.search);
+    const caseIdFromUrl = params.get('case') || '';
+    const tokenFromUrl = params.get('token') || '';
+    const form = document.getElementById('document-form');
+    const helper = document.getElementById('document-helper');
+    const summaryList = document.getElementById('document-summary');
+    const storageNotice = document.getElementById('storage-notice');
+    const state = {
+      caseData: null,
+      publicToken: tokenFromUrl || '',
+      maxDocumentCount: 6,
+      maxDocumentSizeBytes: 4 * 1024 * 1024
+    };
+
+    function escapeHtml(value) {
+      return String(value || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function renderSummary(caseData) {
       const summary = [
-        ['Client', intake.clientName || 'Not provided'],
-        ['Email', intake.clientEmail || 'Not provided'],
-        ['Deceased', intake.deceasedName || 'Not provided'],
-        ['Package', intake.packageLabel || intake.selectedPackage || 'Not provided'],
-        ['Authority basis', intake.authorityBasis || 'Not provided'],
-        ['Known platforms', intake.knownPlatforms || 'Not provided']
+        ['Reference', caseData.reference || 'Not provided'],
+        ['Client', caseData.clientName || 'Not provided'],
+        ['Email', caseData.clientEmail || 'Not provided'],
+        ['Deceased', caseData.deceasedName || 'Not provided'],
+        ['Package', caseData.packageLabel || caseData.selectedPackage || 'Not provided'],
+        ['Outcome', caseData.preferredOutcome || 'Not provided']
       ];
 
-      document.getElementById('document-summary').innerHTML = summary.map(([label, value]) => '<li><strong>' + label + ':</strong> ' + value + '</li>').join('');
+      if (caseData.documents && caseData.documents.length) {
+        summary.push(['Documents already received', String(caseData.documents.length)]);
+      }
+
+      summaryList.innerHTML = summary.map(([label, value]) => '<li><strong>' + escapeHtml(label) + ':</strong> ' + escapeHtml(value) + '</li>').join('');
     }
+
+    async function readFileAsData(file, documentType) {
+      const data = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = () => reject(new Error('Could not read file.'));
+        reader.readAsDataURL(file);
+      });
+
+      return {
+        name: file.name,
+        type: file.type || 'application/octet-stream',
+        size: file.size,
+        documentType,
+        data
+      };
+    }
+
+    async function loadConfig() {
+      try {
+        const response = await fetch('/api/public-config');
+        const payload = await response.json();
+        if (response.ok && payload.ok && payload.config && payload.config.limits) {
+          state.maxDocumentCount = payload.config.limits.maxDocumentCount;
+          state.maxDocumentSizeBytes = payload.config.limits.maxDocumentSizeBytes;
+        }
+
+        if (payload.storage && payload.storage.requiresConfiguration) {
+          storageNotice.style.display = 'block';
+        }
+      } catch (error) {
+        // Keep default limits.
+      }
+    }
+
+    async function loadCase() {
+      if (caseIdFromUrl && tokenFromUrl) {
+        try {
+          const response = await fetch('/api/cases?id=' + encodeURIComponent(caseIdFromUrl) + '&token=' + encodeURIComponent(tokenFromUrl));
+          const payload = await response.json();
+
+          if (response.ok && payload.ok) {
+            state.caseData = payload.case;
+            localStorage.setItem('departedDigitalIntake', JSON.stringify({
+              ...payload.case,
+              publicToken: tokenFromUrl
+            }));
+            return true;
+          }
+        } catch (error) {
+          // Fall back to browser state.
+        }
+      }
+
+      const intakeRaw = localStorage.getItem('departedDigitalIntake');
+      if (intakeRaw) {
+        const intake = JSON.parse(intakeRaw);
+        state.caseData = intake;
+        state.publicToken = intake.publicToken || state.publicToken;
+        return true;
+      }
+
+      return false;
+    }
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      if (!state.caseData || !state.caseData.id || !state.publicToken) {
+        helper.textContent = 'Start with the case intake and payment step first so this upload can attach to the right case.';
+        return;
+      }
+
+      const deathCertificate = document.getElementById('death-certificate').files[0];
+      const authorityProof = document.getElementById('authority-proof').files[0];
+      const additionalFiles = Array.from(document.getElementById('supporting-files').files);
+      const authorityBasis = document.getElementById('authority-basis').value;
+      const notes = document.getElementById('document-notes').value.trim();
+      const files = [];
+
+      if (!authorityBasis) {
+        helper.textContent = 'Tell us your relationship or authority before uploading the documents.';
+        return;
+      }
+
+      if (deathCertificate) {
+        files.push(await readFileAsData(deathCertificate, 'death_certificate'));
+      }
+
+      if (authorityProof) {
+        files.push(await readFileAsData(authorityProof, 'authority_proof'));
+      }
+
+      for (const file of additionalFiles) {
+        files.push(await readFileAsData(file, 'supporting_document'));
+      }
+
+      if (!files.length) {
+        helper.textContent = 'Select at least one document to upload.';
+        return;
+      }
+
+      if (files.length > state.maxDocumentCount) {
+        helper.textContent = 'Please upload no more than ' + state.maxDocumentCount + ' files at a time.';
+        return;
+      }
+
+      const oversizedFile = files.find((file) => file.size > state.maxDocumentSizeBytes);
+      if (oversizedFile) {
+        helper.textContent = oversizedFile.name + ' is too large. Keep each file under ' + Math.round(state.maxDocumentSizeBytes / (1024 * 1024)) + 'MB.';
+        return;
+      }
+
+      const submitButton = form.querySelector('button[type="submit"]');
+      submitButton.disabled = true;
+      submitButton.textContent = 'Uploading securely...';
+      helper.textContent = 'Uploading your documents to the case record...';
+
+      try {
+        const response = await fetch('/api/documents', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            id: state.caseData.id,
+            publicToken: state.publicToken,
+            authorityBasis,
+            notes,
+            files
+          })
+        });
+
+        const payload = await response.json();
+
+        if (!response.ok || !payload.ok) {
+          throw new Error(payload.error || 'Upload failed.');
+        }
+
+        state.caseData = payload.case;
+        localStorage.setItem('departedDigitalIntake', JSON.stringify({
+          ...payload.case,
+          publicToken: state.publicToken
+        }));
+        renderSummary(state.caseData);
+        helper.textContent = 'Documents received. We can now review the case reference ' + (state.caseData.reference || '') + ' and confirm the next submission steps.';
+        form.reset();
+      } catch (error) {
+        helper.textContent = error.message || 'We could not upload those documents just now.';
+      } finally {
+        submitButton.disabled = false;
+        submitButton.textContent = 'Upload supporting documents';
+      }
+    });
+
+    (async () => {
+      await loadConfig();
+      const hasCase = await loadCase();
+
+      if (!hasCase) {
+        helper.textContent = 'Start with the intake and payment step first so the documents can be attached to the right case.';
+        return;
+      }
+
+      renderSummary(state.caseData);
+      if (state.caseData.authorityBasis) {
+        document.getElementById('authority-basis').value = state.caseData.authorityBasis;
+      }
+      if (state.caseData.documentNotes) {
+        document.getElementById('document-notes').value = state.caseData.documentNotes;
+      }
+    })();
   </script>
 </body>
 </html>

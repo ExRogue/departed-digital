@@ -375,12 +375,6 @@
   </footer>
 
   <script>
-    const PAYMENT_LINKS = {
-      essential: '',
-      standard: '',
-      estate: ''
-    };
-
     const PACKAGE_DETAILS = {
       essential: {
         label: 'Essential',
@@ -420,83 +414,252 @@
     const params = new URLSearchParams(window.location.search);
     const requestedPackage = params.get('package') || 'standard';
     const intakeRaw = localStorage.getItem('departedDigitalIntake');
+    const caseIdFromUrl = params.get('case') || '';
+    const tokenFromUrl = params.get('token') || '';
     const emptyState = document.getElementById('empty-state');
     const paymentLayout = document.getElementById('payment-layout');
     const packageOptions = document.querySelectorAll('[data-package]');
     const stickyPaybar = document.getElementById('sticky-paybar');
     const stickyPackage = document.getElementById('sticky-package');
     const stickyPaymentLink = document.getElementById('sticky-payment-link');
+    const paymentLink = document.getElementById('payment-link');
+    const paymentNotice = document.getElementById('payment-notice');
+    const paymentHelper = document.getElementById('payment-helper');
+    const summaryList = document.getElementById('summary-list');
+    const state = {
+      config: {
+        paymentLinks: {
+          essential: '',
+          standard: '',
+          estate: ''
+        }
+      },
+      caseData: null,
+      publicToken: tokenFromUrl || '',
+      storageRequiresConfiguration: false
+    };
 
-    if (!intakeRaw) {
-      emptyState.style.display = 'block';
-      paymentLayout.style.display = 'none';
-      document.getElementById('package-switcher').style.display = 'none';
-      stickyPaybar.style.display = 'none';
-    } else {
-      const intake = JSON.parse(intakeRaw);
-      const paymentLink = document.getElementById('payment-link');
-      const paymentNotice = document.getElementById('payment-notice');
+    function escapeHtml(value) {
+      return String(value || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function updateSummary(caseData) {
       const summaryItems = [
-        ['Client', intake.clientName || 'Not provided'],
-        ['Email', intake.clientEmail || 'Not provided'],
-        ['Deceased', intake.deceasedName || 'Not provided'],
-        ['Preferred outcome', intake.preferredOutcome || 'Not provided'],
-        ['Case details', intake.caseDetails || 'Not provided']
+        ['Reference', caseData.reference || 'Generated after backend save'],
+        ['Client', caseData.clientName || 'Not provided'],
+        ['Email', caseData.clientEmail || 'Not provided'],
+        ['Deceased', caseData.deceasedName || 'Not provided'],
+        ['Preferred outcome', caseData.preferredOutcome || 'Not provided'],
+        ['Case details', caseData.caseDetails || 'Not provided']
       ];
 
-      document.getElementById('summary-list').innerHTML = summaryItems.map(([label, value]) => '<li><strong>' + label + ':</strong> ' + value + '</li>').join('');
+      summaryList.innerHTML = summaryItems.map(([label, value]) => '<li><strong>' + escapeHtml(label) + ':</strong> ' + escapeHtml(value) + '</li>').join('');
+    }
 
-      function renderPackage(packageKey) {
-        const details = PACKAGE_DETAILS[packageKey];
-        const configuredLink = PAYMENT_LINKS[packageKey];
+    async function recordPublicEvent(eventType, metadata) {
+      if (!state.caseData || !state.publicToken) {
+        return;
+      }
 
-        document.getElementById('package-name').textContent = details.label;
-        document.getElementById('package-meta').textContent = details.meta;
-        document.getElementById('package-price').innerHTML = '<small>£</small>' + details.price;
-        document.getElementById('package-features').innerHTML = details.features.map((feature) => '<li>' + feature + '</li>').join('');
-        stickyPackage.textContent = details.label + ' · £' + details.price;
+      try {
+        await fetch('/api/events', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            id: state.caseData.id,
+            publicToken: state.publicToken,
+            eventType,
+            metadata
+          })
+        });
+      } catch (error) {
+        // Quietly fail so the payment step remains usable.
+      }
+    }
 
-        packageOptions.forEach((option) => {
-          option.classList.toggle('active', option.getAttribute('data-package') === packageKey);
+    async function syncSelectedPackage(packageKey) {
+      if (!state.caseData || !state.publicToken) {
+        return;
+      }
+
+      try {
+        const response = await fetch('/api/cases', {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            id: state.caseData.id,
+            publicToken: state.publicToken,
+            selectedPackage: packageKey,
+            activityEvent: 'package_selected',
+            activityMetadata: { packageKey }
+          })
         });
 
-        intake.selectedPackage = packageKey;
-        intake.packageLabel = details.label;
-        localStorage.setItem('departedDigitalIntake', JSON.stringify(intake));
+        const payload = await response.json();
+        if (response.ok && payload.ok) {
+          state.caseData = payload.case;
+          localStorage.setItem('departedDigitalIntake', JSON.stringify({
+            ...payload.case,
+            publicToken: state.publicToken
+          }));
+          updateSummary(state.caseData);
+        }
+      } catch (error) {
+        // Leave the UI usable even if sync fails.
+      }
+    }
 
-        if (configuredLink) {
-          paymentLink.href = configuredLink;
-          stickyPaymentLink.href = configuredLink;
-          paymentLink.textContent = 'Continue to secure payment in Stripe';
-          stickyPaymentLink.textContent = 'Continue to secure payment';
-          paymentNotice.style.display = 'none';
-        } else {
-          const mailBody = [
-            'Package: ' + details.label,
-            'Client: ' + (intake.clientName || 'Not provided'),
-            'Email: ' + (intake.clientEmail || 'Not provided'),
-            'Deceased: ' + (intake.deceasedName || 'Not provided'),
-            'Preferred outcome: ' + (intake.preferredOutcome || 'Not provided'),
-            'Case details: ' + (intake.caseDetails || 'Not provided'),
-            '',
-            'Please send the payment link for this case.'
-          ].join('\n');
+    function buildFallbackHref(caseData, details) {
+      const mailBody = [
+        'Reference: ' + (caseData.reference || 'Not generated yet'),
+        'Package: ' + details.label,
+        'Client: ' + (caseData.clientName || 'Not provided'),
+        'Email: ' + (caseData.clientEmail || 'Not provided'),
+        'Deceased: ' + (caseData.deceasedName || 'Not provided'),
+        'Preferred outcome: ' + (caseData.preferredOutcome || 'Not provided'),
+        'Case details: ' + (caseData.caseDetails || 'Not provided'),
+        '',
+        'Please send the payment link for this case.'
+      ].join('\n');
 
-          const fallbackHref = 'mailto:hello@departed.digital?subject=' + encodeURIComponent('Send payment link for ' + details.label + ' case') + '&body=' + encodeURIComponent(mailBody);
-          paymentLink.href = fallbackHref;
-          stickyPaymentLink.href = fallbackHref;
-          paymentLink.textContent = 'Email us for the payment link';
-          stickyPaymentLink.textContent = 'Email us for the payment link';
-          paymentNotice.style.display = 'block';
+      return 'mailto:hello@departed.digital?subject=' + encodeURIComponent('Send payment link for ' + details.label + ' case') + '&body=' + encodeURIComponent(mailBody);
+    }
+
+    function configureCta(packageKey) {
+      const details = PACKAGE_DETAILS[packageKey];
+      const configuredLink = state.config.paymentLinks[packageKey];
+      const fallbackHref = buildFallbackHref(state.caseData, details);
+
+      paymentLink.href = configuredLink || fallbackHref;
+      stickyPaymentLink.href = configuredLink || fallbackHref;
+
+      if (configuredLink) {
+        paymentLink.textContent = 'Continue to secure payment in Stripe';
+        stickyPaymentLink.textContent = 'Continue to secure payment';
+        paymentNotice.style.display = 'none';
+        paymentHelper.textContent = 'After payment, we request the death certificate and proof of authority in the next step.';
+      } else {
+        paymentLink.textContent = 'Email us for the payment link';
+        stickyPaymentLink.textContent = 'Email us for the payment link';
+        paymentNotice.style.display = 'block';
+        paymentNotice.textContent = state.storageRequiresConfiguration
+          ? 'Backend storage needs its production environment variables before this becomes the live payment handoff. The page still keeps the case context and email fallback in place for testing.'
+          : 'Stripe payment links are not configured on this page yet. For now, the button falls back to a pre-filled email. Once the real links are added, this becomes the live payment step.';
+      }
+    }
+
+    async function renderPackage(packageKey) {
+      const details = PACKAGE_DETAILS[packageKey];
+
+      document.getElementById('package-name').textContent = details.label;
+      document.getElementById('package-meta').textContent = details.meta;
+      document.getElementById('package-price').innerHTML = '<small>£</small>' + details.price;
+      document.getElementById('package-features').innerHTML = details.features.map((feature) => '<li>' + feature + '</li>').join('');
+      stickyPackage.textContent = details.label + ' · £' + details.price;
+
+      packageOptions.forEach((option) => {
+        option.classList.toggle('active', option.getAttribute('data-package') === packageKey);
+      });
+
+      state.caseData.selectedPackage = packageKey;
+      state.caseData.packageLabel = details.label;
+      localStorage.setItem('departedDigitalIntake', JSON.stringify({
+        ...state.caseData,
+        publicToken: state.publicToken
+      }));
+
+      configureCta(packageKey);
+      await syncSelectedPackage(packageKey);
+    }
+
+    async function loadConfig() {
+      try {
+        const response = await fetch('/api/public-config');
+        const payload = await response.json();
+
+        if (response.ok && payload.ok) {
+          state.config = payload.config;
+          state.storageRequiresConfiguration = Boolean(payload.storage && payload.storage.requiresConfiguration);
+        }
+      } catch (error) {
+        // Keep default fallback config.
+      }
+    }
+
+    async function loadCaseData() {
+      if (caseIdFromUrl && tokenFromUrl) {
+        try {
+          const response = await fetch('/api/cases?id=' + encodeURIComponent(caseIdFromUrl) + '&token=' + encodeURIComponent(tokenFromUrl));
+          const payload = await response.json();
+
+          if (response.ok && payload.ok) {
+            state.caseData = payload.case;
+            localStorage.setItem('departedDigitalIntake', JSON.stringify({
+              ...payload.case,
+              publicToken: tokenFromUrl
+            }));
+            return true;
+          }
+        } catch (error) {
+          // Fall back to local browser state below.
         }
       }
+
+      if (intakeRaw) {
+        const parsed = JSON.parse(intakeRaw);
+        state.caseData = parsed;
+        state.publicToken = parsed.publicToken || state.publicToken;
+        return true;
+      }
+
+      return false;
+    }
+
+    function attachPaymentTracking() {
+      [paymentLink, stickyPaymentLink].forEach((link) => {
+        link.addEventListener('click', () => {
+          const selectedPackage = state.caseData && state.caseData.selectedPackage ? state.caseData.selectedPackage : 'standard';
+          recordPublicEvent('payment_cta_clicked', { packageKey: selectedPackage });
+        });
+      });
+    }
+
+    async function boot() {
+      const hasCase = await loadCaseData();
+
+      if (!hasCase) {
+        emptyState.style.display = 'block';
+        paymentLayout.style.display = 'none';
+        document.getElementById('package-switcher').style.display = 'none';
+        stickyPaybar.style.display = 'none';
+        return;
+      }
+
+      await loadConfig();
+      updateSummary(state.caseData);
+      attachPaymentTracking();
 
       packageOptions.forEach((option) => {
         option.addEventListener('click', () => renderPackage(option.getAttribute('data-package')));
       });
 
-      renderPackage(PACKAGE_DETAILS[requestedPackage] ? requestedPackage : (PACKAGE_DETAILS[intake.selectedPackage] ? intake.selectedPackage : 'standard'));
+      const initialPackage = PACKAGE_DETAILS[requestedPackage]
+        ? requestedPackage
+        : (PACKAGE_DETAILS[state.caseData.selectedPackage] ? state.caseData.selectedPackage : 'standard');
+
+      await renderPackage(initialPackage);
     }
+
+    boot();
   </script>
 </body>
 </html>
