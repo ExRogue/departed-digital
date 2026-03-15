@@ -814,6 +814,7 @@
       display: grid;
       gap: 14px;
       text-align: left;
+      cursor: pointer;
       transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
     }
     .case-item:hover {
@@ -2967,9 +2968,12 @@
 
       casesTableWrap.innerHTML = '<div class="case-list">' + rows + '</div>';
 
-      casesTableWrap.querySelectorAll('.case-item-open').forEach((row) => {
-        row.addEventListener('click', async () => {
-          await selectCase(row.getAttribute('data-id'));
+      casesTableWrap.querySelectorAll('.case-item').forEach((card) => {
+        card.addEventListener('click', async function (event) {
+          if (event.target.closest('.case-select') || event.target.closest('.inline-action')) {
+            return;
+          }
+          await selectCase(card.getAttribute('data-id'));
         });
       });
 
