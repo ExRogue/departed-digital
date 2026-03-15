@@ -925,6 +925,9 @@
       background: rgba(255, 252, 247, 0.98);
       backdrop-filter: blur(10px);
     }
+    .detail-panel.is-loading {
+      opacity: 0.96;
+    }
     .detail-panel-head {
       display: flex;
       align-items: flex-start;
@@ -942,6 +945,37 @@
     }
     .detail-panel-close {
       flex: 0 0 auto;
+    }
+    .detail-quickbar {
+      position: sticky;
+      top: -1px;
+      z-index: 3;
+      display: grid;
+      gap: 10px;
+      margin: 0 -8px 14px;
+      padding: 14px 8px 12px;
+      background: linear-gradient(180deg, rgba(255,252,247,0.98) 0%, rgba(255,252,247,0.94) 88%, rgba(255,252,247,0) 100%);
+      backdrop-filter: blur(8px);
+    }
+    .detail-quickbar-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .detail-quickbar-header strong {
+      color: var(--navy);
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .detail-quickbar-copy {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+    .detail-quickbar .quick-actions {
+      margin-top: 0;
     }
     .operations-stack {
       display: grid;
@@ -966,12 +1000,24 @@
       border: 1px solid var(--border);
       border-radius: 18px;
       background: #fffdf9;
-      padding: 18px;
+      padding: 18px 18px 16px;
       display: grid;
-      gap: 14px;
+      gap: 12px;
       text-align: left;
       cursor: pointer;
-      transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+      position: relative;
+      transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease, background 0.18s ease;
+    }
+    .case-item::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 18px;
+      bottom: 18px;
+      width: 4px;
+      border-radius: 999px;
+      background: transparent;
+      transition: background 0.18s ease;
     }
     .case-item:hover {
       border-color: rgba(201,168,76,0.5);
@@ -982,6 +1028,10 @@
       background: #fff8e9;
       border-color: rgba(201,168,76,0.65);
       box-shadow: 0 18px 34px rgba(201,168,76,0.15);
+      transform: translateY(-1px);
+    }
+    .case-item.active::before {
+      background: linear-gradient(180deg, var(--gold) 0%, #e6c45d 100%);
     }
     .case-item-open {
       border: none;
@@ -1022,9 +1072,21 @@
       gap: 14px;
       flex-wrap: wrap;
     }
+    .case-item-kicker {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 700;
+    }
     .case-item-ref {
       display: grid;
       gap: 6px;
+      min-width: 0;
     }
     .case-item-ref strong {
       color: var(--navy);
@@ -1034,6 +1096,12 @@
       color: var(--text-muted);
       font-size: 0.9rem;
     }
+    .case-item-next {
+      color: var(--text-muted);
+      font-size: 0.92rem;
+      line-height: 1.45;
+      overflow-wrap: anywhere;
+    }
     .case-item-pills {
       display: flex;
       gap: 8px;
@@ -1042,8 +1110,8 @@
     }
     .case-item-grid {
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 14px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px 14px;
     }
     .case-fact {
       display: grid;
@@ -1070,6 +1138,8 @@
       color: var(--text-muted);
       font-size: 0.88rem;
       align-items: center;
+      border-top: 1px solid rgba(26,39,68,0.08);
+      padding-top: 12px;
     }
     .case-item-meta strong {
       color: var(--navy);
@@ -1289,6 +1359,13 @@
       }
       .operations-main-grid.has-selected-case .cases-panel {
         padding-right: 26px;
+      }
+      .detail-quickbar {
+        position: static;
+        margin: 0 0 14px;
+        padding: 0;
+        background: none;
+        backdrop-filter: none;
       }
     }
     @media (max-width: 900px) {
@@ -2335,6 +2412,27 @@
       renderCaseActionTray();
     }
 
+    function isInteractiveElement(target) {
+      return Boolean(target && target.closest('input, textarea, select, button, a, [contenteditable="true"]'));
+    }
+
+    function moveCaseSelection(direction) {
+      if (!state.filteredCases.length) {
+        return;
+      }
+
+      const currentIndex = state.filteredCases.findIndex((entry) => entry.id === state.selectedCaseId);
+      const fallbackIndex = direction > 0 ? 0 : state.filteredCases.length - 1;
+      const nextIndex = currentIndex === -1
+        ? fallbackIndex
+        : Math.max(0, Math.min(state.filteredCases.length - 1, currentIndex + direction));
+      const nextCase = state.filteredCases[nextIndex];
+
+      if (nextCase) {
+        selectCase(nextCase.id).catch(function () {});
+      }
+    }
+
     function applyUpdatedCase(caseRecord, options = {}) {
       if (!caseRecord || !caseRecord.id) {
         return;
@@ -2615,6 +2713,9 @@
       state.selectedCaseLoading = !hasExistingDetail;
       state.selectedCaseLoadingSection = hasExistingDetail ? requestedSections.join(',') : '';
       state.selectedCaseError = '';
+      if (detailPanel) {
+        detailPanel.classList.toggle('is-loading', !hasExistingDetail);
+      }
       renderDetail();
 
       try {
@@ -2634,6 +2735,9 @@
         state.selectedCaseLoading = false;
         state.selectedCaseLoadingSection = '';
         state.selectedCaseError = '';
+        if (detailPanel) {
+          detailPanel.classList.remove('is-loading');
+        }
         clearDetailDirty();
         renderCases();
         renderDetail();
@@ -2642,6 +2746,9 @@
         state.selectedCaseLoading = false;
         state.selectedCaseLoadingSection = '';
         state.selectedCaseError = error.message || 'We could not load the selected case.';
+        if (detailPanel) {
+          detailPanel.classList.remove('is-loading');
+        }
         renderDetail();
         throw error;
       }
@@ -3383,8 +3490,10 @@
             '<button class="case-item-open" type="button" data-id="' + escapeHtml(entry.id) + '">' +
             '<div class="case-item-head">' +
               '<div class="case-item-ref">' +
+                '<div class="case-item-kicker"><span>' + escapeHtml(entry.reference) + '</span><span>·</span><span>' + escapeHtml(entry.packageLabel || 'Package not set') + '</span></div>' +
                 '<strong>' + escapeHtml(entry.reference) + '</strong>' +
                 '<span class="case-item-subtitle">' + escapeHtml(entry.packageLabel || 'Package not set') + ' · Priority ' + escapeHtml(titleize(entry.priority || 'standard')) + '</span>' +
+                '<span class="case-item-next">Next: ' + escapeHtml(workflow.stageLabel || 'Workflow review') + '</span>' +
               '</div>' +
               '<div class="case-item-pills">' +
                 (entry.archivedAt ? '<span class="badge alert">Archived</span>' : '') +
@@ -3860,22 +3969,25 @@
               '<div class="mini-card"><h3>Scope</h3><p>' + escapeHtml((platformSummary.total || 0) + ' platforms · ' + (selected.documentCount || 0) + ' docs') + '</p></div>' +
             '</div>' +
           '</div>' +
+          '<div class="detail-quickbar">' +
+            '<div class="detail-quickbar-header">' +
+              '<strong>Primary founder actions</strong>' +
+              '<span class="detail-quickbar-copy">Use these first. Everything else can wait until you need the deeper record.</span>' +
+            '</div>' +
+            '<div class="quick-actions">' +
+              '<button class="primary" type="button" id="save-case-top"' + saveDisabledAttr + '>Save case update</button>' +
+              '<button class="secondary" type="button" id="quick-payment-link"' + (automatedCheckoutEnabled ? ' disabled' : '') + '>' + escapeHtml(paymentLabels.linkQuick) + '</button>' +
+              '<button class="secondary" type="button" id="quick-paid">' + escapeHtml(paymentLabels.paidQuick) + '</button>' +
+              '<button class="secondary" type="button" id="quick-awaiting-docs">Request documents</button>' +
+              '<button class="secondary" type="button" id="quick-active">Set active</button>' +
+              '<button class="secondary" type="button" id="quick-complete">Set completed</button>' +
+            '</div>' +
+          '</div>' +
           '<div class="action-cluster">' +
-            '<h3>Fast actions</h3>' +
+            '<h3>Support actions</h3>' +
             '<p>' + escapeHtml(automatedCheckoutEnabled
               ? 'Stripe owns checkout. Use this area to move the case forward and handle exceptions only.'
               : 'Act first, then work deeper only if the case needs it. Use these buttons to log the customer handoff, not process payment yourself.') + '</p>' +
-            '<div class="action-group">' +
-              '<h4>Primary actions</h4>' +
-              '<div class="quick-actions">' +
-                '<button class="primary" type="button" id="save-case-top"' + saveDisabledAttr + '>Save case update</button>' +
-                '<button class="secondary" type="button" id="quick-payment-link"' + (automatedCheckoutEnabled ? ' disabled' : '') + '>' + escapeHtml(paymentLabels.linkQuick) + '</button>' +
-                '<button class="secondary" type="button" id="quick-paid">' + escapeHtml(paymentLabels.paidQuick) + '</button>' +
-                '<button class="secondary" type="button" id="quick-awaiting-docs">Request documents</button>' +
-                '<button class="secondary" type="button" id="quick-active">Set active</button>' +
-                '<button class="secondary" type="button" id="quick-complete">Set completed</button>' +
-              '</div>' +
-            '</div>' +
             '<div class="action-group">' +
               '<h4>Support actions</h4>' +
               '<div class="quick-actions">' +
@@ -4915,6 +5027,39 @@
 
       event.preventDefault();
       loginDashboardButton.click();
+    });
+
+    document.addEventListener('keydown', function (event) {
+      if (!state.authenticated || state.activeView !== 'operations') {
+        return;
+      }
+
+      if (isInteractiveElement(event.target)) {
+        return;
+      }
+
+      if (event.key === 'Escape' && state.selectedCaseId) {
+        event.preventDefault();
+        closeSelectedCase();
+        return;
+      }
+
+      if (event.key === 'ArrowDown') {
+        event.preventDefault();
+        moveCaseSelection(1);
+        return;
+      }
+
+      if (event.key === 'ArrowUp') {
+        event.preventDefault();
+        moveCaseSelection(-1);
+        return;
+      }
+
+      if (event.key === 'Enter' && !state.selectedCaseId && state.filteredCases.length) {
+        event.preventDefault();
+        selectCase(state.filteredCases[0].id).catch(function () {});
+      }
     });
 
     statusFilter.addEventListener('change', function () {
