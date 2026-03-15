@@ -3900,7 +3900,12 @@ async function getAdminCaseDocumentAsset(caseId, documentId) {
 
   if (getStorageMode() === 'blob') {
     const response = await get(document.storagePath, { access: 'private' });
-    const arrayBuffer = await response.arrayBuffer();
+
+    if (!response || response.statusCode !== 200 || !response.stream) {
+      return null;
+    }
+
+    const arrayBuffer = await new Response(response.stream).arrayBuffer();
     return {
       caseRecord,
       document,
