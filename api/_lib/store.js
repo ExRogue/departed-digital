@@ -3899,7 +3899,7 @@ async function getAdminCaseDocumentAsset(caseId, documentId) {
   }
 
   if (getStorageMode() === 'blob') {
-    const response = await get(document.storagePath);
+    const response = await get(document.storagePath, { access: 'private' });
     const arrayBuffer = await response.arrayBuffer();
     return {
       caseRecord,
