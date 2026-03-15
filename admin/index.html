@@ -221,6 +221,16 @@
       color: var(--navy);
       border: 1px solid var(--border);
     }
+    button.is-busy, .button-link.is-busy {
+      opacity: 0.82;
+      cursor: progress;
+      transform: none;
+    }
+    button.is-success, .button-link.is-success {
+      border-color: rgba(47, 125, 81, 0.32);
+      background: rgba(47, 125, 81, 0.12);
+      color: #2d7048;
+    }
     button:disabled, .button-link[aria-disabled="true"] {
       opacity: 0.45;
       cursor: not-allowed;
@@ -1901,6 +1911,62 @@
       }
     }
 
+    function setHelperMessage(helperId, message) {
+      const helper = document.getElementById(helperId);
+      if (helper) {
+        helper.textContent = message;
+      }
+    }
+
+    function beginButtonFeedback(button, busyLabel) {
+      if (!button) {
+        return null;
+      }
+
+      if (!button.dataset.idleLabel) {
+        button.dataset.idleLabel = button.textContent;
+      }
+
+      button.disabled = true;
+      button.classList.remove('is-success');
+      button.classList.add('is-busy');
+      if (busyLabel) {
+        button.textContent = busyLabel;
+      }
+
+      return {
+        button,
+        idleLabel: button.dataset.idleLabel
+      };
+    }
+
+    function endButtonFeedback(context, options = {}) {
+      if (!context || !context.button) {
+        return;
+      }
+
+      const button = context.button;
+      const idleLabel = context.idleLabel || button.dataset.idleLabel || button.textContent;
+      const successLabel = options.successLabel || '';
+      const resetDelay = typeof options.resetDelay === 'number' ? options.resetDelay : 1200;
+
+      button.classList.remove('is-busy');
+
+      if (successLabel) {
+        button.classList.add('is-success');
+        button.textContent = successLabel;
+        window.setTimeout(function () {
+          button.classList.remove('is-success');
+          button.disabled = false;
+          button.textContent = idleLabel;
+        }, resetDelay);
+        return;
+      }
+
+      button.disabled = false;
+      button.textContent = idleLabel;
+    }
+
     function getSelectedCaseSummary() {
       return state.cases.find((entry) => entry.id === state.selectedCaseId) || null;
     }
@@ -3023,7 +3089,7 @@
       casesTableWrap.querySelectorAll('.inline-action').forEach((button) => {
         button.addEventListener('click', async function (event) {
           event.stopPropagation();
-          await quickUpdateCase(button.getAttribute('data-id'), button.getAttribute('data-inline-action'));
+          await quickUpdateCase(button.getAttribute('data-id'), button.getAttribute('data-inline-action'), button);
         });
       });
 
@@ -3031,7 +3097,7 @@
       renderSavedViewCounts();
     }
 
-    async function quickUpdateCase(caseId, action) {
+    async function quickUpdateCase(caseId, action, actionButton) {
       const caseSummary = state.cases.find((entry) => entry.id === caseId);
       if (!caseSummary || !canWriteCases()) {
         return;
@@ -3059,8 +3125,9 @@
         return;
       }
 
+      const feedback = beginButtonFeedback(actionButton, 'Updating...');
+
       try {
-        const loadedWorkflowSections = hasLoadedCaseSections(selected.id, ['workflow']);
         const result = await requestJson('/api/admin/cases', {
           method: 'PATCH',
           headers: getHeaders(),
@@ -3076,9 +3143,11 @@
 
         applyUpdatedCase(payload.case, { select: state.selectedCaseId === caseId });
         refreshOperationsSummary().catch(function () {});
-        adminHelper.textContent = 'Case updated.';
+        setHelperMessage('admin-helper', 'Case updated.');
+        endButtonFeedback(feedback, { successLabel: 'Done' });
       } catch (error) {
-        adminHelper.textContent = error.message || 'Could not update the case.';
+        setHelperMessage('admin-helper', error.message || 'Could not update the case.');
+        endButtonFeedback(feedback);
       }
     }
 
@@ -3211,14 +3280,14 @@
       markDetailDirty();
     }
 
-    async function persistLifecyclePreset(action) {
+    async function persistLifecyclePreset(action, actionButton) {
       const selected = getSelectedCase();
 
       if (!canWriteCases() || !selected) {
         return;
       }
 
-      await quickUpdateCase(selected.id, action);
+      await quickUpdateCase(selected.id, action, actionButton);
     }
 
     function renderDetail() {
@@ -3609,7 +3678,7 @@
       document.getElementById('detail-referral-type').value = selected.referralPartnerType || 'direct';
       document.getElementById('detail-referral-fee-status').value = selected.referralFeeStatus || 'not_applicable';
 
-      document.getElementById('quick-payment-link').addEventListener('click', async function () {
+      document.getElementById('quick-payment-link').addEventListener('click', async function (event) {
         if (automatedCheckoutEnabled) {
           const helper = document.getElementById('save-helper');
           if (helper) {
@@ -3617,19 +3686,19 @@
           }
           return;
         }
-        await persistLifecyclePreset('payment_link_sent');
+        await persistLifecyclePreset('payment_link_sent', event.currentTarget);
       });
-      document.getElementById('quick-paid').addEventListener('click', async function () {
-        await persistLifecyclePreset('paid');
+      document.getElementById('quick-paid').addEventListener('click', async function (event) {
+        await persistLifecyclePreset('paid', event.currentTarget);
       });
-      document.getElementById('quick-awaiting-docs').addEventListener('click', async function () {
-        await persistLifecyclePreset('awaiting_documents');
+      document.getElementById('quick-awaiting-docs').addEventListener('click', async function (event) {
+        await persistLifecyclePreset('awaiting_documents', event.currentTarget);
       });
-      document.getElementById('quick-active').addEventListener('click', async function () {
-        await persistLifecyclePreset('active');
+      document.getElementById('quick-active').addEventListener('click', async function (event) {
+        await persistLifecyclePreset('active', event.currentTarget);
       });
-      document.getElementById('quick-complete').addEventListener('click', async function () {
-        await persistLifecyclePreset('completed');
+      document.getElementById('quick-complete').addEventListener('click', async function (event) {
+        await persistLifecyclePreset('completed', event.currentTarget);
       });
       document.getElementById('quick-apply-workflow').addEventListener('click', function () {
         applyWorkflowDefaults(selected);
@@ -3817,19 +3886,21 @@
 
       const archiveButton = document.getElementById('archive-case');
       if (archiveButton) {
-        archiveButton.addEventListener('click', function () {
+        archiveButton.addEventListener('click', function (event) {
           if (selected.archivedAt) {
-            restoreSelectedCase();
+            restoreSelectedCase(event.currentTarget);
             return;
           }
 
-          archiveSelectedCase();
+          archiveSelectedCase(event.currentTarget);
         });
       }
 
       const deleteButton = document.getElementById('delete-case');
       if (deleteButton) {
-        deleteButton.addEventListener('click', deleteSelectedCase);
+        deleteButton.addEventListener('click', function (event) {
+          deleteSelectedCase(event.currentTarget);
+        });
       }
 
       if (!canWrite) {
@@ -3865,10 +3936,8 @@
         return;
       }
 
-      saveButtons.forEach(function (button) {
-        button.disabled = true;
-        button.textContent = 'Saving...';
-      });
+      const feedbackContexts = saveButtons.map((button) => beginButtonFeedback(button, 'Saving...'));
+      let saveSucceeded = false;
       helper.textContent = 'Saving case updates...';
 
       try {
@@ -3913,24 +3982,26 @@
         applyUpdatedCase(payload.case);
         refreshOperationsSummary().catch(function () {});
         helper.textContent = 'Case updated successfully.';
+        saveSucceeded = true;
       } catch (error) {
         helper.textContent = error.message || 'Could not save the case.';
       } finally {
-        saveButtons.forEach(function (button) {
-          button.disabled = false;
-          button.textContent = 'Save case update';
+        feedbackContexts.forEach(function (context) {
+          endButtonFeedback(context, saveSucceeded ? { successLabel: 'Saved' } : {});
         });
       }
     }
 
-    async function archiveSelectedCase() {
+    async function archiveSelectedCase(actionButton) {
       const selected = getSelectedCase();
       const helper = document.getElementById('save-helper');
+      const feedback = beginButtonFeedback(actionButton, 'Archiving...');
 
       if (!selected || !canArchiveCases()) {
         if (helper) {
           helper.textContent = 'Your role cannot archive cases.';
         }
+        endButtonFeedback(feedback);
         return;
       }
 
@@ -3953,21 +4024,25 @@
         if (helper) {
           helper.textContent = 'Case archived.';
         }
+        endButtonFeedback(feedback, { successLabel: 'Archived' });
       } catch (error) {
         if (helper) {
           helper.textContent = error.message || 'Could not archive the case.';
         }
+        endButtonFeedback(feedback);
       }
     }
 
-    async function restoreSelectedCase() {
+    async function restoreSelectedCase(actionButton) {
       const selected = getSelectedCase();
       const helper = document.getElementById('save-helper');
+      const feedback = beginButtonFeedback(actionButton, 'Restoring...');
 
       if (!selected || !canArchiveCases()) {
         if (helper) {
           helper.textContent = 'Your role cannot restore cases.';
         }
+        endButtonFeedback(feedback);
         return;
       }
 
@@ -3989,14 +4064,16 @@
         if (helper) {
           helper.textContent = 'Case restored to the working inbox.';
         }
+        endButtonFeedback(feedback, { successLabel: 'Restored' });
       } catch (error) {
         if (helper) {
           helper.textContent = error.message || 'Could not restore the case.';
         }
+        endButtonFeedback(feedback);
       }
     }
 
-    async function deleteSelectedCase() {
+    async function deleteSelectedCase(actionButton) {
       const selected = getSelectedCase();
       const helper = document.getElementById('save-helper');
 
@@ -4011,6 +4088,8 @@
       if (!confirmed) {
         return;
       }
+
+      const feedback = beginButtonFeedback(actionButton, 'Deleting...');
 
       try {
         const result = await requestJson('/api/admin/cases', {
@@ -4032,10 +4111,12 @@
         if (helper) {
           helper.textContent = 'Case deleted permanently.';
         }
+        endButtonFeedback(feedback, { successLabel: 'Deleted' });
       } catch (error) {
         if (helper) {
           helper.textContent = error.message || 'Could not delete the case.';
         }
+        endButtonFeedback(feedback);
       }
     }
 
