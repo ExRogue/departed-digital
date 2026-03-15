@@ -3885,6 +3885,41 @@ async function deleteCase(id, actor = 'admin') {
   };
 }
 
+async function getAdminCaseDocumentAsset(caseId, documentId) {
+  const caseRecord = await getAdminCaseById(caseId, { sections: ['comms'] });
+
+  if (!caseRecord) {
+    return null;
+  }
+
+  const document = ensureArray(caseRecord.documents).find((entry) => entry.id === documentId);
+
+  if (!document) {
+    return null;
+  }
+
+  if (getStorageMode() === 'blob') {
+    const response = await get(document.storagePath);
+    const arrayBuffer = await response.arrayBuffer();
+    return {
+      caseRecord,
+      document,
+      buffer: Buffer.from(arrayBuffer),
+      contentType: document.contentType || 'application/octet-stream',
+      fileName: document.fileName || `${document.id}.bin`
+    };
+  }
+
+  const buffer = await fs.readFile(document.storagePath);
+  return {
+    caseRecord,
+    document,
+    buffer,
+    contentType: document.contentType || 'application/octet-stream',
+    fileName: document.fileName || `${document.id}.bin`
+  };
+}
+
 module.exports = {
   PaymentRequiredError,
   StoreConfigurationError,
@@ -3896,6 +3931,7 @@ module.exports = {
   createCase,
   deleteCase,
   getAdminCaseById,
+  getAdminCaseDocumentAsset,
   getAnalyticsOverview,
   getCaseForAdmin,
   getAnalyticsSummary,

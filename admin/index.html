@@ -1209,10 +1209,27 @@
       padding: 14px 16px;
       color: var(--text-muted);
     }
+    .documents-list li {
+      display: grid;
+      gap: 10px;
+    }
     .timeline strong, .documents-list strong {
       display: block;
       color: var(--navy);
       margin-bottom: 4px;
+    }
+    .document-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .document-meta-line {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      color: var(--text-muted);
+      font-size: 0.9rem;
     }
     .empty {
       color: var(--text-muted);
@@ -1593,6 +1610,15 @@
         dateStyle: 'medium',
         timeStyle: 'short'
       });
+    }
+
+    function formatFileSize(value) {
+      const size = Number(value || 0);
+
+      if (!size) return '0 B';
+      if (size < 1024) return size + ' B';
+      if (size < 1024 * 1024) return (size / 1024).toFixed(1) + ' KB';
+      return (size / (1024 * 1024)).toFixed(1) + ' MB';
     }
 
     function formatTextArea(value) {
@@ -3593,10 +3619,17 @@
       const workflowSectionLoaded = hasLoadedCaseSections(selected.id, ['workflow']);
       const commsSectionLoaded = hasLoadedCaseSections(selected.id, ['workflow', 'comms']);
       const sectionLoadingLabel = state.selectedCaseLoadingSection;
+      const adminCaseBasePath = '/api/admin/cases?id=' + encodeURIComponent(selected.id);
       const documents = (selected.documents || []).length
         ? '<ul class="documents-list">' + selected.documents.map((document) => (
-          '<li><strong>' + escapeHtml(document.documentType.replace(/_/g, ' ')) + '</strong>' +
-          escapeHtml(document.fileName) + '<br />Uploaded ' + escapeHtml(formatDate(document.uploadedAt)) + '</li>'
+          '<li>' +
+            '<div><strong>' + escapeHtml(document.documentType.replace(/_/g, ' ')) + '</strong>' +
+            escapeHtml(document.fileName) + '</div>' +
+            '<div class="document-meta-line"><span>Uploaded ' + escapeHtml(formatDate(document.uploadedAt)) + '</span><span>' + escapeHtml(formatFileSize(document.size)) + '</span></div>' +
+            '<div class="document-actions">' +
+              '<a class="button-link secondary" href="' + escapeHtml(adminCaseBasePath + '&download=' + encodeURIComponent(document.id)) + '">Download file</a>' +
+            '</div>' +
+          '</li>'
         )).join('') + '</ul>'
         : '<p class="empty">No supporting documents received yet.</p>';
 
@@ -3861,6 +3894,26 @@
                   '</div>' +
                 '</div>' +
               '</div>' +
+              '<div class="overview-card">' +
+                '<h3>Submission pack</h3>' +
+                '<div class="link-actions">' +
+                  '<div class="link-action">' +
+                    '<h4>Download case pack (.md)</h4>' +
+                    '<p>Best for a human review before sending the case to Meta or another platform.</p>' +
+                    '<a class="button-link secondary" href="' + escapeHtml(adminCaseBasePath + '&export=markdown') + '">Download markdown pack</a>' +
+                  '</div>' +
+                  '<div class="link-action">' +
+                    '<h4>Download case pack (.json)</h4>' +
+                    '<p>Best for an AI agent or structured handoff into another workflow.</p>' +
+                    '<a class="button-link secondary" href="' + escapeHtml(adminCaseBasePath + '&export=json') + '">Download JSON pack</a>' +
+                  '</div>' +
+                  '<div class="link-action">' +
+                    '<h4>Review documents</h4>' +
+                    '<p>Open the documents section when you need the raw files and timeline together.</p>' +
+                    '<button class="secondary" id="open-comms-tab" type="button">Open documents panel</button>' +
+                  '</div>' +
+                '</div>' +
+              '</div>' +
               '<details class="compact-details">' +
                 '<summary>Operational details</summary>' +
                 '<div class="details-grid">' +
@@ -4059,6 +4112,12 @@
         setDetailNotice('Documents link copied.', 'success');
         flashButtonSuccess(document.getElementById('copy-documents-link'), 'Copied');
       });
+      const openCommsTabButton = document.getElementById('open-comms-tab');
+      if (openCommsTabButton) {
+        openCommsTabButton.addEventListener('click', function () {
+          setDetailView('comms');
+        });
+      }
       const loadClientEmailButton = document.getElementById('load-client-email');
       if (loadClientEmailButton) {
         loadClientEmailButton.addEventListener('click', function () {
