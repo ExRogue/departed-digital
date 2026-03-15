@@ -802,6 +802,14 @@
       gap: 24px;
       align-items: start;
     }
+    .operations-main-grid.has-selected-case .detail-panel {
+      order: -1;
+      border-color: rgba(201,168,76,0.55);
+      box-shadow: 0 22px 44px rgba(26,39,68,0.1);
+    }
+    .operations-main-grid.has-selected-case .cases-panel {
+      background: rgba(255, 253, 249, 0.82);
+    }
     .case-list {
       display: grid;
       gap: 14px;
@@ -1318,6 +1326,8 @@
     const casesTableWrap = document.getElementById('cases-table-wrap');
     const caseDetail = document.getElementById('case-detail');
     const detailPanel = document.querySelector('.detail-panel');
+    const casesPanel = document.querySelector('.cases-panel');
+    const operationsMainGrid = document.querySelector('.operations-main-grid');
     const queueFilter = document.getElementById('queue-filter');
     const statusFilter = document.getElementById('status-filter');
     const packageFilter = document.getElementById('package-filter');
@@ -1996,7 +2006,20 @@
       renderQueueBoard();
       renderCases();
       ensureVisibleSelection();
+      syncWorkspaceFocusMode();
       renderDetail();
+    }
+
+    function syncWorkspaceFocusMode() {
+      if (!operationsMainGrid) {
+        return;
+      }
+
+      const hasSelection = Boolean(state.selectedCaseId);
+      operationsMainGrid.classList.toggle('has-selected-case', hasSelection);
+      if (casesPanel) {
+        casesPanel.setAttribute('data-focus-state', hasSelection ? 'secondary' : 'primary');
+      }
     }
 
     function applyUpdatedCase(caseRecord, options = {}) {
@@ -2326,6 +2349,7 @@
       state.selectedCaseId = caseId;
       state.selectedCaseError = '';
       clearDetailDirty();
+      syncWorkspaceFocusMode();
       renderCases();
       renderDetail();
       if (detailPanel) {
@@ -2350,6 +2374,7 @@
       }
 
       state.selectedCaseId = '';
+      syncWorkspaceFocusMode();
     }
 
     function titleize(value) {
