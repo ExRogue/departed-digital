@@ -10,6 +10,7 @@ const {
 } = require('../_lib/config');
 const { allowCors, methodNotAllowed, parseJsonBody, sendError, sendJson } = require('../_lib/http');
 const { requireAdminAccess } = require('../_lib/security');
+const JSZip = require('jszip');
 const {
   archiveAdminCase,
   deleteCase,
@@ -202,6 +203,27 @@ function buildCaseExportMarkdown(caseRecord, req) {
   ].join('\n');
 }
 
+async function buildCaseExportBundle(caseRecord, req) {
+  const payload = buildCaseExportPayload(caseRecord, req);
+  const zip = new JSZip();
+  const root = caseRecord.reference || caseRecord.id || 'case-pack';
+
+  zip.file(`${root}/${root}-case-pack.md`, buildCaseExportMarkdown(caseRecord, req));
+  zip.file(`${root}/${root}-case-pack.json`, JSON.stringify(payload, null, 2));
+
+  for (const document of payload.documents) {
+    const asset = await getAdminCaseDocumentAsset(caseRecord.id, document.id);
+
+    if (!asset || !asset.buffer) {
+      continue;
+    }
+
+    zip.file(`${root}/documents/${asset.fileName}`, asset.buffer);
+  }
+
+  return zip.generateAsync({ type: 'nodebuffer', compression: 'DEFLATE' });
+}
+
 module.exports = async function handler(req, res) {
   allowCors(res, req);
 
@@ -245,11 +267,21 @@ module.exports = async function handler(req, res) {
         return;
       }
 
-      if (caseId && (exportFormat === 'json' || exportFormat === 'markdown')) {
+      if (caseId && (exportFormat === 'json' || exportFormat === 'markdown' || exportFormat === 'bundle')) {
         const caseRecord = await getAdminCaseById(caseId, { sections: ['core', 'workflow', 'comms'] });
 
         if (!caseRecord) {
           sendError(res, 404, 'Case not found.');
+          return;
+        }
+
+        if (exportFormat === 'bundle') {
+          const bundle = await buildCaseExportBundle(caseRecord, req);
+          res.statusCode = 200;
+          res.setHeader('Content-Type', 'application/zip');
+          res.setHeader('Content-Disposition', `attachment; filename="${caseRecord.reference}-submission-bundle.zip"`);
+          res.setHeader('Cache-Control', 'no-store, max-age=0');
+          res.end(bundle);
           return;
         }
 
