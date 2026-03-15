@@ -499,6 +499,34 @@
       display: grid;
       gap: 18px;
     }
+    .detail-notice {
+      display: none;
+      align-items: center;
+      gap: 10px;
+      border-radius: 16px;
+      padding: 14px 16px;
+      border: 1px solid var(--border);
+      background: #fbf8f3;
+      color: var(--navy);
+      font-size: 0.94rem;
+      line-height: 1.45;
+    }
+    .detail-notice.active {
+      display: flex;
+    }
+    .detail-notice.info {
+      background: #fbf8f3;
+    }
+    .detail-notice.success {
+      background: rgba(47, 125, 81, 0.12);
+      border-color: rgba(47, 125, 81, 0.24);
+      color: #2d7048;
+    }
+    .detail-notice.error {
+      background: rgba(185, 69, 69, 0.12);
+      border-color: rgba(185, 69, 69, 0.24);
+      color: #8d2f2f;
+    }
     .detail-header {
       display: grid;
       gap: 14px;
@@ -1918,6 +1946,22 @@
       }
     }
 
+    function setDetailNotice(message, tone = 'info') {
+      const notice = document.getElementById('detail-notice');
+      if (!notice) {
+        return;
+      }
+
+      if (!message) {
+        notice.className = 'detail-notice';
+        notice.textContent = '';
+        return;
+      }
+
+      notice.className = 'detail-notice active ' + tone;
+      notice.textContent = message;
+    }
+
     function beginButtonFeedback(button, busyLabel) {
       if (!button) {
         return null;
@@ -1965,6 +2009,24 @@
 
       button.disabled = false;
       button.textContent = idleLabel;
+    }
+
+    function flashButtonSuccess(button, label = 'Done', resetDelay = 1200) {
+      if (!button) {
+        return;
+      }
+
+      if (!button.dataset.idleLabel) {
+        button.dataset.idleLabel = button.textContent;
+      }
+
+      const idleLabel = button.dataset.idleLabel;
+      button.classList.add('is-success');
+      button.textContent = label;
+      window.setTimeout(function () {
+        button.classList.remove('is-success');
+        button.textContent = idleLabel;
+      }, resetDelay);
     }
 
     function getSelectedCaseSummary() {
@@ -3144,9 +3206,11 @@
         applyUpdatedCase(payload.case, { select: state.selectedCaseId === caseId });
         refreshOperationsSummary().catch(function () {});
         setHelperMessage('admin-helper', 'Case updated.');
+        setDetailNotice('Case moved forward successfully.', 'success');
         endButtonFeedback(feedback, { successLabel: 'Done' });
       } catch (error) {
         setHelperMessage('admin-helper', error.message || 'Could not update the case.');
+        setDetailNotice(error.message || 'Could not update the case.', 'error');
         endButtonFeedback(feedback);
       }
     }
@@ -3469,6 +3533,7 @@
           );
       caseDetail.innerHTML = (
         '<div class="detail-grid">' +
+          '<div class="detail-notice" id="detail-notice"></div>' +
           '<div class="dirty-bar' + (state.detailDirty ? ' active' : '') + '" id="dirty-bar">' +
             '<div class="dirty-bar-copy">' +
               '<strong>Unsaved changes</strong>' +
@@ -3680,10 +3745,7 @@
 
       document.getElementById('quick-payment-link').addEventListener('click', async function (event) {
         if (automatedCheckoutEnabled) {
-          const helper = document.getElementById('save-helper');
-          if (helper) {
-            helper.textContent = 'Stripe checkout should update payment automatically. Use offline payment recording only if needed.';
-          }
+          setDetailNotice('Stripe checkout should update payment automatically. Use offline payment recording only if needed.', 'info');
           return;
         }
         await persistLifecyclePreset('payment_link_sent', event.currentTarget);
@@ -3702,9 +3764,13 @@
       });
       document.getElementById('quick-apply-workflow').addEventListener('click', function () {
         applyWorkflowDefaults(selected);
+        setDetailNotice('Workflow defaults applied to the open case.', 'success');
+        flashButtonSuccess(document.getElementById('quick-apply-workflow'), 'Applied');
       });
       document.getElementById('quick-follow-up').addEventListener('click', function () {
         setFollowUpDate(1);
+        setDetailNotice('Follow-up date moved to tomorrow. Save when you are ready.', 'info');
+        flashButtonSuccess(document.getElementById('quick-follow-up'), 'Updated');
       });
       const addPlatformButton = document.getElementById('add-platform-task');
       if (addPlatformButton) {
@@ -3767,18 +3833,28 @@
       });
       document.getElementById('copy-agent-brief').addEventListener('click', function () {
         copyText(operational.agentSummary || '', 'Agent brief', 'save-helper');
+        setDetailNotice('Agent brief copied to clipboard.', 'success');
+        flashButtonSuccess(document.getElementById('copy-agent-brief'), 'Copied');
       });
       document.getElementById('copy-client-update').addEventListener('click', function () {
         copyText(operational.clientUpdateDraft || '', 'Client update', 'save-helper');
+        setDetailNotice('Client update copied to clipboard.', 'success');
+        flashButtonSuccess(document.getElementById('copy-client-update'), 'Copied');
       });
       document.getElementById('copy-platform-brief').addEventListener('click', function () {
         copyText(operational.platformSubmissionBrief || '', 'Platform brief', 'save-helper');
+        setDetailNotice('Platform brief copied to clipboard.', 'success');
+        flashButtonSuccess(document.getElementById('copy-platform-brief'), 'Copied');
       });
       document.getElementById('copy-case-link').addEventListener('click', function () {
         copyText(window.location.origin + (caseLinks.status || '/case'), 'Case link', 'save-helper');
+        setDetailNotice('Private case link copied.', 'success');
+        flashButtonSuccess(document.getElementById('copy-case-link'), 'Copied');
       });
       document.getElementById('copy-documents-link').addEventListener('click', function () {
         copyText(window.location.origin + (caseLinks.documents || '/documents'), 'Documents link', 'save-helper');
+        setDetailNotice('Documents link copied.', 'success');
+        flashButtonSuccess(document.getElementById('copy-documents-link'), 'Copied');
       });
       const loadClientEmailButton = document.getElementById('load-client-email');
       if (loadClientEmailButton) {
@@ -3933,6 +4009,7 @@
 
       if (!canWriteCases()) {
         helper.textContent = 'Your role cannot edit cases.';
+        setDetailNotice('Your role cannot edit cases.', 'error');
         return;
       }
 
@@ -3982,9 +4059,11 @@
         applyUpdatedCase(payload.case);
         refreshOperationsSummary().catch(function () {});
         helper.textContent = 'Case updated successfully.';
+        setDetailNotice('Case updated successfully.', 'success');
         saveSucceeded = true;
       } catch (error) {
         helper.textContent = error.message || 'Could not save the case.';
+        setDetailNotice(error.message || 'Could not save the case.', 'error');
       } finally {
         feedbackContexts.forEach(function (context) {
           endButtonFeedback(context, saveSucceeded ? { successLabel: 'Saved' } : {});
@@ -4001,6 +4080,7 @@
         if (helper) {
           helper.textContent = 'Your role cannot archive cases.';
         }
+        setDetailNotice('Your role cannot archive cases.', 'error');
         endButtonFeedback(feedback);
         return;
       }
@@ -4024,11 +4104,13 @@
         if (helper) {
           helper.textContent = 'Case archived.';
         }
+        setDetailNotice('Case archived.', 'success');
         endButtonFeedback(feedback, { successLabel: 'Archived' });
       } catch (error) {
         if (helper) {
           helper.textContent = error.message || 'Could not archive the case.';
         }
+        setDetailNotice(error.message || 'Could not archive the case.', 'error');
         endButtonFeedback(feedback);
       }
     }
@@ -4042,6 +4124,7 @@
         if (helper) {
           helper.textContent = 'Your role cannot restore cases.';
         }
+        setDetailNotice('Your role cannot restore cases.', 'error');
         endButtonFeedback(feedback);
         return;
       }
@@ -4064,11 +4147,13 @@
         if (helper) {
           helper.textContent = 'Case restored to the working inbox.';
         }
+        setDetailNotice('Case restored to the working inbox.', 'success');
         endButtonFeedback(feedback, { successLabel: 'Restored' });
       } catch (error) {
         if (helper) {
           helper.textContent = error.message || 'Could not restore the case.';
         }
+        setDetailNotice(error.message || 'Could not restore the case.', 'error');
         endButtonFeedback(feedback);
       }
     }
@@ -4081,6 +4166,7 @@
         if (helper) {
           helper.textContent = 'Your role cannot delete cases.';
         }
+        setDetailNotice('Your role cannot delete cases.', 'error');
         return;
       }
 
@@ -4111,11 +4197,13 @@
         if (helper) {
           helper.textContent = 'Case deleted permanently.';
         }
+        setDetailNotice('Case deleted permanently.', 'success');
         endButtonFeedback(feedback, { successLabel: 'Deleted' });
       } catch (error) {
         if (helper) {
           helper.textContent = error.message || 'Could not delete the case.';
         }
+        setDetailNotice(error.message || 'Could not delete the case.', 'error');
         endButtonFeedback(feedback);
       }
     }
