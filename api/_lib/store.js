@@ -3886,7 +3886,7 @@ async function deleteCase(id, actor = 'admin') {
 }
 
 async function getAdminCaseDocumentAsset(caseId, documentId) {
-  const caseRecord = await getAdminCaseById(caseId, { sections: ['comms'] });
+  const caseRecord = await getCaseForAdmin(caseId);
 
   if (!caseRecord) {
     return null;
