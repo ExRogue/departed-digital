@@ -1317,6 +1317,7 @@
     const teamPanel = document.getElementById('team-panel');
     const casesTableWrap = document.getElementById('cases-table-wrap');
     const caseDetail = document.getElementById('case-detail');
+    const detailPanel = document.querySelector('.detail-panel');
     const queueFilter = document.getElementById('queue-filter');
     const statusFilter = document.getElementById('status-filter');
     const packageFilter = document.getElementById('package-filter');
@@ -2327,6 +2328,14 @@
       clearDetailDirty();
       renderCases();
       renderDetail();
+      if (detailPanel) {
+        window.requestAnimationFrame(function () {
+          detailPanel.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        });
+      }
       await fetchCaseDetail(caseId, {
         ...options,
         sections: options.sections || ['core']
