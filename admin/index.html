@@ -469,22 +469,7 @@
       color: var(--navy);
     }
     .case-action-tray {
-      display: none;
-      gap: 16px;
-      padding: 18px;
-      margin-bottom: 16px;
-      border-radius: 22px;
-      border: 1px solid rgba(201,168,76,0.42);
-      background: linear-gradient(180deg, #fff9ec 0%, #fffdf7 100%);
-      box-shadow: 0 20px 36px rgba(26,39,68,0.08);
-      transform: translateY(8px);
-      opacity: 0;
-      transition: opacity 0.22s ease, transform 0.22s ease, box-shadow 0.22s ease;
-    }
-    .case-action-tray.active {
-      display: grid;
-      opacity: 1;
-      transform: translateY(0);
+      display: none !important;
     }
     .case-action-tray-head {
       display: flex;
@@ -918,29 +903,60 @@
     .detail-section.active {
       display: grid;
     }
+    .detail-backdrop {
+      display: none;
+    }
     .detail-panel {
-      position: static;
-      max-height: none;
-      overflow: visible;
+      position: fixed;
+      top: 104px;
+      right: 28px;
+      bottom: 28px;
+      width: clamp(440px, 38vw, 640px);
+      max-height: calc(100vh - 132px);
+      overflow: auto;
       min-width: 0;
+      z-index: 40;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateX(calc(100% + 24px));
+      transition: transform 0.24s ease, opacity 0.24s ease, box-shadow 0.24s ease;
+      box-shadow: 0 28px 60px rgba(26,39,68,0.18);
+      border-color: rgba(201,168,76,0.32);
+      background: rgba(255, 252, 247, 0.98);
+      backdrop-filter: blur(10px);
+    }
+    .detail-panel-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 14px;
+    }
+    .detail-panel-copy {
+      display: grid;
+      gap: 6px;
+    }
+    .detail-panel-copy p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+    .detail-panel-close {
+      flex: 0 0 auto;
     }
     .operations-stack {
       display: grid;
       gap: 24px;
     }
     .operations-main-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 24px;
-      align-items: start;
+      display: block;
     }
     .operations-main-grid.has-selected-case .detail-panel {
-      order: -1;
-      border-color: rgba(201,168,76,0.55);
-      box-shadow: 0 22px 44px rgba(26,39,68,0.1);
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateX(0);
     }
     .operations-main-grid.has-selected-case .cases-panel {
-      background: rgba(255, 253, 249, 0.82);
+      padding-right: clamp(464px, 40vw, 668px);
     }
     .case-list {
       display: grid;
@@ -1236,12 +1252,6 @@
       padding: 18px 0;
     }
     @media (max-width: 1320px) {
-      .operations-main-grid {
-        grid-template-columns: 1fr;
-      }
-      .detail-panel {
-        order: -1;
-      }
       .detail-topline {
         grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
       }
@@ -1252,6 +1262,33 @@
     @media (max-width: 1180px) {
       .kpi-grid, .ops-secondary-strip, .stats-grid, .analytics-layout, .signal-grid, .queue-board, .operations-main-grid, .detail-topline, .summary-grid {
         grid-template-columns: 1fr;
+      }
+      .detail-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(26, 39, 68, 0.18);
+        z-index: 30;
+      }
+      .detail-panel {
+        position: static;
+        width: auto;
+        max-height: none;
+        right: auto;
+        top: auto;
+        bottom: auto;
+        transform: none;
+        opacity: 1;
+        pointer-events: auto;
+        box-shadow: none;
+        background: #fff;
+        backdrop-filter: none;
+        margin-top: 20px;
+      }
+      .detail-panel-close {
+        display: none;
+      }
+      .operations-main-grid.has-selected-case .cases-panel {
+        padding-right: 26px;
       }
     }
     @media (max-width: 900px) {
@@ -1410,9 +1447,16 @@
               </div>
             </section>
 
+            <div id="detail-backdrop" class="detail-backdrop" aria-hidden="true"></div>
             <aside class="panel detail-panel">
-              <span class="eyebrow" style="margin-bottom: 8px;">Selected case</span>
-              <h2 style="font-size: 1.9rem; margin-bottom: 14px;">Case workspace</h2>
+              <div class="detail-panel-head">
+                <div class="detail-panel-copy">
+                  <span class="eyebrow">Selected case</span>
+                  <h2 style="font-size: 1.9rem;">Case workspace</h2>
+                  <p>Pick a case from the inbox and work it here without losing your place in the list.</p>
+                </div>
+                <button class="secondary detail-panel-close" id="close-workspace" type="button">Close</button>
+              </div>
               <div id="case-detail" class="empty">Choose a case from the inbox to review the full record, exports, and next action.</div>
             </aside>
           </div>
@@ -1477,6 +1521,8 @@
     const selectedCaseTray = document.getElementById('selected-case-tray');
     const caseDetail = document.getElementById('case-detail');
     const detailPanel = document.querySelector('.detail-panel');
+    const detailBackdrop = document.getElementById('detail-backdrop');
+    const closeWorkspaceButton = document.getElementById('close-workspace');
     const casesPanel = document.querySelector('.cases-panel');
     const operationsMainGrid = document.querySelector('.operations-main-grid');
     const queueFilter = document.getElementById('queue-filter');
@@ -2270,6 +2316,23 @@
       if (casesPanel) {
         casesPanel.setAttribute('data-focus-state', hasSelection ? 'secondary' : 'primary');
       }
+      if (detailPanel) {
+        detailPanel.setAttribute('aria-hidden', hasSelection ? 'false' : 'true');
+      }
+      if (detailBackdrop) {
+        detailBackdrop.hidden = !hasSelection;
+      }
+    }
+
+    function closeSelectedCase() {
+      state.selectedCaseId = '';
+      state.selectedCaseLoading = false;
+      state.selectedCaseError = '';
+      clearDetailDirty();
+      syncWorkspaceFocusMode();
+      renderCases();
+      renderDetail();
+      renderCaseActionTray();
     }
 
     function applyUpdatedCase(caseRecord, options = {}) {
@@ -2602,7 +2665,7 @@
       syncWorkspaceFocusMode();
       renderCases();
       renderDetail();
-      if (detailPanel) {
+      if (detailPanel && window.matchMedia('(max-width: 1180px)').matches) {
         window.requestAnimationFrame(function () {
           detailPanel.scrollIntoView({
             behavior: 'smooth',
@@ -3253,12 +3316,7 @@
       const clearSelectedCaseButton = document.getElementById('clear-selected-case');
       if (clearSelectedCaseButton) {
         clearSelectedCaseButton.addEventListener('click', function () {
-          state.selectedCaseId = '';
-          clearDetailDirty();
-          syncWorkspaceFocusMode();
-          renderCases();
-          renderDetail();
-          renderCaseActionTray();
+          closeSelectedCase();
         });
       }
     }
@@ -4806,6 +4864,20 @@
         loginDashboardButton.disabled = false;
       }
     });
+
+    if (closeWorkspaceButton) {
+      closeWorkspaceButton.addEventListener('click', function () {
+        closeSelectedCase();
+      });
+    }
+
+    if (detailBackdrop) {
+      detailBackdrop.addEventListener('click', function () {
+        if (window.matchMedia('(max-width: 1180px)').matches) {
+          closeSelectedCase();
+        }
+      });
+    }
 
     logoutDashboardButton.addEventListener('click', async function () {
       logoutDashboardButton.disabled = true;
