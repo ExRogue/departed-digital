@@ -509,6 +509,89 @@
       gap: 8px;
       font-size: 0.92rem;
     }
+    .overview-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 14px;
+    }
+    .overview-card {
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      background: #fbf8f3;
+      padding: 18px;
+      display: grid;
+      gap: 12px;
+    }
+    .overview-card h3 {
+      font-size: 1.18rem;
+      margin-bottom: 2px;
+    }
+    .overview-list {
+      list-style: none;
+      display: grid;
+      gap: 8px;
+      color: var(--text-muted);
+      font-size: 0.92rem;
+    }
+    .overview-list strong {
+      color: var(--navy);
+    }
+    .overview-meta {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 10px;
+    }
+    .overview-meta .mini-card {
+      padding: 14px 16px;
+    }
+    .overview-stack {
+      display: grid;
+      gap: 14px;
+    }
+    .link-list {
+      list-style: none;
+      display: grid;
+      gap: 10px;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+    .link-list code {
+      display: inline-block;
+      max-width: 100%;
+      overflow-wrap: anywhere;
+      color: var(--navy);
+      background: rgba(255,255,255,0.72);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 4px 8px;
+      margin-top: 4px;
+    }
+    details.compact-details {
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      background: #fbf8f3;
+      padding: 18px;
+    }
+    details.compact-details summary {
+      list-style: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      color: var(--navy);
+      font-family: 'Playfair Display', serif;
+      font-size: 1.18rem;
+    }
+    details.compact-details summary::-webkit-details-marker {
+      display: none;
+    }
+    .details-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+      margin-top: 16px;
+    }
     .action-cluster {
       border-radius: 18px;
       border: 1px solid var(--border);
@@ -3189,82 +3272,90 @@
             '<button class="detail-tab" type="button" data-detail-view="comms">Comms and files</button>' +
           '</div>' +
           '<section class="detail-section active" data-detail-panel="overview">' +
-            '<div class="detail-summary">' +
-              '<div><strong>Reference:</strong> ' + escapeHtml(selected.reference) + '</div>' +
-              '<div><strong>Package:</strong> ' + escapeHtml(selected.packageLabel) + '</div>' +
-              '<div><strong>Client:</strong> ' + escapeHtml(selected.clientName) + '</div>' +
-              '<div><strong>Email:</strong> ' + escapeHtml(selected.clientEmail) + '</div>' +
-              '<div><strong>Deceased:</strong> ' + escapeHtml(selected.deceasedName) + '</div>' +
-              '<div><strong>Outcome:</strong> ' + escapeHtml(selected.preferredOutcome || 'Not set') + '</div>' +
-              '<div><strong>Relationship:</strong> ' + escapeHtml(selected.relationshipToDeceased || 'Not supplied') + '</div>' +
-              '<div><strong>Authority:</strong> ' + escapeHtml(selected.authorityBasis || 'Not set') + '</div>' +
-              '<div><strong>Referral source:</strong> ' + escapeHtml(selected.referralSource || 'None recorded') + '</div>' +
-              '<div><strong>Partner:</strong> ' + escapeHtml(selected.referralPartnerName || 'None recorded') + '</div>' +
-              '<div><strong>Archived:</strong> ' + escapeHtml(selected.archivedAt ? formatDate(selected.archivedAt) : 'No') + '</div>' +
-              '<div><strong>Archived by:</strong> ' + escapeHtml(selected.archivedBy || 'Not archived') + '</div>' +
-            '</div>' +
-            '<div class="signal-grid">' +
-              '<div class="signal-card">' +
-                '<h3>Customer handoff</h3>' +
-                '<ul>' +
-                  '<li><strong>Private case page:</strong> ' + escapeHtml(caseLinks.status || '/case') + '</li>' +
-                  '<li><strong>Documents step:</strong> ' + escapeHtml(caseLinks.documents || '/documents') + '</li>' +
-                  '<li><strong>Case review step:</strong> ' + escapeHtml(caseLinks.payment || '/review') + '</li>' +
+            '<div class="overview-grid">' +
+              '<div class="overview-card">' +
+                '<h3>Case summary</h3>' +
+                '<ul class="overview-list">' +
+                  '<li><strong>Reference:</strong> ' + escapeHtml(selected.reference) + '</li>' +
+                  '<li><strong>Package:</strong> ' + escapeHtml(selected.packageLabel) + '</li>' +
+                  '<li><strong>Client:</strong> ' + escapeHtml(selected.clientName) + '</li>' +
+                  '<li><strong>Email:</strong> ' + escapeHtml(selected.clientEmail) + '</li>' +
+                  '<li><strong>Deceased:</strong> ' + escapeHtml(selected.deceasedName) + '</li>' +
+                  '<li><strong>Outcome:</strong> ' + escapeHtml(selected.preferredOutcome || 'Not set') + '</li>' +
+                  '<li><strong>Relationship:</strong> ' + escapeHtml(selected.relationshipToDeceased || 'Not supplied') + '</li>' +
+                  '<li><strong>Authority:</strong> ' + escapeHtml(selected.authorityBasis || 'Not set') + '</li>' +
                 '</ul>' +
-                '<div class="action-row" style="margin-top:14px;">' +
+              '</div>' +
+              '<div class="overview-card">' +
+                '<h3>Operational snapshot</h3>' +
+                '<div class="overview-meta">' +
+                  '<div class="mini-card"><h3>Queue</h3><p>' + escapeHtml(workflow.queueLabel || 'Workflow review') + '</p></div>' +
+                  '<div class="mini-card"><h3>Waiting on</h3><p>' + escapeHtml(titleize(workflow.waitingOn || 'operator')) + '</p></div>' +
+                  '<div class="mini-card"><h3>Payment</h3><p>' + escapeHtml(formatPaymentStatusLabel(selected.paymentStatus || 'pending')) + '</p></div>' +
+                  '<div class="mini-card"><h3>Health</h3><p>' + escapeHtml(titleize(workflow.healthStatus || 'on_track')) + '</p></div>' +
+                '</div>' +
+                '<ul class="overview-list">' +
+                  '<li><strong>Service target:</strong> ' + escapeHtml(workflow.serviceTargetDate || 'Not set') + '</li>' +
+                  '<li><strong>Next follow-up:</strong> ' + escapeHtml(workflow.followUpDate || 'Not set') + '</li>' +
+                  '<li><strong>Priority:</strong> ' + escapeHtml(titleize(selected.priority || 'standard')) + '</li>' +
+                  '<li><strong>Owner:</strong> ' + escapeHtml(selected.assignedTo || 'Unassigned') + '</li>' +
+                  '<li><strong>Partner:</strong> ' + escapeHtml(selected.referralPartnerName || 'None recorded') + '</li>' +
+                  '<li><strong>Referral source:</strong> ' + escapeHtml(selected.referralSource || 'None recorded') + '</li>' +
+                '</ul>' +
+              '</div>' +
+            '</div>' +
+            '<div class="overview-stack">' +
+              '<div class="overview-card">' +
+                '<h3>Customer links</h3>' +
+                '<ul class="link-list">' +
+                  '<li><strong>Private case page</strong><br /><code>' + escapeHtml(caseLinks.status || '/case') + '</code></li>' +
+                  '<li><strong>Documents step</strong><br /><code>' + escapeHtml(caseLinks.documents || '/documents') + '</code></li>' +
+                  '<li><strong>Case review step</strong><br /><code>' + escapeHtml(caseLinks.payment || '/review') + '</code></li>' +
+                '</ul>' +
+                '<div class="action-row" style="margin-top:8px;">' +
                   '<button class="secondary" id="copy-case-link" type="button">Copy case link</button>' +
                   '<button class="secondary" id="copy-documents-link" type="button">Copy documents link</button>' +
                 '</div>' +
               '</div>' +
-              '<div class="signal-card">' +
-                '<h3>Payment handoff</h3>' +
-                '<ul>' +
-                  '<li><strong>Mode:</strong> ' + escapeHtml(automatedCheckoutEnabled ? 'Stripe checkout automation' : 'Manual checkout handoff') + '</li>' +
-                  '<li><strong>Current payment status:</strong> ' + escapeHtml(formatPaymentStatusLabel(selected.paymentStatus || 'pending')) + '</li>' +
-                  '<li><strong>Operator instruction:</strong> ' + escapeHtml(automatedCheckoutEnabled ? 'Let Stripe update the case automatically unless this was an offline payment.' : 'Send the checkout handoff, then record when payment is received.') + '</li>' +
-                '</ul>' +
-              '</div>' +
-            '</div>' +
-            '<div class="signal-grid">' +
-              '<div class="signal-card">' +
-                '<h3>Missing items</h3>' +
-                ((operational.missingItems || []).length
-                  ? '<ul>' + operational.missingItems.map((item) => '<li>' + escapeHtml(item) + '</li>').join('') + '</ul>'
-                  : '<p>No obvious gaps at the moment.</p>') +
-              '</div>' +
-              '<div class="signal-card">' +
-                '<h3>Workflow engine</h3>' +
-                '<ul>' +
-                  '<li><strong>Stage:</strong> ' + escapeHtml(workflow.stageLabel || 'Workflow review') + '</li>' +
-                  '<li><strong>Health:</strong> ' + escapeHtml(titleize(workflow.healthStatus || 'on_track')) + '</li>' +
-                  '<li><strong>Service target:</strong> ' + escapeHtml(workflow.serviceTargetDate || 'Not set') + '</li>' +
-                  '<li><strong>Next follow-up:</strong> ' + escapeHtml(workflow.followUpDate || 'Not set') + '</li>' +
-                  '<li><strong>Recommended lane:</strong> ' + escapeHtml(titleize(workflow.recommendedLane || 'intake_desk')) + '</li>' +
-                  '<li><strong>Open reminders:</strong> ' + escapeHtml(workflow.openReminderCount || 0) + '</li>' +
-                  '<li><strong>Escalated reminders:</strong> ' + escapeHtml(workflow.escalatedReminderCount || 0) + '</li>' +
-                  '<li><strong>Progress:</strong> ' + escapeHtml(workflow.progressPercent || 0) + '%</li>' +
-                '</ul>' +
-              '</div>' +
-            '</div>' +
-            '<div class="signal-grid">' +
-              '<div class="signal-card">' +
-                '<h3>Platform summary</h3>' +
-                '<ul>' +
-                  '<li><strong>Total platforms:</strong> ' + escapeHtml(platformSummary.total || 0) + '</li>' +
-                  '<li><strong>Active or pending:</strong> ' + escapeHtml(platformSummary.active || 0) + '</li>' +
-                  '<li><strong>Resolved:</strong> ' + escapeHtml(platformSummary.resolved || 0) + '</li>' +
-                  '<li><strong>Blocked:</strong> ' + escapeHtml(platformSummary.blocked || 0) + '</li>' +
-                '</ul>' +
-              '</div>' +
-              '<div class="signal-card">' +
-                '<h3>Internal context</h3>' +
-                '<ul>' +
-                  '<li><strong>Queue:</strong> ' + escapeHtml(workflow.queueLabel || 'Workflow review') + '</li>' +
-                  '<li><strong>Waiting on:</strong> ' + escapeHtml(titleize(workflow.waitingOn || 'operator')) + '</li>' +
-                  '<li><strong>Priority:</strong> ' + escapeHtml(titleize(selected.priority || 'standard')) + '</li>' +
-                  '<li><strong>Due date:</strong> ' + escapeHtml(selected.dueDate || 'Not set') + '</li>' +
-                '</ul>' +
-              '</div>' +
+              '<details class="compact-details">' +
+                '<summary>Operational details</summary>' +
+                '<div class="details-grid">' +
+                  '<div class="signal-card">' +
+                    '<h3>Missing items</h3>' +
+                    ((operational.missingItems || []).length
+                      ? '<ul>' + operational.missingItems.map((item) => '<li>' + escapeHtml(item) + '</li>').join('') + '</ul>'
+                      : '<p>No obvious gaps at the moment.</p>') +
+                  '</div>' +
+                  '<div class="signal-card">' +
+                    '<h3>Workflow engine</h3>' +
+                    '<ul>' +
+                      '<li><strong>Stage:</strong> ' + escapeHtml(workflow.stageLabel || 'Workflow review') + '</li>' +
+                      '<li><strong>Recommended lane:</strong> ' + escapeHtml(titleize(workflow.recommendedLane || 'intake_desk')) + '</li>' +
+                      '<li><strong>Open reminders:</strong> ' + escapeHtml(workflow.openReminderCount || 0) + '</li>' +
+                      '<li><strong>Escalated reminders:</strong> ' + escapeHtml(workflow.escalatedReminderCount || 0) + '</li>' +
+                      '<li><strong>Progress:</strong> ' + escapeHtml(workflow.progressPercent || 0) + '%</li>' +
+                    '</ul>' +
+                  '</div>' +
+                  '<div class="signal-card">' +
+                    '<h3>Platform summary</h3>' +
+                    '<ul>' +
+                      '<li><strong>Total platforms:</strong> ' + escapeHtml(platformSummary.total || 0) + '</li>' +
+                      '<li><strong>Active or pending:</strong> ' + escapeHtml(platformSummary.active || 0) + '</li>' +
+                      '<li><strong>Resolved:</strong> ' + escapeHtml(platformSummary.resolved || 0) + '</li>' +
+                      '<li><strong>Blocked:</strong> ' + escapeHtml(platformSummary.blocked || 0) + '</li>' +
+                    '</ul>' +
+                  '</div>' +
+                  '<div class="signal-card">' +
+                    '<h3>Archive and payment</h3>' +
+                    '<ul>' +
+                      '<li><strong>Mode:</strong> ' + escapeHtml(automatedCheckoutEnabled ? 'Stripe checkout automation' : 'Manual checkout handoff') + '</li>' +
+                      '<li><strong>Archived:</strong> ' + escapeHtml(selected.archivedAt ? formatDate(selected.archivedAt) : 'No') + '</li>' +
+                      '<li><strong>Archived by:</strong> ' + escapeHtml(selected.archivedBy || 'Not archived') + '</li>' +
+                      '<li><strong>Operator instruction:</strong> ' + escapeHtml(automatedCheckoutEnabled ? 'Let Stripe update the case automatically unless this was an offline payment.' : 'Send the checkout handoff, then record when payment is received.') + '</li>' +
+                    '</ul>' +
+                  '</div>' +
+                '</div>' +
+              '</details>' +
             '</div>' +
           '</section>' +
           '<section class="detail-section" data-detail-panel="case-ops">' +
