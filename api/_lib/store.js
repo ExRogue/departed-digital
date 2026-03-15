@@ -262,8 +262,8 @@ function buildStatusTimeline(caseRecord) {
     },
     {
       key: 'payment',
-      label: 'Payment step',
-      description: 'The package and payment step is completed before sensitive document requests.',
+      label: 'Case review',
+      description: 'The private case review and checkout handoff are completed before sensitive document requests.',
       completed: caseRecord.paymentStatus === 'paid',
       completedAt: caseRecord.paymentStatus === 'paid' ? caseRecord.updatedAt : ''
     },
@@ -1012,7 +1012,7 @@ function buildAdminCase(caseRecord) {
     workflow,
     publicToken: caseRecord.publicToken,
     caseLinks: {
-      payment: `/payment?case=${caseRecord.id}&token=${caseRecord.publicToken}&package=${caseRecord.selectedPackage}`,
+      payment: `/review?case=${caseRecord.id}&token=${caseRecord.publicToken}&package=${caseRecord.selectedPackage}`,
       documents: `/documents?case=${caseRecord.id}&token=${caseRecord.publicToken}`,
       status: `/case?case=${caseRecord.id}&token=${caseRecord.publicToken}`
     },

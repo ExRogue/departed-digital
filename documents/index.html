@@ -247,7 +247,7 @@
     <div class="nav-inner">
       <a href="/" class="logo">Departed<span>.</span>Digital</a>
       <div style="display:flex; gap:18px; flex-wrap:wrap;">
-        <a class="nav-link" href="/payment">Back to payment</a>
+        <a class="nav-link" href="/review">Back to case review</a>
         <a class="nav-link" id="status-nav-link" href="/case">Case status</a>
         <a class="nav-link" href="/start">Start again</a>
       </div>
@@ -314,7 +314,7 @@
           </div>
           <p class="disabled-note" id="document-helper">Upload the death certificate and proof of authority here once payment has been confirmed. We review the case file from this point onward.</p>
           <button class="button primary" id="upload-documents" type="submit" data-track="documents_upload" data-track-label="Documents upload supporting documents">Upload supporting documents</button>
-          <a class="button secondary" href="/payment">Back to payment</a>
+          <a class="button secondary" href="/review">Back to case review</a>
           <a class="button secondary" id="status-link" href="/case">Case status</a>
           </form>
         </section>
@@ -470,7 +470,7 @@
       event.preventDefault();
 
       if (!state.caseData || !state.caseData.id || !state.publicToken) {
-        helper.textContent = 'Start with the case intake and payment step first so this upload can attach to the right case.';
+        helper.textContent = 'Start with the case intake and review step first so this upload can attach to the right case.';
         return;
       }
 
@@ -567,7 +567,7 @@
       const hasCase = await loadCase();
 
       if (!hasCase) {
-        helper.textContent = 'Start with the intake and payment step first so the documents can be attached to the right case.';
+        helper.textContent = 'Start with the intake and review step first so the documents can be attached to the right case.';
         return;
       }
 

@@ -602,7 +602,7 @@
         <ul>
           <li>This first step should only take about a minute.</li>
           <li>You do not need passwords for the deceased's accounts.</li>
-          <li>The next screen is where the package and payment decision happens.</li>
+          <li>The next screen is where the package and secure checkout handoff decision happens.</li>
           <li>Every case ends with a written outcome record.</li>
         </ul>
       </div>
@@ -776,7 +776,7 @@
           packageKey: caseData.selectedPackage || intakeData.selectedPackage
         });
 
-        const nextUrl = new URL('/payment', window.location.origin);
+        const nextUrl = new URL('/review', window.location.origin);
         nextUrl.searchParams.set('case', payload.case.id);
         nextUrl.searchParams.set('token', payload.publicToken);
         nextUrl.searchParams.set('package', payload.case.selectedPackage || intakeData.selectedPackage);
@@ -789,7 +789,7 @@
           label: 'Start form submitted with fallback',
           packageKey: intakeData.selectedPackage || 'standard'
         });
-        window.location.href = '/payment?package=' + encodeURIComponent(intakeData.selectedPackage || 'standard');
+        window.location.href = '/review?package=' + encodeURIComponent(intakeData.selectedPackage || 'standard');
       } finally {
         submitButton.disabled = false;
         submitButton.textContent = 'Continue to Package and Payment';

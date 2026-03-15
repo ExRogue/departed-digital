@@ -241,7 +241,7 @@
     <div class="nav-inner">
       <a href="/" class="logo">Departed<span>.</span>Digital</a>
       <div class="nav-links">
-        <a href="/payment" id="payment-nav-link">Payment step</a>
+        <a href="/review" id="payment-nav-link">Case review</a>
         <a href="/documents" id="documents-nav-link">Documents</a>
         <a href="/about">About</a>
         <a href="/blog">Resources</a>
@@ -271,7 +271,7 @@
             <ul id="status-timeline" class="timeline"></ul>
 
             <div class="cta-row">
-              <a class="button secondary" id="payment-link" href="/payment">Open payment step</a>
+              <a class="button secondary" id="payment-link" href="/review">Open case review</a>
               <a class="button secondary" id="documents-link" href="/documents">Open documents step</a>
               <button class="button secondary" id="copy-case-link" type="button">Copy private case link</button>
             </div>
@@ -402,7 +402,7 @@
         : '<li>No platform-specific workflow has been created yet.</li>';
 
       if (caseData.id && tokenFromUrl) {
-        const paymentHref = '/payment?case=' + encodeURIComponent(caseData.id) + '&token=' + encodeURIComponent(tokenFromUrl) + '&package=' + encodeURIComponent(caseData.selectedPackage || 'standard');
+        const paymentHref = '/review?case=' + encodeURIComponent(caseData.id) + '&token=' + encodeURIComponent(tokenFromUrl) + '&package=' + encodeURIComponent(caseData.selectedPackage || 'standard');
         const documentsHref = '/documents?case=' + encodeURIComponent(caseData.id) + '&token=' + encodeURIComponent(tokenFromUrl);
         paymentLink.href = paymentHref;
         documentsLink.href = documentsHref;

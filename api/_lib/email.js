@@ -130,7 +130,7 @@ function caseUrls(caseRecord) {
   const settings = getEmailSettings();
 
   return {
-    payment: `${settings.baseUrl}/payment?case=${encodeURIComponent(caseRecord.id)}&token=${encodeURIComponent(caseRecord.publicToken)}&package=${encodeURIComponent(caseRecord.selectedPackage)}`,
+    payment: `${settings.baseUrl}/review?case=${encodeURIComponent(caseRecord.id)}&token=${encodeURIComponent(caseRecord.publicToken)}&package=${encodeURIComponent(caseRecord.selectedPackage)}`,
     documents: `${settings.baseUrl}/documents?case=${encodeURIComponent(caseRecord.id)}&token=${encodeURIComponent(caseRecord.publicToken)}`,
     status: `${settings.baseUrl}/case?case=${encodeURIComponent(caseRecord.id)}&token=${encodeURIComponent(caseRecord.publicToken)}`
   };
@@ -166,7 +166,7 @@ async function sendCaseCreatedEmails(caseRecord) {
           `<p><strong>Package:</strong> ${escapeHtml(caseRecord.packageLabel)}</p>`,
           `<p><strong>Relationship:</strong> ${escapeHtml(caseRecord.relationshipToDeceased || 'Not supplied')}</p>`,
           `<p><strong>Known platforms:</strong> ${escapeHtml(caseRecord.knownPlatforms || 'Not supplied')}</p>`,
-          `<p><strong>Payment step:</strong> <a href="${escapeHtml(urls.payment)}">${escapeHtml(urls.payment)}</a></p>`,
+          `<p><strong>Case review step:</strong> <a href="${escapeHtml(urls.payment)}">${escapeHtml(urls.payment)}</a></p>`,
           `<p><strong>Document step:</strong> <a href="${escapeHtml(urls.documents)}">${escapeHtml(urls.documents)}</a></p>`,
           `<p><strong>Status page:</strong> <a href="${escapeHtml(urls.status)}">${escapeHtml(urls.status)}</a></p>`
         ].join('')
@@ -184,7 +184,7 @@ async function sendCaseCreatedEmails(caseRecord) {
       `Reference: ${caseRecord.reference}`,
       '',
       'You do not need to send passwords.',
-      'Supporting documents are only requested after the payment step.',
+      'Supporting documents are only requested after the checkout handoff has been confirmed.',
       '',
       `Your next step: ${urls.payment}`,
       `Your status page: ${urls.status}`,
@@ -193,12 +193,12 @@ async function sendCaseCreatedEmails(caseRecord) {
     ].join('\n'),
     html: buildShell(
       'We’ve received your case.',
-      `Your reference is ${caseRecord.reference}. We’ve created the record and the next step is the package-and-payment page.`,
+      `Your reference is ${caseRecord.reference}. We’ve created the record and the next step is the private case review page.`,
       [
         `<p>Hello ${escapeHtml(caseRecord.clientName)},</p>`,
         `<p>We’ve received your case for <strong>${escapeHtml(caseRecord.deceasedName)}</strong>.</p>`,
-        `<p>You do not need to send passwords. Supporting documents are only requested after the payment step.</p>`,
-        `<p><a href="${escapeHtml(urls.payment)}" style="display:inline-block;background:#c9a84c;color:#111b35;text-decoration:none;padding:12px 18px;border-radius:999px;font-weight:700;">Continue to the next step</a></p>`,
+        `<p>You do not need to send passwords. Supporting documents are only requested after the checkout handoff has been confirmed.</p>`,
+        `<p><a href="${escapeHtml(urls.payment)}" style="display:inline-block;background:#c9a84c;color:#111b35;text-decoration:none;padding:12px 18px;border-radius:999px;font-weight:700;">Open your private case review</a></p>`,
         `<p><a href="${escapeHtml(urls.status)}">Open your case status page</a></p>`
       ].join(''),
       'If anything is unclear, just reply to this email and we’ll help.'
