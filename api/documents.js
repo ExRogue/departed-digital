@@ -1,14 +1,14 @@
 const { MAX_DOCUMENT_COUNT, MAX_DOCUMENT_SIZE_BYTES } = require('./_lib/config');
 const { sendDocumentsUploadedEmails } = require('./_lib/email');
 const { allowCors, methodNotAllowed, parseJsonBody, sendError, sendJson } = require('./_lib/http');
-const { StoreConfigurationError, buildPublicCase, getCaseForPublic, uploadDocuments } = require('./_lib/store');
+const { PaymentRequiredError, StoreConfigurationError, buildPublicCase, getCaseForPublic, uploadDocuments } = require('./_lib/store');
 
 function normalizeString(value, maxLength = 400) {
   return String(value || '').trim().slice(0, maxLength);
 }
 
 module.exports = async function handler(req, res) {
-  allowCors(res);
+  allowCors(res, req);
 
   if (req.method === 'OPTIONS') {
     res.statusCode = 204;
@@ -72,6 +72,11 @@ module.exports = async function handler(req, res) {
       case: buildPublicCase(updated)
     });
   } catch (error) {
+    if (error instanceof PaymentRequiredError) {
+      sendError(res, 409, error.message, { code: 'payment_required' });
+      return;
+    }
+
     if (error instanceof StoreConfigurationError) {
       sendError(res, 503, error.message, { code: 'storage_not_configured' });
       return;

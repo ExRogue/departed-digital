@@ -1,4 +1,9 @@
 .vercel
 .env*.local
 data/
+exports/
+supabase/.temp/
 node_modules/
+.DS_Store
+Icon?
+*.swp

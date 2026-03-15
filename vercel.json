@@ -1,0 +1,13 @@
+{
+  "functions": {
+    "api/**/*.js": {
+      "regions": ["iad1"]
+    }
+  },
+  "crons": [
+    {
+      "path": "/api/internal/process-jobs",
+      "schedule": "0 8 * * *"
+    }
+  ]
+}

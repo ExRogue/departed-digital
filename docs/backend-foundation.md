@@ -4,6 +4,29 @@
 
 Evolve Departed Digital from a static marketing site into an operational platform without throwing away the current site, URLs, or SEO gains.
 
+## Important architecture note
+
+The current Blob-backed case store has been good enough to prove the product and build the workflow, but it should not remain the long-term system of record for a live service business.
+
+The production-grade direction is now documented in:
+
+- `docs/cto-architecture.md`
+- `db/README.md`
+- `db/migrations/0001_core.sql`
+- `db/migrations/0002_reporting_views.sql`
+
+And the repo now includes migration-prep scripts:
+
+- `npm run ops:export`
+- `npm run ops:backup`
+- `npm run ops:render-seed -- exports/<snapshot-file>.json`
+
+Operational runbooks now live in:
+
+- `docs/launch-runbook.md`
+- `docs/recovery-and-backups.md`
+- `docs/incident-response.md`
+
 ## Current implementation status
 
 The site now includes a first backend foundation inside the repo:
@@ -15,6 +38,8 @@ The site now includes a first backend foundation inside the repo:
 - `/api/public-config` for payment link and package config exposure
 - `/api/admin/cases` and `/api/admin/stats` for the internal dashboard
 - `/admin` and the discreet alias `/studio` as the first operations dashboard for Steven and the VA
+
+Public-safe health and readiness signals are exposed through `/api/public-config` so the project stays within Vercel Hobby function limits while still supporting launch checks.
 
 This means the front end no longer has to stay browser-only forever. The intake, payment, and document steps are ready to talk to a real store.
 

@@ -26,6 +26,8 @@
       --gold: #c9a84c;
       --gold-light: #e0c06a;
       --cream: #f9f6f0;
+      --paper: #fffdf8;
+      --sand: #efe6d8;
       --white: #ffffff;
       --text: #2d3a4a;
       --text-muted: #6b7a8d;
@@ -35,7 +37,9 @@
     }
     body {
       font-family: 'Inter', sans-serif;
-      background: var(--cream);
+      background:
+        radial-gradient(circle at top left, rgba(224,192,106,0.14), transparent 28%),
+        linear-gradient(180deg, #fcf8f1 0%, #f7efe4 100%);
       color: var(--text);
       line-height: 1.7;
     }
@@ -503,6 +507,69 @@
         align-items: flex-start;
       }
     }
+
+    .hero {
+      background:
+        radial-gradient(circle at 10% 14%, rgba(224,192,106,0.2), transparent 26%),
+        linear-gradient(180deg, #faf4e9 0%, #f3eadb 100%);
+      color: var(--text);
+    }
+    .hero::after {
+      background-image:
+        linear-gradient(rgba(26,39,68,0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(26,39,68,0.035) 1px, transparent 1px);
+      background-size: 56px 56px;
+      opacity: 0.24;
+    }
+    .hero h1,
+    .hero p {
+      color: var(--navy-dark);
+    }
+    .hero p {
+      color: rgba(45,58,74,0.78);
+    }
+    .hero-chip {
+      background: rgba(255,255,255,0.74);
+      border-color: rgba(26,39,68,0.08);
+      color: var(--navy);
+      box-shadow: 0 12px 30px rgba(26,39,68,0.05);
+    }
+    .hero-panel,
+    .cta-aside {
+      background: linear-gradient(160deg, rgba(17,27,53,0.96), rgba(33,49,84,0.95));
+      border-color: rgba(255,255,255,0.08);
+      box-shadow: 0 24px 56px rgba(17,27,53,0.16);
+    }
+    .hero-panel p,
+    .hero-panel ul,
+    .cta-aside ul {
+      color: rgba(255,255,255,0.82);
+    }
+    .package-card,
+    .detail-card,
+    .step,
+    .form-panel,
+    .note-card {
+      background: rgba(255,255,255,0.88);
+      box-shadow: 0 18px 44px rgba(26,39,68,0.06);
+    }
+    details.optional-panel {
+      background: rgba(255,255,255,0.72);
+    }
+    details.optional-panel[open] {
+      background: rgba(255,255,255,0.92);
+    }
+    .field input,
+    .field select,
+    .field textarea {
+      background: #fffdf8;
+    }
+    .cta-panel {
+      background:
+        radial-gradient(circle at top right, rgba(224,192,106,0.14), transparent 24%),
+        linear-gradient(135deg, rgba(17,27,53,0.98), rgba(26,39,68,0.95));
+      box-shadow: 0 28px 60px rgba(17,27,53,0.16);
+    }
   </style>
 </head>
 <body>
@@ -511,8 +578,9 @@
       <a class="logo" href="/">Departed<span>.</span>Digital</a>
       <div class="nav-links">
         <a class="nav-link" href="/">Home</a>
+        <a class="nav-link" href="/about">About</a>
         <a class="nav-link" href="/blog">Resources</a>
-        <a class="nav-link" href="/#partners">Funeral Directors</a>
+        <a class="nav-link" href="/partners">Funeral Directors</a>
       </div>
     </div>
   </nav>
@@ -521,8 +589,8 @@
     <div class="nav-inner hero-inner">
       <div>
         <span class="eyebrow">Start a case</span>
-        <h1>A calmer way to begin the digital admin after a loss.</h1>
-        <p>Start with a very short form. Then choose the package and continue to payment. We only ask for the death certificate and proof of authority after payment.</p>
+        <h1>Begin the case without a long form or another burden.</h1>
+        <p>Start with the essentials only. Then choose the package and move into payment when you are ready. Supporting documents come later, once the case is open.</p>
         <div class="hero-chips">
           <div class="hero-chip">Usually about a minute</div>
           <div class="hero-chip">No passwords required</div>
@@ -545,8 +613,8 @@
     <div class="container">
       <section class="section">
         <span class="section-label">Step 1</span>
-        <h2 class="section-title">A short first step</h2>
-        <p class="section-sub">This should take about a minute. We keep the required part short, then let families add optional detail that makes the case easier for us to handle and easier for platform teams to review later.</p>
+        <h2 class="section-title">Tell us only the essentials first</h2>
+        <p class="section-sub">This should take about a minute. We keep the required part short, then let families add optional detail that makes the case easier to handle later and easier for platform teams to review.</p>
         <div class="intake-layout">
           <div class="form-panel">
             <form id="intake-form">
@@ -577,7 +645,7 @@
                 <summary>
                   <div class="optional-summary-copy">
                     <span>Add optional details if you already have them</span>
-                    <small>Helpful for Meta, Google, or platform submissions later, but not required to begin.</small>
+                    <small>Helpful for Meta, Google, or other platform submissions later, but not required to begin.</small>
                   </div>
                   <span class="optional-summary-icon">+</span>
                 </summary>
@@ -629,6 +697,7 @@
   <footer>
     <div class="footer-inner">
       <a href="/">Home</a>
+      <a href="/about">About</a>
       <a href="/blog">Resources</a>
       <a href="/privacy">Privacy</a>
       <a href="/terms">Terms</a>

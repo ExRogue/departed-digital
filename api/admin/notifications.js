@@ -8,7 +8,7 @@ function normalizeString(value, maxLength = 6000) {
 }
 
 module.exports = async function handler(req, res) {
-  allowCors(res);
+  allowCors(res, req);
 
   if (req.method === 'OPTIONS') {
     res.statusCode = 204;
@@ -16,7 +16,7 @@ module.exports = async function handler(req, res) {
     return;
   }
 
-  const adminCheck = requireAdminAccess(req);
+  const adminCheck = await requireAdminAccess(req, 'notifications.send');
 
   if (!adminCheck.ok) {
     sendError(res, adminCheck.statusCode, adminCheck.message);

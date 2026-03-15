@@ -45,7 +45,7 @@ function validateCreatePayload(payload) {
 }
 
 module.exports = async function handler(req, res) {
-  allowCors(res);
+  allowCors(res, req);
 
   if (req.method === 'OPTIONS') {
     res.statusCode = 204;
@@ -122,8 +122,6 @@ module.exports = async function handler(req, res) {
         relationshipToDeceased: normalizeString(body.relationshipToDeceased, 140),
         knownPlatforms: normalizeString(body.knownPlatforms, 1200),
         profileUrls: normalizeString(body.profileUrls, 2000),
-        paymentStatus: normalizeString(body.paymentStatus, 40),
-        status: normalizeString(body.status, 40),
         activityEvent: normalizeString(body.activityEvent, 80),
         activityMetadata: body.activityMetadata && typeof body.activityMetadata === 'object' ? body.activityMetadata : {}
       });

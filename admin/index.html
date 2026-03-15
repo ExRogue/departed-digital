@@ -36,13 +36,16 @@
       color: var(--text);
       line-height: 1.6;
     }
+    [hidden] {
+      display: none !important;
+    }
     nav {
       background: linear-gradient(135deg, var(--navy-dark), var(--navy));
       color: var(--white);
       padding: 20px 24px;
     }
     .nav-inner, .container {
-      max-width: 1320px;
+      max-width: 1480px;
       margin: 0 auto;
     }
     .nav-inner {
@@ -107,12 +110,47 @@
     }
     .access-grid {
       display: grid;
-      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.1fr) auto auto;
+      grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.15fr) auto;
       gap: 14px;
       align-items: end;
     }
+    .access-field.is-hidden,
+    .access-actions.is-hidden {
+      display: none;
+    }
+    .preset-input {
+      background: #f5efe4;
+      color: var(--navy);
+      font-weight: 600;
+    }
+    .access-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      align-items: center;
+    }
     .session-note {
       margin-top: 12px;
+      color: var(--text-muted);
+      font-size: 0.92rem;
+    }
+    .dashboard-shell.hidden {
+      display: none;
+    }
+    .access-summary {
+      margin-top: 16px;
+      padding: 16px 18px;
+      border-radius: 18px;
+      background: #fbf8f3;
+      border: 1px solid var(--border);
+      display: grid;
+      gap: 6px;
+    }
+    .access-summary strong {
+      color: var(--navy);
+      font-size: 0.96rem;
+    }
+    .access-summary span {
       color: var(--text-muted);
       font-size: 0.92rem;
     }
@@ -154,21 +192,27 @@
       color: var(--navy-dark);
     }
     button.primary:hover, .button-link.primary:hover { background: var(--gold-light); }
+    button.danger, .button-link.danger {
+      background: #8d2f2f;
+      color: #fff;
+    }
+    button.danger:hover, .button-link.danger:hover {
+      background: #a83c3c;
+    }
     button.secondary, .button-link.secondary {
       background: transparent;
       color: var(--navy);
       border: 1px solid var(--border);
     }
+    button:disabled, .button-link[aria-disabled="true"] {
+      opacity: 0.45;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
     .helper {
       margin-top: 12px;
       color: var(--text-muted);
       font-size: 0.92rem;
-    }
-    .dashboard-grid {
-      display: grid;
-      grid-template-columns: 1.15fr 0.85fr;
-      gap: 24px;
-      align-items: start;
     }
     .stats-grid {
       display: grid;
@@ -206,7 +250,7 @@
     }
     .queue-board {
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 16px;
       margin-top: 18px;
     }
@@ -217,6 +261,20 @@
       padding: 18px;
       display: grid;
       gap: 12px;
+      cursor: pointer;
+      text-align: left;
+      color: inherit;
+      font: inherit;
+      transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+    }
+    .queue-card:hover {
+      border-color: rgba(201,168,76,0.55);
+      box-shadow: 0 12px 24px rgba(26,39,68,0.08);
+      transform: translateY(-1px);
+    }
+    .queue-card.active {
+      background: #fff8e9;
+      border-color: rgba(201,168,76,0.65);
     }
     .queue-card h3 {
       font-size: 1.15rem;
@@ -254,29 +312,81 @@
     }
     .cases-toolbar {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) 220px 220px;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 12px;
       margin: 18px 0 20px;
     }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.94rem;
+    .cases-toolbar input[type="search"] {
+      grid-column: 1 / -1;
     }
-    th, td {
-      text-align: left;
-      padding: 14px 12px;
-      border-bottom: 1px solid var(--border);
-      vertical-align: top;
+    .saved-views {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 16px;
     }
-    th {
-      color: var(--text-muted);
-      font-size: 0.79rem;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
+    .saved-view {
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.9);
+      color: var(--navy);
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: border-color 0.18s ease, background 0.18s ease, transform 0.18s ease;
+      gap: 8px;
     }
-    tr.case-row { cursor: pointer; }
-    tr.case-row.active { background: #fff8e9; }
+    .saved-view:hover {
+      border-color: rgba(201,168,76,0.55);
+      background: #fff8e9;
+      transform: translateY(-1px);
+    }
+    .saved-view.active {
+      background: var(--navy);
+      border-color: var(--navy);
+      color: var(--white);
+    }
+    .saved-view-count {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 24px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: rgba(26,39,68,0.08);
+      color: inherit;
+      font-size: 0.76rem;
+      line-height: 1;
+    }
+    .saved-view.active .saved-view-count {
+      background: rgba(255,255,255,0.18);
+    }
+    .bulk-bar {
+      display: none;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 16px;
+      border: 1px solid rgba(201,168,76,0.28);
+      border-radius: 16px;
+      background: #fff8e9;
+      margin-bottom: 16px;
+    }
+    .bulk-bar.active {
+      display: flex;
+    }
+    .bulk-bar strong {
+      color: var(--navy);
+    }
+    .bulk-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .bulk-inline-select {
+      min-width: 220px;
+      width: auto;
+    }
     .badge {
       display: inline-flex;
       align-items: center;
@@ -298,6 +408,58 @@
     .detail-grid {
       display: grid;
       gap: 18px;
+    }
+    .detail-header {
+      display: grid;
+      gap: 14px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--border);
+    }
+    .detail-kicker {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+    .detail-title {
+      display: grid;
+      gap: 6px;
+    }
+    .detail-title h3 {
+      font-size: 1.45rem;
+    }
+    .detail-title p {
+      color: var(--text-muted);
+      font-size: 0.92rem;
+    }
+    .detail-badge-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+    .detail-topline {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .detail-topline .mini-card {
+      padding: 14px 16px;
+    }
+    .detail-topline .mini-card h3 {
+      font-size: 0.76rem;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      font-family: 'Inter', sans-serif;
+    }
+    .detail-topline .mini-card p {
+      color: var(--navy);
+      font-weight: 600;
+      font-size: 0.95rem;
+      line-height: 1.45;
     }
     .detail-summary {
       display: grid;
@@ -329,6 +491,22 @@
       gap: 8px;
       font-size: 0.92rem;
     }
+    .action-cluster {
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      background: #fbf8f3;
+      padding: 18px;
+      display: grid;
+      gap: 12px;
+    }
+    .action-cluster h3 {
+      font-size: 1.18rem;
+      margin-bottom: 2px;
+    }
+    .action-cluster p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
     .field-grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -341,9 +519,267 @@
       flex-wrap: wrap;
     }
     .quick-actions { margin-top: 6px; }
+    .detail-tabs {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .dirty-bar {
+      display: none;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      border: 1px solid rgba(201,168,76,0.28);
+      background: #fff8e9;
+      border-radius: 16px;
+      padding: 14px 16px;
+      margin-bottom: 18px;
+    }
+    .dirty-bar.active {
+      display: flex;
+    }
+    .dirty-bar-copy {
+      display: grid;
+      gap: 4px;
+    }
+    .detail-tab {
+      border: 1px solid var(--border);
+      background: #fff;
+      color: var(--navy);
+      border-radius: 999px;
+      padding: 10px 16px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+    .detail-tab.active {
+      background: var(--navy);
+      color: var(--white);
+      border-color: var(--navy);
+    }
+    .detail-section {
+      display: none;
+      gap: 18px;
+    }
+    .detail-section.active {
+      display: grid;
+    }
+    .detail-panel {
+      position: static;
+      max-height: none;
+      overflow: visible;
+    }
+    .operations-stack {
+      display: grid;
+      gap: 24px;
+    }
+    .operations-main-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(400px, 0.85fr);
+      gap: 24px;
+      align-items: start;
+    }
+    .case-list {
+      display: grid;
+      gap: 14px;
+    }
+    .case-item {
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: #fffdf9;
+      padding: 18px;
+      display: grid;
+      gap: 14px;
+      text-align: left;
+      transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+    }
+    .case-item:hover {
+      border-color: rgba(201,168,76,0.5);
+      box-shadow: 0 14px 30px rgba(26,39,68,0.08);
+      transform: translateY(-1px);
+    }
+    .case-item.active {
+      background: #fff8e9;
+      border-color: rgba(201,168,76,0.65);
+      box-shadow: 0 18px 34px rgba(201,168,76,0.15);
+    }
+    .case-item-open {
+      border: none;
+      background: transparent;
+      padding: 0;
+      margin: 0;
+      width: 100%;
+      display: grid;
+      gap: 14px;
+      text-align: left;
+      cursor: pointer;
+      color: inherit;
+      font: inherit;
+    }
+    .case-item-topline {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+    .case-select {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-muted);
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+    .case-select input {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--gold);
+    }
+    .case-item-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .case-item-ref {
+      display: grid;
+      gap: 6px;
+    }
+    .case-item-ref strong {
+      color: var(--navy);
+      font-size: 1.02rem;
+    }
+    .case-item-subtitle {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+    .case-item-pills {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+    .case-item-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+    }
+    .case-fact {
+      display: grid;
+      gap: 4px;
+    }
+    .case-fact-label {
+      color: var(--text-muted);
+      font-size: 0.76rem;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      font-weight: 700;
+    }
+    .case-fact-value {
+      color: var(--navy);
+      font-size: 0.96rem;
+      line-height: 1.45;
+      word-break: break-word;
+    }
+    .case-item-meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+      color: var(--text-muted);
+      font-size: 0.88rem;
+      align-items: center;
+    }
+    .case-item-meta strong {
+      color: var(--navy);
+    }
+    .case-item-inline-actions {
+      display: inline-flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-left: auto;
+    }
+    .inline-action {
+      border: 1px solid rgba(26,39,68,0.12);
+      border-radius: 999px;
+      background: rgba(255,255,255,0.85);
+      color: var(--navy);
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 8px 12px;
+      cursor: pointer;
+      transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+    }
+    .inline-action:hover {
+      background: #fff8e9;
+      border-color: rgba(201,168,76,0.55);
+      transform: translateY(-1px);
+    }
+    .view-switcher {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+    .view-button {
+      border: 1px solid var(--border);
+      background: var(--white);
+      color: var(--navy);
+      border-radius: 999px;
+      padding: 12px 18px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .view-button.active {
+      background: var(--navy);
+      color: var(--white);
+      border-color: var(--navy);
+    }
+    .dashboard-view {
+      display: none;
+    }
+    .dashboard-view.active {
+      display: block;
+    }
+    details.section-card summary {
+      list-style: none;
+      cursor: pointer;
+      font-family: 'Playfair Display', serif;
+      color: var(--navy);
+      font-size: 1.28rem;
+      margin-bottom: 14px;
+    }
+    details.section-card summary::-webkit-details-marker {
+      display: none;
+    }
+    .callout {
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      background: #fff8e9;
+      color: var(--navy);
+      padding: 16px 18px;
+    }
     .templates-grid {
       display: grid;
       gap: 14px;
+    }
+    .team-list, .reminder-list {
+      display: grid;
+      gap: 14px;
+    }
+    .team-card, .reminder-card {
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      background: #fbf8f3;
+      padding: 18px;
+      display: grid;
+      gap: 10px;
+    }
+    .pill-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
     }
     .template-card {
       border-radius: 18px;
@@ -419,13 +855,20 @@
       padding: 18px 0;
     }
     @media (max-width: 1180px) {
-      .dashboard-grid, .stats-grid, .analytics-layout, .signal-grid, .queue-board {
+      .stats-grid, .analytics-layout, .signal-grid, .queue-board, .operations-main-grid, .detail-topline {
         grid-template-columns: 1fr;
       }
     }
     @media (max-width: 900px) {
-      .cases-toolbar, .access-grid, .field-grid, .detail-summary, .platform-mini {
+      .cases-toolbar, .access-grid, .field-grid, .detail-summary, .platform-mini, .stats-grid, .case-item-grid {
         grid-template-columns: 1fr;
+      }
+      .access-actions {
+        justify-content: stretch;
+      }
+      .bulk-bar, .dirty-bar {
+        align-items: flex-start;
+        flex-direction: column;
       }
     }
   </style>
@@ -451,43 +894,48 @@
 
       <section class="panel access-panel">
         <div class="access-grid">
-          <div>
+          <div class="access-field">
             <label for="admin-username">Admin username</label>
-            <input id="admin-username" type="text" autocomplete="username" placeholder="admin" readonly />
+            <input class="preset-input" id="admin-username" type="text" autocomplete="username" placeholder="admin" readonly />
           </div>
-          <div>
+          <div class="access-field" id="password-field">
             <label for="admin-password">Password</label>
             <input id="admin-password" type="password" autocomplete="current-password" placeholder="Enter password" />
           </div>
-          <button class="secondary" id="logout-dashboard" type="button">Sign out</button>
-          <button class="primary" id="login-dashboard" type="button">Sign in</button>
+          <div class="access-actions">
+            <button class="secondary" id="refresh-dashboard" type="button" hidden>Refresh data</button>
+            <button class="secondary" id="logout-dashboard" type="button">Sign out</button>
+            <button class="primary" id="login-dashboard" type="button">Sign in</button>
+          </div>
         </div>
         <p class="helper" id="admin-helper">Sign in to open the operations dashboard. This page is not linked publicly, and the alias path is <code>/studio</code>.</p>
         <p class="session-note" id="session-note">No active admin session.</p>
+        <div class="access-summary">
+          <strong>What opens after sign-in</strong>
+          <span>Operations, analytics, partner enquiries, and team access are kept behind the dashboard so the public site stays calm and client-safe.</span>
+        </div>
       </section>
 
+      <div class="dashboard-shell hidden" id="dashboard-shell">
       <section class="stats-grid" id="stats-grid">
-        <div class="panel stat-card"><strong>Total cases</strong><span>0</span><p class="helper">Load the dashboard to see live case metrics.</p></div>
-        <div class="panel stat-card"><strong>Awaiting payment</strong><span>0</span><p class="helper">Cases still waiting for the payment step.</p></div>
+        <div class="panel stat-card"><strong>Working cases</strong><span>0</span><p class="helper">Live cases in the active inbox.</p></div>
+        <div class="panel stat-card"><strong>Waiting on client</strong><span>0</span><p class="helper">Cases paused until payment or documents arrive.</p></div>
         <div class="panel stat-card"><strong>Unique visitors</strong><span>0</span><p class="helper">Sessions tracked across the website.</p></div>
-        <div class="panel stat-card"><strong>CTA clicks</strong><span>0</span><p class="helper">Tracked conversion intent across key buttons.</p></div>
+        <div class="panel stat-card"><strong>Action now</strong><span>0</span><p class="helper">Cases that need human follow-up now.</p></div>
+        <div class="panel stat-card"><strong>Open reminders</strong><span>0</span><p class="helper">Manual internal reminders still open.</p></div>
+        <div class="panel stat-card"><strong>Ready to submit</strong><span>0</span><p class="helper">Cases ready for the next platform action.</p></div>
       </section>
 
-      <div class="dashboard-grid">
-        <div>
-          <section class="panel analytics-panel">
-            <span class="eyebrow" style="margin-bottom: 8px;">Traffic and funnel</span>
-            <h2 style="font-size: 1.9rem;">Site analytics</h2>
-            <p class="helper">Lightweight first-party analytics based on your own backend. This shows what pages are being viewed, which CTAs are being clicked, and how the funnel is moving.</p>
-            <div class="analytics-layout" id="analytics-layout">
-              <div class="mini-card"><h3>Top pages</h3><p class="empty">Load the dashboard to see analytics.</p></div>
-              <div class="mini-card"><h3>Top clicks</h3><p class="empty">Load the dashboard to see analytics.</p></div>
-              <div class="mini-card"><h3>Funnel snapshot</h3><p class="empty">Load the dashboard to see analytics.</p></div>
-              <div class="mini-card"><h3>Latest events</h3><p class="empty">Load the dashboard to see analytics.</p></div>
-            </div>
-          </section>
+      <div class="view-switcher">
+        <button class="view-button active" type="button" data-dashboard-view="operations">Operations</button>
+        <button class="view-button" type="button" data-dashboard-view="analytics">Analytics</button>
+        <button class="view-button" type="button" data-dashboard-view="partners">Partners</button>
+        <button class="view-button" type="button" data-dashboard-view="team">Team</button>
+      </div>
 
-          <section class="panel analytics-panel" style="margin-top: 24px;">
+      <section class="dashboard-view active" data-dashboard-view-panel="operations">
+        <div class="operations-stack">
+          <section class="panel analytics-panel">
             <span class="eyebrow" style="margin-bottom: 8px;">Workflow engine</span>
             <h2 style="font-size: 1.9rem;">Operational queues</h2>
             <p class="helper">These queues surface where cases are getting stuck so the next action can be taken without scanning every record.</p>
@@ -499,48 +947,117 @@
             </div>
           </section>
 
-          <section class="panel cases-panel" style="margin-top: 24px;">
-            <span class="eyebrow" style="margin-bottom: 8px;">Cases</span>
-            <h2 style="font-size: 1.9rem;">Case inbox</h2>
-            <div class="cases-toolbar">
-              <input id="case-search" type="search" placeholder="Search by reference, client, email, or deceased name" />
-              <select id="queue-filter">
-                <option value="all">All queues</option>
-                <option value="attention">Needs attention</option>
-                <option value="waiting_on_client">Waiting on client</option>
-                <option value="submission_queue">Ready to submit</option>
-                <option value="blocked">Blocked</option>
-                <option value="overdue">Overdue</option>
-              </select>
-              <select id="status-filter">
-                <option value="all">All statuses</option>
-                <option value="awaiting_payment">Awaiting payment</option>
-                <option value="paid">Paid</option>
-                <option value="awaiting_documents">Awaiting documents</option>
-                <option value="documents_received">Documents received</option>
-                <option value="active">Active</option>
-                <option value="submitted">Submitted</option>
-                <option value="completed">Completed</option>
-                <option value="blocked">Blocked</option>
-              </select>
-              <select id="package-filter">
-                <option value="all">All packages</option>
-                <option value="essential">Essential</option>
-                <option value="standard">Standard</option>
-                <option value="estate">Estate</option>
-              </select>
-            </div>
-            <div id="cases-table-wrap">
-              <p class="empty">Load the dashboard to see cases.</p>
-            </div>
-          </section>
-        </div>
+          <div class="operations-main-grid">
+            <section class="panel cases-panel">
+              <span class="eyebrow" style="margin-bottom: 8px;">Cases</span>
+              <h2 style="font-size: 1.9rem;">Case inbox</h2>
+              <div class="saved-views" id="saved-views">
+                <button class="saved-view active" type="button" data-saved-view="all_cases" data-view-label="All cases">All cases</button>
+                <button class="saved-view" type="button" data-saved-view="awaiting_payment" data-view-label="Awaiting payment">Awaiting payment</button>
+                <button class="saved-view" type="button" data-saved-view="waiting_on_client" data-view-label="Waiting on client">Waiting on client</button>
+                <button class="saved-view" type="button" data-saved-view="awaiting_documents" data-view-label="Awaiting documents">Awaiting documents</button>
+                <button class="saved-view" type="button" data-saved-view="ready_to_submit" data-view-label="Ready to submit">Ready to submit</button>
+                <button class="saved-view" type="button" data-saved-view="blocked" data-view-label="Blocked">Blocked</button>
+                <button class="saved-view" type="button" data-saved-view="partner_referrals" data-view-label="Partner referrals">Partner referrals</button>
+              </div>
+              <div class="cases-toolbar">
+                <input id="case-search" type="search" placeholder="Search by reference, client, email, or deceased name" />
+                <select id="queue-filter">
+                  <option value="all">All queues</option>
+                  <option value="attention">Needs attention</option>
+                  <option value="waiting_on_client">Waiting on client</option>
+                  <option value="submission_queue">Ready to submit</option>
+                  <option value="blocked">Blocked</option>
+                  <option value="overdue">Overdue</option>
+                  <option value="partner_referrals">Partner referrals</option>
+                </select>
+                <select id="status-filter">
+                  <option value="all">All statuses</option>
+                  <option value="awaiting_payment">Awaiting payment</option>
+                  <option value="paid">Paid</option>
+                  <option value="awaiting_documents">Awaiting documents</option>
+                  <option value="documents_received">Documents received</option>
+                  <option value="active">Active</option>
+                  <option value="submitted">Submitted</option>
+                  <option value="completed">Completed</option>
+                  <option value="blocked">Blocked</option>
+                </select>
+                <select id="package-filter">
+                  <option value="all">All packages</option>
+                  <option value="essential">Essential</option>
+                  <option value="standard">Standard</option>
+                  <option value="estate">Estate</option>
+                </select>
+                <select id="lifecycle-filter">
+                  <option value="active">Active records</option>
+                  <option value="all">All records</option>
+                  <option value="archived">Archived only</option>
+                </select>
+              </div>
+              <div class="bulk-bar" id="bulk-bar">
+                <strong id="bulk-count">0 selected</strong>
+                <div class="bulk-actions">
+                  <select id="bulk-owner-select" class="bulk-inline-select" aria-label="Assign selected cases to owner">
+                    <option value="">Choose owner</option>
+                  </select>
+                  <button class="secondary" type="button" id="bulk-assign-owner">Assign owner</button>
+                  <button class="secondary" type="button" id="bulk-payment-link">Mark payment link sent</button>
+                  <button class="secondary" type="button" id="bulk-paid">Set paid</button>
+                  <button class="secondary" type="button" id="bulk-awaiting-docs">Awaiting documents</button>
+                  <button class="secondary" type="button" id="bulk-complete">Set completed</button>
+                  <button class="secondary" type="button" id="bulk-archive">Archive selected</button>
+                  <button class="secondary" type="button" id="bulk-clear">Clear selection</button>
+                </div>
+              </div>
+              <div id="cases-table-wrap">
+                <p class="empty">Load the dashboard to see cases.</p>
+              </div>
+            </section>
 
-        <aside class="panel detail-panel">
-          <span class="eyebrow" style="margin-bottom: 8px;">Selected case</span>
-          <h2 style="font-size: 1.9rem; margin-bottom: 14px;">Case detail and agent context</h2>
-          <div id="case-detail" class="empty">Choose a case from the inbox to review the full record, exports, and next action.</div>
-        </aside>
+            <aside class="panel detail-panel">
+              <span class="eyebrow" style="margin-bottom: 8px;">Selected case</span>
+              <h2 style="font-size: 1.9rem; margin-bottom: 14px;">Case detail and agent context</h2>
+              <div id="case-detail" class="empty">Choose a case from the inbox to review the full record, exports, and next action.</div>
+            </aside>
+          </div>
+        </div>
+      </section>
+
+      <section class="dashboard-view" data-dashboard-view-panel="analytics">
+        <section class="panel analytics-panel">
+          <span class="eyebrow" style="margin-bottom: 8px;">Traffic and funnel</span>
+          <h2 style="font-size: 1.9rem;">Site analytics</h2>
+          <p class="helper">Lightweight first-party analytics based on your own backend. This shows what pages are being viewed, which CTAs are being clicked, and how the funnel is moving.</p>
+          <div class="analytics-layout" id="analytics-layout">
+            <div class="mini-card"><h3>Top pages</h3><p class="empty">Load the dashboard to see analytics.</p></div>
+            <div class="mini-card"><h3>Top clicks</h3><p class="empty">Load the dashboard to see analytics.</p></div>
+            <div class="mini-card"><h3>Funnel snapshot</h3><p class="empty">Load the dashboard to see analytics.</p></div>
+            <div class="mini-card"><h3>Latest events</h3><p class="empty">Load the dashboard to see analytics.</p></div>
+          </div>
+        </section>
+      </section>
+
+      <section class="dashboard-view" data-dashboard-view-panel="partners">
+        <section class="panel analytics-panel">
+          <span class="eyebrow" style="margin-bottom: 8px;">Partner prospects</span>
+          <h2 style="font-size: 1.9rem;">Referral partners</h2>
+          <p class="helper">Funeral directors and referral partners captured through the partner page live here so prospect follow-up is not lost.</p>
+          <div id="partners-panel">
+            <p class="empty">Sign in to review partner enquiries.</p>
+          </div>
+        </section>
+      </section>
+
+      <section class="dashboard-view" data-dashboard-view-panel="team">
+        <section class="panel analytics-panel">
+          <span class="eyebrow" style="margin-bottom: 8px;">Team access</span>
+          <h2 style="font-size: 1.9rem;">Operators and roles</h2>
+          <p class="helper">Create separate logins for you, VAs, or specialist operators. Permissions are role-based so not every account needs full control.</p>
+          <div id="team-panel">
+            <p class="empty">Sign in to manage team access.</p>
+          </div>
+        </section>
+      </section>
       </div>
     </div>
   </main>
@@ -552,28 +1069,58 @@
     const sessionNote = document.getElementById('session-note');
     const loginDashboardButton = document.getElementById('login-dashboard');
     const logoutDashboardButton = document.getElementById('logout-dashboard');
+    const refreshDashboardButton = document.getElementById('refresh-dashboard');
+    const passwordField = document.getElementById('password-field');
+    const dashboardShell = document.getElementById('dashboard-shell');
     const statsGrid = document.getElementById('stats-grid');
     const analyticsLayout = document.getElementById('analytics-layout');
     const queueBoard = document.getElementById('queue-board');
+    const partnersPanel = document.getElementById('partners-panel');
+    const teamPanel = document.getElementById('team-panel');
     const casesTableWrap = document.getElementById('cases-table-wrap');
     const caseDetail = document.getElementById('case-detail');
     const queueFilter = document.getElementById('queue-filter');
     const statusFilter = document.getElementById('status-filter');
     const packageFilter = document.getElementById('package-filter');
+    const lifecycleFilter = document.getElementById('lifecycle-filter');
     const caseSearch = document.getElementById('case-search');
+    const viewButtons = Array.from(document.querySelectorAll('[data-dashboard-view]'));
+    const savedViewButtons = Array.from(document.querySelectorAll('[data-saved-view]'));
+    const bulkBar = document.getElementById('bulk-bar');
+    const bulkCount = document.getElementById('bulk-count');
+    const bulkOwnerSelect = document.getElementById('bulk-owner-select');
+    const SESSION_HINT_KEY = 'departedDigitalAdminSessionHint';
+    const SESSION_TOKEN_KEY = 'departedDigitalAdminSessionToken';
+    const DASHBOARD_CACHE_KEY = 'departedDigitalAdminDashboardCache';
 
     const state = {
       authenticated: false,
       username: 'admin',
+      name: 'Admin',
+      role: 'founder_admin',
+      permissions: [],
       sessionExpiresAt: '',
       stats: null,
+      loadIssues: {},
+      users: [],
+      teamRoles: [],
+      partners: [],
       cases: [],
+      caseDetailsById: {},
       selectedCaseId: '',
-      filteredCases: []
+      bulkSelectedIds: [],
+      selectedCaseLoading: false,
+      selectedCaseLoadingSection: '',
+      selectedCaseError: '',
+      detailDirty: false,
+      filteredCases: [],
+      activeView: 'operations',
+      activeDetailView: 'overview',
+      activeSavedView: 'all_cases'
     };
 
     function escapeHtml(value) {
-      return String(value || '')
+      return String(value ?? '')
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;')
@@ -582,9 +1129,79 @@
     }
 
     function getHeaders() {
-      return {
+      const headers = {
         'Content-Type': 'application/json'
       };
+
+      const sessionToken = readSessionToken();
+
+      if (sessionToken) {
+        headers['X-Admin-Session'] = sessionToken;
+      }
+
+      return headers;
+    }
+
+    async function readJsonResponse(response, fallbackError) {
+      const raw = await response.text();
+
+      try {
+        return raw ? JSON.parse(raw) : {};
+      } catch (error) {
+        return {
+          ok: false,
+          error: raw
+            ? raw.replace(/\s+/g, ' ').trim().slice(0, 180)
+            : fallbackError
+        };
+      }
+    }
+
+    async function requestJson(path, options, fallbackError, attempts = 3) {
+      let lastError = new Error(fallbackError);
+
+      for (let attempt = 0; attempt < attempts; attempt += 1) {
+        let timeout;
+        try {
+          const requestOptions = { ...(options || {}) };
+          const timeoutMs = Number(requestOptions.timeoutMs || 8000);
+          delete requestOptions.timeoutMs;
+          const controller = new AbortController();
+          timeout = setTimeout(() => controller.abort(), timeoutMs);
+          const response = await fetch(path, {
+            cache: 'no-store',
+            ...requestOptions,
+            signal: controller.signal
+          });
+          clearTimeout(timeout);
+          const payload = await readJsonResponse(response, fallbackError);
+
+          if (response.ok && payload && payload.ok !== false) {
+            return { response, payload };
+          }
+
+          const message = (payload && payload.error) || fallbackError;
+
+          if (attempt < attempts - 1 && response.status >= 500) {
+            await new Promise((resolve) => setTimeout(resolve, 450 * (attempt + 1)));
+            continue;
+          }
+
+          throw new Error(message);
+        } catch (error) {
+          clearTimeout(timeout);
+          lastError = error && error.name === 'AbortError'
+            ? new Error('The request took too long. Please try again.')
+            : error;
+
+          if (attempt < attempts - 1) {
+            await new Promise((resolve) => setTimeout(resolve, 450 * (attempt + 1)));
+            continue;
+          }
+        }
+      }
+
+      throw lastError;
     }
 
     function formatDate(value) {
@@ -599,30 +1216,424 @@
       return escapeHtml(value || '').replace(/\n/g, '<br />');
     }
 
+    function readSessionHint() {
+      try {
+        const raw = sessionStorage.getItem(SESSION_HINT_KEY);
+        return raw ? JSON.parse(raw) : null;
+      } catch (error) {
+        return null;
+      }
+    }
+
+    function readSessionToken() {
+      try {
+        return sessionStorage.getItem(SESSION_TOKEN_KEY) || '';
+      } catch (error) {
+        return '';
+      }
+    }
+
+    function saveSessionToken(token) {
+      try {
+        if (token) {
+          sessionStorage.setItem(SESSION_TOKEN_KEY, token);
+        } else {
+          sessionStorage.removeItem(SESSION_TOKEN_KEY);
+        }
+      } catch (error) {
+        // Ignore storage errors.
+      }
+    }
+
+    function saveSessionHint() {
+      if (!state.authenticated) {
+        sessionStorage.removeItem(SESSION_HINT_KEY);
+        return;
+      }
+
+      sessionStorage.setItem(SESSION_HINT_KEY, JSON.stringify({
+        username: state.username,
+        name: state.name,
+        role: state.role,
+        permissions: state.permissions,
+        sessionExpiresAt: state.sessionExpiresAt
+      }));
+    }
+
+    function clearSessionHint() {
+      sessionStorage.removeItem(SESSION_HINT_KEY);
+      saveSessionToken('');
+      try {
+        sessionStorage.removeItem(DASHBOARD_CACHE_KEY);
+      } catch (error) {
+        // Ignore storage errors.
+      }
+    }
+
+    function readDashboardCache() {
+      try {
+        const raw = sessionStorage.getItem(DASHBOARD_CACHE_KEY);
+        if (!raw) {
+          return null;
+        }
+        const parsed = JSON.parse(raw);
+        if (!parsed || !parsed.savedAt) {
+          return null;
+        }
+        if (Date.now() - new Date(parsed.savedAt).getTime() > 30 * 60 * 1000) {
+          return null;
+        }
+        return parsed;
+      } catch (error) {
+        return null;
+      }
+    }
+
+    function saveDashboardCache() {
+      try {
+        sessionStorage.setItem(DASHBOARD_CACHE_KEY, JSON.stringify({
+          savedAt: new Date().toISOString(),
+          stats: state.stats,
+          cases: state.cases,
+          partners: state.partners,
+          users: state.users,
+          teamRoles: state.teamRoles,
+          selectedCaseId: state.selectedCaseId
+        }));
+      } catch (error) {
+        // Ignore storage errors.
+      }
+    }
+
+    function hydrateDashboardCache() {
+      const cached = readDashboardCache();
+
+      if (!cached) {
+        return false;
+      }
+
+      state.stats = cached.stats || null;
+      state.cases = Array.isArray(cached.cases) ? cached.cases : [];
+      state.partners = Array.isArray(cached.partners) ? cached.partners : [];
+      state.users = Array.isArray(cached.users) ? cached.users : [];
+      state.teamRoles = Array.isArray(cached.teamRoles) ? cached.teamRoles : [];
+      state.selectedCaseId = cached.selectedCaseId || '';
+      state.caseDetailsById = {};
+      state.loadIssues = {};
+      renderStats();
+      renderAnalytics();
+      renderQueueBoard();
+      renderPartnersPanel();
+      renderTeamPanel();
+      renderCases();
+      ensureVisibleSelection();
+      renderDetail();
+      return true;
+    }
+
+    function renderDashboardSectionsForView(viewName) {
+      renderStats();
+
+      if (viewName === 'operations' || viewName === 'all') {
+        renderQueueBoard();
+        renderCases();
+        ensureVisibleSelection();
+        renderDetail();
+      }
+
+      if (viewName === 'analytics' || viewName === 'all') {
+        renderAnalytics();
+      }
+
+      if (viewName === 'partners' || viewName === 'all') {
+        renderPartnersPanel();
+      }
+
+      if (viewName === 'team' || viewName === 'all') {
+        renderTeamPanel();
+      }
+    }
+
+    function applySessionState(session) {
+      state.authenticated = true;
+      state.username = session.username || state.username;
+      state.name = session.name || session.username || state.name;
+      state.role = session.role || 'founder_admin';
+      state.permissions = session.permissions || [];
+      state.sessionExpiresAt = session.expiresAt || session.sessionExpiresAt || '';
+      try {
+        localStorage.setItem('departedDigitalOperatorBrowser', 'true');
+      } catch (error) {
+        // Ignore storage errors for operator marking.
+      }
+    }
+
     function resetDashboardView() {
       state.stats = null;
+      state.loadIssues = {};
+      state.users = [];
+      state.teamRoles = [];
+      state.partners = [];
       state.cases = [];
+      state.caseDetailsById = {};
       state.selectedCaseId = '';
+      state.bulkSelectedIds = [];
+      state.selectedCaseLoading = false;
+      state.selectedCaseError = '';
+      state.detailDirty = false;
       state.filteredCases = [];
-      statsGrid.innerHTML = '<div class="panel stat-card"><strong>Total cases</strong><span>0</span><p class="helper">Sign in to see live case metrics.</p></div><div class="panel stat-card"><strong>Awaiting payment</strong><span>0</span><p class="helper">Cases still waiting for the payment step.</p></div><div class="panel stat-card"><strong>Unique visitors</strong><span>0</span><p class="helper">Sessions tracked across the website.</p></div><div class="panel stat-card"><strong>CTA clicks</strong><span>0</span><p class="helper">Tracked conversion intent across key buttons.</p></div>';
+      statsGrid.innerHTML = '<div class="panel stat-card"><strong>Working cases</strong><span>0</span><p class="helper">Sign in to see live case metrics.</p></div><div class="panel stat-card"><strong>Action now</strong><span>0</span><p class="helper">Cases that currently need operator action.</p></div><div class="panel stat-card"><strong>Waiting on client</strong><span>0</span><p class="helper">Cases paused until payment or documents arrive.</p></div><div class="panel stat-card"><strong>Unique visitors</strong><span>0</span><p class="helper">Distinct visitors tracked across the website.</p></div>';
       analyticsLayout.innerHTML = '<div class="mini-card"><h3>Top pages</h3><p class="empty">Sign in to see analytics.</p></div><div class="mini-card"><h3>Top clicks</h3><p class="empty">Sign in to see analytics.</p></div><div class="mini-card"><h3>Funnel snapshot</h3><p class="empty">Sign in to see analytics.</p></div><div class="mini-card"><h3>Latest events</h3><p class="empty">Sign in to see analytics.</p></div>';
       queueBoard.innerHTML = '<div class="queue-card"><h3>Needs attention</h3><p class="empty">Sign in to see the queue.</p></div><div class="queue-card"><h3>Waiting on client</h3><p class="empty">Sign in to see the queue.</p></div><div class="queue-card"><h3>Ready to submit</h3><p class="empty">Sign in to see the queue.</p></div><div class="queue-card"><h3>Blocked or overdue</h3><p class="empty">Sign in to see the queue.</p></div>';
+      partnersPanel.innerHTML = '<p class="empty">Sign in to review partner enquiries.</p>';
+      teamPanel.innerHTML = '<p class="empty">Sign in to manage team access.</p>';
       casesTableWrap.innerHTML = '<p class="empty">Sign in to see cases.</p>';
       caseDetail.innerHTML = 'Choose a case from the inbox to review the full record, exports, and next action.';
+      updateBulkBar();
+      syncDashboardShell();
+    }
+
+    function renderDashboardLoadFailure(message) {
+      const safeMessage = escapeHtml(message || 'Dashboard data is temporarily unavailable.');
+      state.loadIssues = { dashboard: safeMessage };
+
+      statsGrid.innerHTML = [
+        ['Working cases'],
+        ['Action now'],
+        ['Waiting on client'],
+        ['Unique visitors']
+      ].map(([label]) => (
+        '<div class="panel stat-card">' +
+          '<strong>' + escapeHtml(label) + '</strong>' +
+          '<span>—</span>' +
+          '<p class="helper">' + safeMessage + '</p>' +
+        '</div>'
+      )).join('');
+
+      analyticsLayout.innerHTML =
+        '<div class="mini-card"><h3>Top pages</h3><p class="empty">' + safeMessage + '</p></div>' +
+        '<div class="mini-card"><h3>Top clicks</h3><p class="empty">' + safeMessage + '</p></div>' +
+        '<div class="mini-card"><h3>Funnel snapshot</h3><p class="empty">' + safeMessage + '</p></div>' +
+        '<div class="mini-card"><h3>Latest events</h3><p class="empty">' + safeMessage + '</p></div>';
+
+      queueBoard.innerHTML =
+        '<div class="queue-card"><h3>Needs attention</h3><p class="empty">' + safeMessage + '</p></div>' +
+        '<div class="queue-card"><h3>Waiting on client</h3><p class="empty">' + safeMessage + '</p></div>' +
+        '<div class="queue-card"><h3>Ready to submit</h3><p class="empty">' + safeMessage + '</p></div>' +
+        '<div class="queue-card"><h3>Blocked or overdue</h3><p class="empty">' + safeMessage + '</p></div>';
+
+      partnersPanel.innerHTML = '<p class="empty">' + safeMessage + '</p>';
+      teamPanel.innerHTML = '<p class="empty">' + safeMessage + '</p>';
+      casesTableWrap.innerHTML = '<p class="empty">' + safeMessage + '</p>';
+      caseDetail.innerHTML = safeMessage + ' Refresh and try again.';
+    }
+
+    function renderDashboardLoadingState() {
+      statsGrid.innerHTML = [
+        ['Working cases'],
+        ['Action now'],
+        ['Waiting on client'],
+        ['Unique visitors']
+      ].map(([label]) => (
+        '<div class="panel stat-card">' +
+          '<strong>' + escapeHtml(label) + '</strong>' +
+          '<span>...</span>' +
+          '<p class="helper">Loading live dashboard data...</p>' +
+        '</div>'
+      )).join('');
+
+      analyticsLayout.innerHTML =
+        '<div class="mini-card"><h3>Top pages</h3><p class="empty">Loading analytics...</p></div>' +
+        '<div class="mini-card"><h3>Top clicks</h3><p class="empty">Loading analytics...</p></div>' +
+        '<div class="mini-card"><h3>Funnel snapshot</h3><p class="empty">Loading analytics...</p></div>' +
+        '<div class="mini-card"><h3>Latest events</h3><p class="empty">Loading analytics...</p></div>' +
+        '<div class="mini-card"><h3>System health</h3><p class="empty">Loading system health...</p></div>';
+
+      queueBoard.innerHTML =
+        '<div class="queue-card"><h3>Needs attention</h3><p class="empty">Loading queue...</p></div>' +
+        '<div class="queue-card"><h3>Waiting on client</h3><p class="empty">Loading queue...</p></div>' +
+        '<div class="queue-card"><h3>Ready to submit</h3><p class="empty">Loading queue...</p></div>' +
+        '<div class="queue-card"><h3>Blocked or overdue</h3><p class="empty">Loading queue...</p></div>';
+
+      partnersPanel.innerHTML = '<p class="empty">Loading partner prospects...</p>';
+      teamPanel.innerHTML = '<p class="empty">Loading team access...</p>';
+      casesTableWrap.innerHTML = '<p class="empty">Loading cases...</p>';
+      caseDetail.innerHTML = 'Loading the selected case record...';
+    }
+
+    function summarizeLoadIssues() {
+      return Object.values(state.loadIssues || {}).filter(Boolean).join(' ');
     }
 
     function updateSessionNote() {
       if (!state.authenticated) {
         sessionNote.textContent = 'No active admin session.';
         logoutDashboardButton.disabled = true;
+        refreshDashboardButton.hidden = true;
+        syncDashboardShell();
         return;
       }
 
       const expiryText = state.sessionExpiresAt
         ? ' Session expires ' + formatDate(state.sessionExpiresAt) + '.'
         : '';
-      sessionNote.textContent = 'Signed in as ' + state.username + '.' + expiryText;
+      sessionNote.textContent = 'Signed in as ' + state.name + ' (' + titleize(state.role) + ').' + expiryText;
       logoutDashboardButton.disabled = false;
+      refreshDashboardButton.hidden = false;
+      syncDashboardShell();
+    }
+
+    function syncDashboardShell() {
+      dashboardShell.classList.toggle('hidden', !state.authenticated);
+      if (passwordField) {
+        passwordField.classList.toggle('is-hidden', state.authenticated);
+      }
+      loginDashboardButton.hidden = state.authenticated;
+      logoutDashboardButton.hidden = !state.authenticated;
+    }
+
+    function setDashboardView(viewName, refreshData = true) {
+      state.activeView = viewName;
+      document.querySelectorAll('[data-dashboard-view-panel]').forEach(function (panel) {
+        panel.classList.toggle('active', panel.getAttribute('data-dashboard-view-panel') === viewName);
+      });
+      viewButtons.forEach(function (button) {
+        button.classList.toggle('active', button.getAttribute('data-dashboard-view') === viewName);
+      });
+
+      if (refreshData && state.authenticated) {
+        if (viewName === 'partners' && !state.partners.length && !state.loadIssues.partners) {
+          loadDashboard(true, 'partners').catch(function () {});
+        } else if (viewName === 'team' && !state.users.length && !state.loadIssues.team) {
+          loadDashboard(true, 'team').catch(function () {});
+        } else if (viewName === 'analytics' && (!state.stats || !state.stats.analytics)) {
+          loadDashboard(true, 'analytics').catch(function () {});
+        }
+      }
+    }
+
+    function setDetailView(viewName) {
+      state.activeDetailView = viewName;
+      caseDetail.querySelectorAll('[data-detail-view]').forEach(function (button) {
+        button.classList.toggle('active', button.getAttribute('data-detail-view') === viewName);
+      });
+      caseDetail.querySelectorAll('[data-detail-panel]').forEach(function (panel) {
+        panel.classList.toggle('active', panel.getAttribute('data-detail-panel') === viewName);
+      });
+
+      if (state.selectedCaseId && !hasLoadedCaseSections(state.selectedCaseId, getSectionsForDetailView(viewName))) {
+        fetchCaseDetail(state.selectedCaseId, {
+          sections: getSectionsForDetailView(viewName)
+        }).catch(function () {});
+      }
+    }
+
+    function hasPermission(permission) {
+      return state.permissions.includes(permission);
+    }
+
+    function canManageUsers() {
+      return hasPermission('users.manage');
+    }
+
+    function canWriteCases() {
+      return hasPermission('cases.write');
+    }
+
+    function canArchiveCases() {
+      return hasPermission('cases.archive');
+    }
+
+    function canDeleteCases() {
+      return hasPermission('cases.delete');
+    }
+
+    function createReminderMarkup(reminder, index) {
+      return (
+        '<div class="reminder-card" data-reminder-index="' + escapeHtml(index) + '">' +
+          '<div class="field-grid">' +
+            '<div class="field">' +
+              '<label>Reminder title</label>' +
+              '<input type="text" data-reminder-field="title" value="' + escapeHtml(reminder.title || '') + '" />' +
+            '</div>' +
+            '<div class="field">' +
+              '<label>Status</label>' +
+              '<select data-reminder-field="status">' +
+                '<option value="open">Open</option>' +
+                '<option value="done">Done</option>' +
+                '<option value="dismissed">Dismissed</option>' +
+              '</select>' +
+            '</div>' +
+            '<div class="field">' +
+              '<label>Severity</label>' +
+              '<select data-reminder-field="severity">' +
+                '<option value="normal">Normal</option>' +
+                '<option value="priority">Priority</option>' +
+                '<option value="urgent">Urgent</option>' +
+              '</select>' +
+            '</div>' +
+            '<div class="field">' +
+              '<label>Assigned to</label>' +
+              '<input type="text" data-reminder-field="assignedTo" value="' + escapeHtml(reminder.assignedTo || '') + '" placeholder="Person or desk" />' +
+            '</div>' +
+            '<div class="field">' +
+              '<label>Lane</label>' +
+              '<input type="text" data-reminder-field="ownerLane" value="' + escapeHtml(reminder.ownerLane || '') + '" placeholder="document_desk, partner_desk..." />' +
+            '</div>' +
+            '<div class="field">' +
+              '<label>Due date</label>' +
+              '<input type="date" data-reminder-field="dueDate" value="' + escapeHtml(reminder.dueDate || '') + '" />' +
+            '</div>' +
+            '<div class="field">' +
+              '<label>Escalate on</label>' +
+              '<input type="date" data-reminder-field="escalateAt" value="' + escapeHtml(reminder.escalateAt || '') + '" />' +
+            '</div>' +
+            '<div class="field full">' +
+              '<label>Notes</label>' +
+              '<textarea data-reminder-field="notes">' + escapeHtml(reminder.notes || '') + '</textarea>' +
+            '</div>' +
+          '</div>' +
+          '<div class="action-row">' +
+            '<button class="secondary remove-reminder" type="button">Remove reminder</button>' +
+          '</div>' +
+        '</div>'
+      );
+    }
+
+    function collectReminders() {
+      return Array.from(document.querySelectorAll('.reminder-card')).map((node) => {
+        const field = (name) => {
+          const input = node.querySelector('[data-reminder-field="' + name + '"]');
+          return input ? input.value : '';
+        };
+
+        const status = field('status');
+        const completedAt = status === 'done' ? new Date().toISOString() : '';
+
+        return {
+          title: field('title'),
+          status,
+          severity: field('severity'),
+          assignedTo: field('assignedTo'),
+          ownerLane: field('ownerLane'),
+          dueDate: field('dueDate'),
+          escalateAt: field('escalateAt'),
+          notes: field('notes'),
+          completedAt
+        };
+      }).filter((reminder) => reminder.title.trim());
+    }
+
+    function bindReminderButtons() {
+      document.querySelectorAll('.remove-reminder').forEach((button) => {
+        button.onclick = function () {
+          const reminder = button.closest('.reminder-card');
+          if (reminder) {
+            reminder.remove();
+            markDetailDirty();
+          }
+        };
+      });
     }
 
     async function copyText(value, label, helperId) {
@@ -640,14 +1651,497 @@
       }
     }
 
-    function getSelectedCase() {
+    function getSelectedCaseSummary() {
       return state.cases.find((entry) => entry.id === state.selectedCaseId) || null;
+    }
+
+    function getSelectedCase() {
+      if (!state.selectedCaseId) {
+        return null;
+      }
+
+      return state.caseDetailsById[state.selectedCaseId] || null;
+    }
+
+    function normalizeDetailSections(sections) {
+      const values = Array.isArray(sections) ? sections : [sections || 'core'];
+      const normalized = new Set(['core']);
+
+      values.forEach(function (value) {
+        const next = String(value || '').trim().toLowerCase();
+        if (next === 'workflow' || next === 'comms' || next === 'all') {
+          normalized.add(next);
+        }
+      });
+
+      return Array.from(normalized);
+    }
+
+    function getCaseLoadedSections(caseId) {
+      const detail = state.caseDetailsById[caseId];
+      const sections = detail && Array.isArray(detail._loadedSections) ? detail._loadedSections : [];
+      return new Set(normalizeDetailSections(sections));
+    }
+
+    function hasLoadedCaseSections(caseId, sections) {
+      const loaded = getCaseLoadedSections(caseId);
+      return normalizeDetailSections(sections).every(function (section) {
+        return loaded.has(section);
+      });
+    }
+
+    function getSectionsForDetailView(viewName) {
+      if (viewName === 'workflow') {
+        return ['workflow'];
+      }
+
+      if (viewName === 'comms') {
+        return ['workflow', 'comms'];
+      }
+
+      return ['core'];
+    }
+
+    function syncCaseSummary(caseRecord) {
+      if (!caseRecord || !caseRecord.id) {
+        return;
+      }
+
+      const summary = {
+        id: caseRecord.id,
+        reference: caseRecord.reference,
+        clientName: caseRecord.clientName,
+        clientEmail: caseRecord.clientEmail,
+        deceasedName: caseRecord.deceasedName,
+        selectedPackage: caseRecord.selectedPackage,
+        packageLabel: caseRecord.packageLabel,
+        relationshipToDeceased: caseRecord.relationshipToDeceased || '',
+        assignedTo: caseRecord.assignedTo || '',
+        priority: caseRecord.priority || 'standard',
+        dueDate: caseRecord.dueDate || '',
+        referralPartnerName: caseRecord.referralPartnerName || '',
+        referralFeeStatus: caseRecord.referralFeeStatus || 'not_applicable',
+        status: caseRecord.status,
+        paymentStatus: caseRecord.paymentStatus,
+        platformCount: caseRecord.platformCount || ((caseRecord.platformTasks || []).length || 0),
+        resolvedPlatformCount: caseRecord.resolvedPlatformCount || ((caseRecord.platformTasks || []).filter((task) => task.status === 'resolved').length || 0),
+        documentCount: caseRecord.documentCount || ((caseRecord.documents || []).length || 0),
+        reminderCount: caseRecord.reminderCount || ((caseRecord.reminders || []).filter((entry) => entry.status !== 'done' && entry.status !== 'dismissed').length || 0),
+        archivedAt: caseRecord.archivedAt || '',
+        createdAt: caseRecord.createdAt,
+        updatedAt: caseRecord.updatedAt,
+        workflow: caseRecord.workflow || {}
+      };
+
+      const index = state.cases.findIndex((entry) => entry.id === caseRecord.id);
+      if (index >= 0) {
+        state.cases[index] = {
+          ...state.cases[index],
+          ...summary
+        };
+      }
+    }
+
+    function removeCaseSummary(caseId) {
+      state.cases = state.cases.filter((entry) => entry.id !== caseId);
+      if (state.filteredCases) {
+        state.filteredCases = state.filteredCases.filter((entry) => entry.id !== caseId);
+      }
+      delete state.caseDetailsById[caseId];
+      state.bulkSelectedIds = state.bulkSelectedIds.filter((id) => id !== caseId);
+    }
+
+    function refreshOperationsUI() {
+      renderStats();
+      renderQueueBoard();
+      renderCases();
+      ensureVisibleSelection();
+      renderDetail();
+    }
+
+    function applyUpdatedCase(caseRecord, options = {}) {
+      if (!caseRecord || !caseRecord.id) {
+        return;
+      }
+
+      const existingDetail = state.caseDetailsById[caseRecord.id] || {};
+      const loadedSections = Array.from(new Set(
+        normalizeDetailSections(existingDetail._loadedSections || [])
+          .concat(normalizeDetailSections(caseRecord._loadedSections || ['core']))
+      ));
+      const mergedCase = {
+        ...existingDetail,
+        ...caseRecord,
+        caseLinks: caseRecord.caseLinks || existingDetail.caseLinks || {},
+        documents: caseRecord.documents || existingDetail.documents || [],
+        activity: caseRecord.activity || existingDetail.activity || [],
+        platformTasks: caseRecord.platformTasks || existingDetail.platformTasks || [],
+        reminders: caseRecord.reminders || existingDetail.reminders || [],
+        operational: caseRecord.operational || existingDetail.operational || {},
+        workflow: caseRecord.workflow || existingDetail.workflow || {},
+        _loadedSections: loadedSections
+      };
+
+      state.caseDetailsById[caseRecord.id] = mergedCase;
+      syncCaseSummary(mergedCase);
+
+      if (options.select !== false) {
+        state.selectedCaseId = mergedCase.id;
+      }
+
+      clearDetailDirty();
+      refreshOperationsUI();
+    }
+
+    async function refreshOperationsSummary() {
+      if (!state.authenticated) {
+        return;
+      }
+
+      try {
+        const result = await requestJson('/api/admin/stats?view=summary', {
+          headers: getHeaders(),
+          credentials: 'same-origin',
+          timeoutMs: 5000
+        }, 'We could not refresh the operations summary.', 2);
+        const payload = result.payload || {};
+        if (payload.stats || payload.cases) {
+          state.loadIssues.stats = '';
+          state.loadIssues.analytics = '';
+          mergeDashboardPayload(payload, 'operations');
+          renderStats();
+          renderQueueBoard();
+          renderCases();
+          ensureVisibleSelection();
+          renderDetail();
+        }
+      } catch (error) {
+        // Leave the current dashboard state in place; the operator should not lose the workspace.
+      }
+    }
+
+    function clearDetailDirty() {
+      state.detailDirty = false;
+      const helper = document.getElementById('save-helper');
+      if (helper && helper.textContent === 'Unsaved changes.') {
+        helper.textContent = canWriteCases()
+          ? 'Use the copy buttons to hand the case to a VA, live operator, or AI agent without rewriting the context each time.'
+          : 'Your role is read-only for case editing. You can still review the record and copy briefs.';
+      }
+    }
+
+    function getAssignableOperators() {
+      const seen = new Set();
+      const operators = [];
+      const pushOperator = (name, username, role) => {
+        const trimmedName = String(name || '').trim();
+        if (!trimmedName) {
+          return;
+        }
+        const key = trimmedName.toLowerCase();
+        if (seen.has(key)) {
+          return;
+        }
+        seen.add(key);
+        operators.push({
+          label: username ? trimmedName + ' (' + username + ')' : trimmedName,
+          value: trimmedName,
+          role: role || ''
+        });
+      };
+
+      if (state.name || state.username) {
+        pushOperator(state.name || state.username, state.username, state.role);
+      }
+
+      (state.users || []).forEach((user) => {
+        if (user && user.status === 'active') {
+          pushOperator(user.name || user.username, user.username, user.role);
+        }
+      });
+
+      return operators.sort((left, right) => left.label.localeCompare(right.label));
+    }
+
+    function renderOwnerOptions(selectedValue) {
+      const operators = getAssignableOperators();
+      const options = ['<option value="">Unassigned</option>']
+        .concat(operators.map((operator) => (
+          '<option value="' + escapeHtml(operator.value) + '">' + escapeHtml(operator.label) + '</option>'
+        )));
+
+      if (selectedValue && !operators.some((operator) => operator.value === selectedValue)) {
+        options.push('<option value="' + escapeHtml(selectedValue) + '">' + escapeHtml(selectedValue) + '</option>');
+      }
+
+      return options.join('');
+    }
+
+    function renderSavedViewCounts() {
+      const allCases = state.cases || [];
+      const activeCases = allCases.filter((entry) => !entry.archivedAt);
+      const counts = {
+        all_cases: activeCases.length,
+        awaiting_payment: activeCases.filter((entry) => entry.status === 'awaiting_payment').length,
+        waiting_on_client: activeCases.filter((entry) => entry.workflow && (entry.workflow.waitingOn === 'client_payment' || entry.workflow.waitingOn === 'client_documents')).length,
+        awaiting_documents: activeCases.filter((entry) => entry.status === 'paid' || entry.status === 'awaiting_documents').length,
+        ready_to_submit: activeCases.filter((entry) => entry.workflow && entry.workflow.queueKey === 'submission_queue').length,
+        blocked: activeCases.filter((entry) => entry.status === 'blocked' || (entry.workflow && (entry.workflow.queueKey === 'blocked' || entry.workflow.overdue))).length,
+        partner_referrals: activeCases.filter((entry) => entry.referralPartnerName || entry.referralPartnerType === 'funeral_director').length
+      };
+
+      savedViewButtons.forEach((button) => {
+        const preset = button.getAttribute('data-saved-view');
+        const count = counts[preset] || 0;
+        const label = button.getAttribute('data-view-label') || button.textContent.trim();
+        button.innerHTML = escapeHtml(label) + '<span class="saved-view-count">' + escapeHtml(count) + '</span>';
+      });
+    }
+
+    function renderBulkOwnerSelect() {
+      if (!bulkOwnerSelect) {
+        return;
+      }
+
+      const previousValue = bulkOwnerSelect.value;
+      bulkOwnerSelect.innerHTML = '<option value="">Choose owner</option>' + renderOwnerOptions(previousValue).replace('<option value="">Unassigned</option>', '');
+      if (previousValue) {
+        bulkOwnerSelect.value = previousValue;
+      }
+    }
+
+    function renderBulkActionLabels() {
+      const labels = getPaymentActionLabels();
+      const paymentLinkButton = document.getElementById('bulk-payment-link');
+      const paidButton = document.getElementById('bulk-paid');
+      const awaitingDocsButton = document.getElementById('bulk-awaiting-docs');
+
+      if (paymentLinkButton) {
+        paymentLinkButton.textContent = labels.bulkLink;
+        paymentLinkButton.disabled = hasAutomatedCheckout();
+      }
+
+      if (paidButton) {
+        paidButton.textContent = labels.bulkPaid;
+      }
+
+      if (awaitingDocsButton) {
+        awaitingDocsButton.textContent = 'Request documents';
+      }
+    }
+
+    function updateBulkBar() {
+      if (!bulkBar || !bulkCount) {
+        return;
+      }
+
+      const visibleIds = new Set(state.filteredCases.map((entry) => entry.id));
+      state.bulkSelectedIds = state.bulkSelectedIds.filter((id) => visibleIds.has(id));
+      bulkCount.textContent = state.bulkSelectedIds.length + ' selected';
+      bulkBar.classList.toggle('active', state.bulkSelectedIds.length > 0);
+      renderBulkOwnerSelect();
+      renderBulkActionLabels();
+    }
+
+    function clearBulkSelection() {
+      state.bulkSelectedIds = [];
+      updateBulkBar();
+      renderCases();
+    }
+
+    function toggleBulkSelection(caseId, checked) {
+      if (!caseId) {
+        return;
+      }
+
+      if (checked) {
+        if (!state.bulkSelectedIds.includes(caseId)) {
+          state.bulkSelectedIds.push(caseId);
+        }
+      } else {
+        state.bulkSelectedIds = state.bulkSelectedIds.filter((id) => id !== caseId);
+      }
+
+      updateBulkBar();
+    }
+
+    function applySavedView(preset) {
+      state.activeSavedView = preset;
+
+      if (preset === 'awaiting_payment') {
+        queueFilter.value = 'all';
+        statusFilter.value = 'awaiting_payment';
+        packageFilter.value = 'all';
+        lifecycleFilter.value = 'active';
+      } else if (preset === 'waiting_on_client') {
+        queueFilter.value = 'waiting_on_client';
+        statusFilter.value = 'all';
+        packageFilter.value = 'all';
+        lifecycleFilter.value = 'active';
+      } else if (preset === 'awaiting_documents') {
+        queueFilter.value = 'waiting_on_client';
+        statusFilter.value = 'all';
+        packageFilter.value = 'all';
+        lifecycleFilter.value = 'active';
+      } else if (preset === 'ready_to_submit') {
+        queueFilter.value = 'submission_queue';
+        statusFilter.value = 'all';
+        packageFilter.value = 'all';
+        lifecycleFilter.value = 'active';
+      } else if (preset === 'blocked') {
+        queueFilter.value = 'blocked';
+        statusFilter.value = 'blocked';
+        packageFilter.value = 'all';
+        lifecycleFilter.value = 'active';
+      } else if (preset === 'partner_referrals') {
+        queueFilter.value = 'all';
+        statusFilter.value = 'all';
+        packageFilter.value = 'all';
+        lifecycleFilter.value = 'active';
+      } else {
+        queueFilter.value = 'all';
+        statusFilter.value = 'all';
+        packageFilter.value = 'all';
+        lifecycleFilter.value = 'active';
+      }
+
+      savedViewButtons.forEach(function (button) {
+        button.classList.toggle('active', button.getAttribute('data-saved-view') === preset);
+      });
+
+      renderCases();
+      renderSavedViewCounts();
+      ensureVisibleSelection();
+      renderDetail();
+    }
+
+    function markDetailDirty() {
+      state.detailDirty = true;
+      const helper = document.getElementById('save-helper');
+      if (helper && canWriteCases()) {
+        helper.textContent = 'Unsaved changes.';
+      }
+    }
+
+    async function fetchCaseDetail(caseId, options = {}) {
+      const force = Boolean(options.force);
+      const requestedSections = normalizeDetailSections(options.sections || ['core']);
+
+      if (!caseId) {
+        return null;
+      }
+
+      if (!force && state.caseDetailsById[caseId] && hasLoadedCaseSections(caseId, requestedSections)) {
+        return state.caseDetailsById[caseId];
+      }
+
+      const hasExistingDetail = Boolean(state.caseDetailsById[caseId]);
+      state.selectedCaseLoading = !hasExistingDetail;
+      state.selectedCaseLoadingSection = hasExistingDetail ? requestedSections.join(',') : '';
+      state.selectedCaseError = '';
+      renderDetail();
+
+      try {
+        const result = await requestJson('/api/admin/cases?id=' + encodeURIComponent(caseId) + '&sections=' + encodeURIComponent(requestedSections.join(',')), {
+          method: 'GET',
+          headers: getHeaders(),
+          credentials: 'same-origin',
+          timeoutMs: 9000
+        }, 'We could not load the selected case.', 2);
+        const payload = result.payload || {};
+        if (!payload.case) {
+          throw new Error('We could not load the selected case.');
+        }
+
+        state.caseDetailsById[caseId] = payload.case;
+        syncCaseSummary(payload.case);
+        state.selectedCaseLoading = false;
+        state.selectedCaseLoadingSection = '';
+        state.selectedCaseError = '';
+        clearDetailDirty();
+        renderCases();
+        renderDetail();
+        return payload.case;
+      } catch (error) {
+        state.selectedCaseLoading = false;
+        state.selectedCaseLoadingSection = '';
+        state.selectedCaseError = error.message || 'We could not load the selected case.';
+        renderDetail();
+        throw error;
+      }
+    }
+
+    async function selectCase(caseId, options = {}) {
+      if (!caseId || caseId === state.selectedCaseId && state.caseDetailsById[caseId] && !options.force) {
+        return;
+      }
+
+      if (state.detailDirty && caseId !== state.selectedCaseId) {
+        const confirmed = window.confirm('You have unsaved changes on this case. Continue and lose those edits?');
+        if (!confirmed) {
+          return;
+        }
+      }
+
+      state.selectedCaseId = caseId;
+      state.selectedCaseError = '';
+      clearDetailDirty();
+      renderCases();
+      renderDetail();
+      await fetchCaseDetail(caseId, {
+        ...options,
+        sections: options.sections || ['core']
+      });
+    }
+
+    function ensureVisibleSelection() {
+      const visibleSelected = state.filteredCases.find((entry) => entry.id === state.selectedCaseId);
+
+      if (visibleSelected) {
+        return;
+      }
+
+      state.selectedCaseId = '';
     }
 
     function titleize(value) {
       return String(value || '')
         .replace(/_/g, ' ')
         .replace(/\b\w/g, (character) => character.toUpperCase());
+    }
+
+    function hasAutomatedCheckout() {
+      return Boolean(state.stats && state.stats.payments && state.stats.payments.automatedCheckoutEnabled);
+    }
+
+    function formatPaymentStatusLabel(value) {
+      if (value === 'payment_link_sent') {
+        return hasAutomatedCheckout() ? 'Stripe checkout' : 'Checkout sent';
+      }
+
+      return titleize(value || 'pending');
+    }
+
+    function getPaymentActionLabels() {
+      if (hasAutomatedCheckout()) {
+        return {
+          linkInline: 'Stripe checkout',
+          paidInline: 'Record offline payment',
+          linkQuick: 'Stripe checkout manages this',
+          paidQuick: 'Record offline payment',
+          bulkLink: 'Stripe checkout manages this',
+          bulkPaid: 'Record offline payment'
+        };
+      }
+
+      return {
+        linkInline: 'Log checkout sent',
+        paidInline: 'Record payment',
+        linkQuick: 'Log checkout handoff',
+        paidQuick: 'Record payment received',
+        bulkLink: 'Log checkout sent',
+        bulkPaid: 'Record payment'
+      };
     }
 
     function createPlatformTaskMarkup(task, index) {
@@ -733,6 +2227,7 @@
           const task = button.closest('.platform-task');
           if (task) {
             task.remove();
+            markDetailDirty();
           }
         };
       });
@@ -741,58 +2236,71 @@
     function renderStats() {
       const stats = state.stats || { totalCases: 0, awaitingPayment: 0, activeCases: 0, documentsStored: 0, analytics: {}, email: {} };
       const analytics = stats.analytics || {};
+      const statsIssue = state.loadIssues.stats || '';
+      const visitorCount = analytics.uniqueVisitors || analytics.uniqueSessions || 0;
+      const visitorLabel = visitorCount ? 'Last known visitors' : 'Visitors snapshot';
+      const visitorHelper = visitorCount
+        ? 'Cached visitor count from the latest analytics refresh.'
+        : 'Open the Analytics tab to load live visitor data.';
 
       statsGrid.innerHTML = [
-        ['Total cases', stats.totalCases, 'All stored cases in the operations system.'],
-        ['Awaiting payment', stats.awaitingPayment, 'Cases where the next job is payment follow-up.'],
-        ['Active cases', stats.activeCases, 'Cases already in handling or submission work.'],
-        ['Documents stored', stats.documentsStored, 'Supporting files currently attached to cases.'],
-        ['Urgent cases', stats.urgentCases || 0, 'Cases flagged for faster handling.'],
-        ['Unassigned cases', stats.unassignedCases || 0, 'Cases that still need an owner.'],
-        ['Needs attention', stats.attentionCases || 0, 'Cases with follow-up pressure, missing owner, or workflow risk.'],
-        ['Overdue cases', stats.overdueCases || 0, 'Cases that have passed the current service target date.'],
-        ['Waiting on client', stats.waitingOnClientCases || 0, 'Cases waiting on payment or supporting documents.'],
+        ['Working cases', stats.totalCases, 'Live cases currently in the working inbox.'],
+        ['Action now', stats.attentionCases || 0, 'Cases that need operator action, not just client waiting.'],
+        ['Waiting on client', stats.waitingOnClientCases || 0, 'Cases paused until payment or supporting documents arrive.'],
         ['Ready to submit', stats.readyForSubmissionCases || 0, 'Cases ready for the next platform submission.'],
-        ['Funeral director cases', stats.partnerCases || 0, 'Cases tied to referral partners.'],
-        ['Unique visitors', analytics.uniqueSessions || 0, 'Sessions recorded by the first-party analytics layer.'],
-        ['Page views', analytics.pageViews || 0, 'All tracked page views across the site.'],
-        ['CTA clicks', analytics.ctaClicks || 0, 'Tracked button and link clicks from the marketing site.'],
-        ['Intake submits', analytics.intakeSubmits || 0, 'Completed start-form submissions.']
+        ['Blocked or overdue', stats.blockedOrOverdueCases || 0, 'Cases blocked or outside the expected service window.'],
+        ['Completed', stats.completedCases || 0, 'Cases already finished and ready to archive or reference.'],
+        ['Open reminders', stats.openReminders || 0, 'Manual reminder tasks still open across the casebook.'],
+        [visitorLabel, visitorCount, visitorHelper]
       ].map(([label, value, helper]) => (
         '<div class="panel stat-card">' +
           '<strong>' + escapeHtml(label) + '</strong>' +
           '<span>' + escapeHtml(value) + '</span>' +
-          '<p class="helper">' + escapeHtml(helper) + '</p>' +
+          '<p class="helper">' + escapeHtml(statsIssue || helper) + '</p>' +
         '</div>'
       )).join('');
     }
 
     function renderQueueBoard() {
+      if (state.loadIssues.cases) {
+        queueBoard.innerHTML =
+          '<div class="queue-card"><h3>Needs attention</h3><p class="empty">' + escapeHtml(state.loadIssues.cases) + '</p></div>' +
+          '<div class="queue-card"><h3>Waiting on client</h3><p class="empty">' + escapeHtml(state.loadIssues.cases) + '</p></div>' +
+          '<div class="queue-card"><h3>Ready to submit</h3><p class="empty">' + escapeHtml(state.loadIssues.cases) + '</p></div>' +
+          '<div class="queue-card"><h3>Blocked or overdue</h3><p class="empty">' + escapeHtml(state.loadIssues.cases) + '</p></div>';
+        return;
+      }
+
+      const liveCases = state.cases.filter((entry) => !entry.archivedAt);
       const queueSets = [
         {
           title: 'Needs attention',
-          items: state.cases.filter((entry) => entry.workflow && entry.workflow.needsAttention),
+          key: 'attention',
+          items: liveCases.filter((entry) => entry.workflow && entry.workflow.needsAttention),
           empty: 'No urgent internal follow-ups right now.'
         },
         {
           title: 'Waiting on client',
-          items: state.cases.filter((entry) => entry.workflow && (entry.workflow.waitingOn === 'client_payment' || entry.workflow.waitingOn === 'client_documents')),
+          key: 'waiting_on_client',
+          items: liveCases.filter((entry) => entry.workflow && (entry.workflow.waitingOn === 'client_payment' || entry.workflow.waitingOn === 'client_documents')),
           empty: 'No cases are currently waiting on the client.'
         },
         {
           title: 'Ready to submit',
-          items: state.cases.filter((entry) => entry.workflow && entry.workflow.queueKey === 'submission_queue'),
+          key: 'submission_queue',
+          items: liveCases.filter((entry) => entry.workflow && entry.workflow.queueKey === 'submission_queue'),
           empty: 'No cases are queued for the next platform submission.'
         },
         {
           title: 'Blocked or overdue',
-          items: state.cases.filter((entry) => entry.workflow && (entry.workflow.queueKey === 'blocked' || entry.workflow.overdue)),
+          key: 'blocked',
+          items: liveCases.filter((entry) => entry.workflow && (entry.workflow.queueKey === 'blocked' || entry.workflow.overdue)),
           empty: 'No blocked or overdue cases right now.'
         }
       ];
 
       queueBoard.innerHTML = queueSets.map((queue) => (
-        '<div class="queue-card">' +
+        '<button class="queue-card' + (queueFilter.value === queue.key ? ' active' : '') + '" type="button" data-queue-preset="' + escapeHtml(queue.key) + '">' +
           '<h3>' + escapeHtml(queue.title) + '</h3>' +
           (queue.items.length
             ? '<ul>' + queue.items.slice(0, 4).map((entry) => (
@@ -802,43 +2310,273 @@
               '</li>'
             )).join('') + '</ul>'
             : '<p class="empty">' + escapeHtml(queue.empty) + '</p>') +
-        '</div>'
+        '</button>'
       )).join('');
+
+      queueBoard.querySelectorAll('[data-queue-preset]').forEach(function (button) {
+        button.addEventListener('click', function () {
+          state.activeSavedView = 'custom';
+          savedViewButtons.forEach((entry) => entry.classList.remove('active'));
+          queueFilter.value = button.getAttribute('data-queue-preset');
+          renderCases();
+          ensureVisibleSelection();
+          renderDetail();
+        });
+      });
     }
 
     function renderAnalytics() {
       const analytics = (state.stats && state.stats.analytics) || {};
+      const architecture = (state.stats && state.stats.architecture) || { current: {}, readiness: {}, approvalGates: [] };
       const topPages = analytics.topPages || [];
       const topClicks = analytics.topClicks || [];
+      const topSources = analytics.topSources || [];
+      const topReferrers = analytics.topReferrers || [];
+      const topCampaigns = analytics.topCampaigns || [];
+      const topLandingPages = analytics.topLandingPages || [];
       const latestEvents = analytics.latestEvents || [];
+      const trafficBreakdown = analytics.trafficBreakdown || {};
+      const analyticsIssue = state.loadIssues.analytics || '';
 
       analyticsLayout.innerHTML = (
         '<div class="mini-card">' +
           '<h3>Top pages</h3>' +
-          (topPages.length
+          (analyticsIssue
+            ? '<p class="empty">' + escapeHtml(analyticsIssue) + '</p>'
+            : topPages.length
             ? '<ul>' + topPages.map((item) => '<li><strong>' + escapeHtml(item.path) + '</strong><br />' + escapeHtml(item.count) + ' views</li>').join('') + '</ul>'
             : '<p class="empty">No page data yet.</p>') +
         '</div>' +
         '<div class="mini-card">' +
           '<h3>Top clicks</h3>' +
-          (topClicks.length
+          (analyticsIssue
+            ? '<p class="empty">' + escapeHtml(analyticsIssue) + '</p>'
+            : topClicks.length
             ? '<ul>' + topClicks.map((item) => '<li><strong>' + escapeHtml(item.label) + '</strong><br />' + escapeHtml(item.count) + ' clicks</li>').join('') + '</ul>'
             : '<p class="empty">No CTA data yet.</p>') +
         '</div>' +
         '<div class="mini-card">' +
+          '<h3>Traffic sources</h3>' +
+          (analyticsIssue
+            ? '<p class="empty">' + escapeHtml(analyticsIssue) + '</p>'
+            : topSources.length
+            ? '<ul>' + topSources.map((item) => '<li><strong>' + escapeHtml(item.source) + '</strong><br />' + escapeHtml(item.count) + ' sessions</li>').join('') + '</ul>'
+            : '<p class="empty">Source attribution will build up as new visits come in.</p>') +
+        '</div>' +
+        '<div class="mini-card">' +
+          '<h3>Public vs internal</h3>' +
+          (analyticsIssue
+            ? '<p class="empty">' + escapeHtml(analyticsIssue) + '</p>'
+            : '<ul>' +
+              '<li><strong>Public sessions:</strong> ' + escapeHtml(trafficBreakdown.publicSessions || 0) + '</li>' +
+              '<li><strong>Internal sessions:</strong> ' + escapeHtml(trafficBreakdown.internalSessions || 0) + '</li>' +
+              '<li><strong>Direct:</strong> ' + escapeHtml(trafficBreakdown.directSessions || 0) + '</li>' +
+              '<li><strong>Search:</strong> ' + escapeHtml(trafficBreakdown.searchSessions || 0) + '</li>' +
+              '<li><strong>Social:</strong> ' + escapeHtml(trafficBreakdown.socialSessions || 0) + '</li>' +
+              '<li><strong>Referral:</strong> ' + escapeHtml(trafficBreakdown.referralSessions || 0) + '</li>' +
+            '</ul>') +
+        '</div>' +
+        '<div class="mini-card">' +
           '<h3>Funnel snapshot</h3>' +
-          '<ul>' +
+          (analyticsIssue
+            ? '<p class="empty">' + escapeHtml(analyticsIssue) + '</p>'
+            : '<ul>' +
             '<li><strong>Article views:</strong> ' + escapeHtml(analytics.articleViews || 0) + '</li>' +
             '<li><strong>Intake starts:</strong> ' + escapeHtml(analytics.intakeStarts || 0) + '</li>' +
             '<li><strong>Intake submits:</strong> ' + escapeHtml(analytics.intakeSubmits || 0) + '</li>' +
             '<li><strong>Payment clicks:</strong> ' + escapeHtml(analytics.paymentClicks || 0) + '</li>' +
-          '</ul>' +
+            '<li><strong>Partner enquiries:</strong> ' + escapeHtml(analytics.partnerLeads || 0) + '</li>' +
+          '</ul>') +
+        '</div>' +
+        '<div class="mini-card">' +
+          '<h3>Referrers</h3>' +
+          (analyticsIssue
+            ? '<p class="empty">' + escapeHtml(analyticsIssue) + '</p>'
+            : topReferrers.length
+            ? '<ul>' + topReferrers.map((item) => '<li><strong>' + escapeHtml(item.domain) + '</strong><br />' + escapeHtml(item.count) + ' sessions</li>').join('') + '</ul>'
+            : '<p class="empty">No referrer domains captured yet.</p>') +
+        '</div>' +
+        '<div class="mini-card">' +
+          '<h3>Campaigns</h3>' +
+          (analyticsIssue
+            ? '<p class="empty">' + escapeHtml(analyticsIssue) + '</p>'
+            : topCampaigns.length
+            ? '<ul>' + topCampaigns.map((item) => '<li><strong>' + escapeHtml(item.campaign) + '</strong><br />' + escapeHtml(item.count) + ' sessions</li>').join('') + '</ul>'
+            : '<p class="empty">No tagged campaigns yet.</p>') +
+        '</div>' +
+        '<div class="mini-card">' +
+          '<h3>Landing pages</h3>' +
+          (analyticsIssue
+            ? '<p class="empty">' + escapeHtml(analyticsIssue) + '</p>'
+            : topLandingPages.length
+            ? '<ul>' + topLandingPages.map((item) => '<li><strong>' + escapeHtml(item.path) + '</strong><br />' + escapeHtml(item.count) + ' sessions</li>').join('') + '</ul>'
+            : '<p class="empty">Landing page data will appear as sessions accumulate.</p>') +
         '</div>' +
         '<div class="mini-card">' +
           '<h3>Latest events</h3>' +
-          (latestEvents.length
+          (analyticsIssue
+            ? '<p class="empty">' + escapeHtml(analyticsIssue) + '</p>'
+            : latestEvents.length
             ? '<ul>' + latestEvents.slice(0, 8).map((item) => '<li><strong>' + escapeHtml(item.eventType) + '</strong><br />' + escapeHtml(item.path || item.caseId || 'site') + ' · ' + escapeHtml(formatDate(item.createdAt)) + '</li>').join('') + '</ul>'
             : '<p class="empty">No analytics events yet.</p>') +
+        '</div>' +
+        '<div class="mini-card">' +
+          '<h3>System health</h3>' +
+          '<ul>' +
+            '<li><strong>Case store:</strong> ' + escapeHtml(architecture.current.caseStore || 'Unknown') + '</li>' +
+            '<li><strong>Document store:</strong> ' + escapeHtml(architecture.current.documentStore || 'Unknown') + '</li>' +
+            '<li><strong>Auth:</strong> ' + escapeHtml(architecture.current.auth || 'Unknown') + '</li>' +
+            '<li><strong>Workflow engine:</strong> ' + escapeHtml(architecture.current.workflowEngine || 'Unknown') + '</li>' +
+            '<li><strong>Production grade:</strong> ' + escapeHtml(architecture.readiness && architecture.readiness.productionGrade ? 'Yes' : 'Not yet') + '</li>' +
+          '</ul>' +
+          ((architecture.approvalGates || []).length
+            ? '<p class="helper" style="margin-top:12px;">' + escapeHtml(architecture.approvalGates[0]) + '</p>'
+            : '') +
+        '</div>'
+      );
+    }
+
+    function renderTeamPanel() {
+      if (!state.authenticated) {
+        teamPanel.innerHTML = '<p class="empty">Sign in to manage team access.</p>';
+        return;
+      }
+
+      if (state.loadIssues.team) {
+        teamPanel.innerHTML = '<p class="empty">' + escapeHtml(state.loadIssues.team) + '</p>';
+        return;
+      }
+
+      if (!canManageUsers()) {
+        teamPanel.innerHTML = '<p class="empty">Your role can view cases, but only a founder admin can manage logins and permissions.</p>';
+        return;
+      }
+
+      const users = state.users || [];
+      const roles = state.teamRoles || [];
+      const visibleUsers = users.length
+        ? users
+        : [{
+            id: 'current-session-admin',
+            name: state.name || 'Founder Admin',
+            username: state.username || 'admin',
+            role: state.role || 'founder_admin',
+            status: 'active',
+            isSessionOnly: true
+          }];
+
+      teamPanel.innerHTML = (
+        '<div class="team-list">' +
+          (visibleUsers.length
+            ? visibleUsers.map((user) => (
+              '<div class="team-card">' +
+                '<div class="pill-row">' +
+                  '<span class="badge">' + escapeHtml(user.name) + '</span>' +
+                  '<span class="badge' + (user.status === 'disabled' ? ' alert' : ' good') + '">' + escapeHtml(titleize(user.status)) + '</span>' +
+                  '<span class="badge">' + escapeHtml(titleize(user.role)) + '</span>' +
+                '</div>' +
+                '<div style="color:#6b7a8d;">' + escapeHtml(user.username) + '</div>' +
+                (user.isSessionOnly
+                  ? '<p class="helper">This is the current founder-admin session. Create separate operator logins below for delegation.</p>'
+                  : '<div class="field-grid">' +
+                  '<div class="field">' +
+                    '<label>Name</label>' +
+                    '<input type="text" data-user-name="' + escapeHtml(user.id) + '" value="' + escapeHtml(user.name) + '" />' +
+                  '</div>' +
+                  '<div class="field">' +
+                    '<label>Role</label>' +
+                    '<select data-user-role="' + escapeHtml(user.id) + '">' +
+                      roles.map((role) => '<option value="' + escapeHtml(role) + '">' + escapeHtml(titleize(role)) + '</option>').join('') +
+                    '</select>' +
+                  '</div>' +
+                  '<div class="field">' +
+                    '<label>Status</label>' +
+                    '<select data-user-status="' + escapeHtml(user.id) + '">' +
+                      '<option value="active">Active</option>' +
+                      '<option value="disabled">Disabled</option>' +
+                    '</select>' +
+                  '</div>' +
+                  '<div class="field">' +
+                    '<label>Reset password</label>' +
+                    '<input type="password" data-user-password="' + escapeHtml(user.id) + '" placeholder="Leave blank to keep current" />' +
+                  '</div>' +
+                '</div>' +
+                '<div class="action-row">' +
+                  '<button class="secondary save-user" type="button" data-user-save="' + escapeHtml(user.id) + '">Save user</button>' +
+                '</div>') +
+              '</div>'
+            )).join('')
+            : '<p class="empty">No team users created yet beyond the founder login.</p>') +
+          '<div class="team-card">' +
+            '<h3 style="font-size:1.2rem;">Add team user</h3>' +
+            '<div class="field-grid">' +
+              '<div class="field"><label for="new-user-name">Name</label><input id="new-user-name" type="text" placeholder="VA or operator name" /></div>' +
+              '<div class="field"><label for="new-user-username">Username</label><input id="new-user-username" type="text" placeholder="va-anna" /></div>' +
+              '<div class="field"><label for="new-user-role">Role</label><select id="new-user-role">' + roles.map((role) => '<option value="' + escapeHtml(role) + '">' + escapeHtml(titleize(role)) + '</option>').join('') + '</select></div>' +
+              '<div class="field"><label for="new-user-password">Password</label><input id="new-user-password" type="password" placeholder="Set a password" /></div>' +
+            '</div>' +
+            '<div class="action-row">' +
+              '<button class="primary" id="create-user" type="button">Create user</button>' +
+            '</div>' +
+            '<p class="helper" id="team-helper">Create separate logins so work can be delegated safely.</p>' +
+          '</div>' +
+        '</div>'
+      );
+
+      users.forEach((user) => {
+        const roleField = teamPanel.querySelector('[data-user-role="' + user.id + '"]');
+        const statusField = teamPanel.querySelector('[data-user-status="' + user.id + '"]');
+        if (roleField) roleField.value = user.role;
+        if (statusField) statusField.value = user.status;
+      });
+
+      teamPanel.querySelectorAll('.save-user').forEach((button) => {
+        button.addEventListener('click', function () {
+          saveUser(button.getAttribute('data-user-save'));
+        });
+      });
+
+      const createUserButton = document.getElementById('create-user');
+      if (createUserButton) {
+        createUserButton.addEventListener('click', createUser);
+      }
+    }
+
+    function renderPartnersPanel() {
+      if (!state.authenticated) {
+        partnersPanel.innerHTML = '<p class="empty">Sign in to review partner enquiries.</p>';
+        return;
+      }
+
+      if (state.loadIssues.partners) {
+        partnersPanel.innerHTML = '<p class="empty">' + escapeHtml(state.loadIssues.partners) + '</p>';
+        return;
+      }
+
+      const partners = state.partners || [];
+
+      if (!partners.length) {
+        partnersPanel.innerHTML = '<p class="empty">No partner prospects have been captured yet.</p>';
+        return;
+      }
+
+      partnersPanel.innerHTML = (
+        '<div class="team-list">' +
+          partners.map((partner) => (
+            '<div class="team-card">' +
+              '<div class="pill-row">' +
+                '<span class="badge">' + escapeHtml(partner.businessName) + '</span>' +
+                '<span class="badge">' + escapeHtml(titleize(partner.partnerType)) + '</span>' +
+                '<span class="badge' + (partner.status === 'active' ? ' good' : '') + '">' + escapeHtml(titleize(partner.status)) + '</span>' +
+              '</div>' +
+              '<div><strong>Contact:</strong> ' + escapeHtml(partner.primaryContactName || 'Not set') + '</div>' +
+              '<div><strong>Email:</strong> ' + escapeHtml(partner.email || 'Not set') + '</div>' +
+              '<div><strong>Phone:</strong> ' + escapeHtml(partner.phone || 'Not set') + '</div>' +
+              '<div><strong>Referral fee:</strong> £' + escapeHtml((partner.referralFeeGbp || 0).toFixed(2)) + '</div>' +
+              '<div><strong>Captured:</strong> ' + escapeHtml(formatDate(partner.createdAt)) + '</div>' +
+              (partner.notes ? '<div class="helper" style="margin-top:0;">' + escapeHtml(partner.notes) + '</div>' : '') +
+            '</div>'
+          )).join('') +
         '</div>'
       );
     }
@@ -850,12 +2588,16 @@
         const workflow = entry.workflow || {};
         const matchesStatus = statusFilter.value === 'all' || entry.status === statusFilter.value;
         const matchesPackage = packageFilter.value === 'all' || entry.selectedPackage === packageFilter.value;
+        const matchesLifecycle = lifecycleFilter.value === 'all'
+          || (lifecycleFilter.value === 'active' && !entry.archivedAt)
+          || (lifecycleFilter.value === 'archived' && entry.archivedAt);
         const matchesQueue = queueFilter.value === 'all'
           || (queueFilter.value === 'attention' && workflow.needsAttention)
           || (queueFilter.value === 'waiting_on_client' && (workflow.waitingOn === 'client_payment' || workflow.waitingOn === 'client_documents'))
           || (queueFilter.value === 'submission_queue' && workflow.queueKey === 'submission_queue')
           || (queueFilter.value === 'blocked' && workflow.queueKey === 'blocked')
-          || (queueFilter.value === 'overdue' && workflow.overdue);
+          || (queueFilter.value === 'overdue' && workflow.overdue)
+          || (queueFilter.value === 'partner_referrals' && entry.referralPartnerName);
         const haystack = [
           entry.reference,
           entry.clientName,
@@ -867,45 +2609,251 @@
           workflow.stageLabel || ''
         ].join(' ').toLowerCase();
         const matchesSearch = !search || haystack.includes(search);
-        return matchesStatus && matchesPackage && matchesQueue && matchesSearch;
+        return matchesStatus && matchesPackage && matchesLifecycle && matchesQueue && matchesSearch;
       });
     }
 
     function renderCases() {
-      state.filteredCases = getVisibleCases();
-
-      if (!state.filteredCases.length) {
-        casesTableWrap.innerHTML = '<p class="empty">No cases match the current filters.</p>';
+      if (state.loadIssues.cases) {
+        casesTableWrap.innerHTML =
+          '<div class="empty-state">' +
+            '<p class="empty">' + escapeHtml(state.loadIssues.cases) + '</p>' +
+            '<div class="action-row" style="margin-top:12px;">' +
+              '<button class="secondary" type="button" id="retry-case-inbox">Retry inbox</button>' +
+            '</div>' +
+          '</div>';
+        const retryButton = document.getElementById('retry-case-inbox');
+        if (retryButton) {
+          retryButton.addEventListener('click', function () {
+            loadDashboard(false, 'operations').catch(function () {});
+          });
+        }
         return;
       }
 
-      const rows = state.filteredCases.map((entry) => (
-        '<tr class="case-row' + (entry.id === state.selectedCaseId ? ' active' : '') + '" data-id="' + escapeHtml(entry.id) + '">' +
-          '<td><strong>' + escapeHtml(entry.reference) + '</strong><br /><span style="color:#6b7a8d;">' + escapeHtml(entry.packageLabel) + ' · ' + escapeHtml(titleize(entry.priority || 'standard')) + '</span></td>' +
-          '<td>' + escapeHtml(entry.clientName) + '<br /><span style="color:#6b7a8d;">' + escapeHtml(entry.clientEmail) + '</span></td>' +
-          '<td>' + escapeHtml(entry.deceasedName) + '<br /><span style="color:#6b7a8d;">' + escapeHtml(entry.assignedTo || 'Unassigned') + '</span></td>' +
-          '<td><span class="badge">' + escapeHtml(entry.status.replace(/_/g, ' ')) + '</span></td>' +
-          '<td>' + escapeHtml(entry.paymentStatus.replace(/_/g, ' ')) + '</td>' +
-          '<td>' + escapeHtml(entry.documentCount || 0) + ' · ' + escapeHtml(entry.platformCount || 0) + ' platforms' +
-            '<br /><span class="badge' + ((entry.workflow && (entry.workflow.overdue || entry.workflow.queueKey === 'blocked')) ? ' alert' : ((entry.workflow && !entry.workflow.needsAttention) ? ' good' : '')) + '" style="margin-top:8px;">' + escapeHtml((entry.workflow && entry.workflow.queueLabel) || 'Workflow review') + '</span>' +
-          '</td>' +
-        '</tr>'
-      )).join('');
+      state.filteredCases = getVisibleCases();
 
-      casesTableWrap.innerHTML = (
-        '<table>' +
-          '<thead><tr><th>Case</th><th>Client</th><th>Deceased / owner</th><th>Status</th><th>Payment</th><th>Docs / platforms</th></tr></thead>' +
-          '<tbody>' + rows + '</tbody>' +
-        '</table>'
-      );
+      if (!state.filteredCases.length) {
+        casesTableWrap.innerHTML = '<div class="empty-state"><p class="empty">No cases match the current filters.</p><div class="action-row" style="margin-top:12px;"><button class="secondary" type="button" id="refresh-case-inbox">Refresh inbox</button></div></div>';
+        const refreshButton = document.getElementById('refresh-case-inbox');
+        if (refreshButton) {
+          refreshButton.addEventListener('click', function () {
+            loadDashboard(false, 'operations').catch(function () {});
+          });
+        }
+        updateBulkBar();
+        renderSavedViewCounts();
+        return;
+      }
 
-      casesTableWrap.querySelectorAll('.case-row').forEach((row) => {
-        row.addEventListener('click', () => {
-          state.selectedCaseId = row.getAttribute('data-id');
-          renderCases();
-          renderDetail();
+      const rows = state.filteredCases.map((entry) => {
+        const workflow = entry.workflow || {};
+        const paymentLabels = getPaymentActionLabels();
+        const queueBadgeClass = (workflow.overdue || workflow.queueKey === 'blocked' || workflow.escalatedReminderCount)
+          ? 'badge alert'
+          : (!workflow.needsAttention ? 'badge good' : 'badge');
+        const isSelected = state.bulkSelectedIds.includes(entry.id);
+        const inlineActions = [];
+
+        if (entry.status === 'active' || entry.status === 'submitted') {
+          inlineActions.push({ action: 'completed', label: 'Set completed' });
+        } else if (entry.status === 'awaiting_documents' || entry.status === 'documents_received' || entry.paymentStatus === 'paid' || entry.status === 'paid') {
+          inlineActions.push({ action: 'active', label: 'Set active' });
+          inlineActions.push({ action: 'completed', label: 'Set completed' });
+        } else {
+          inlineActions.push({ action: 'payment_link_sent', label: paymentLabels.linkInline });
+          inlineActions.push({ action: 'paid', label: paymentLabels.paidInline });
+        }
+
+        return (
+          '<article class="case-item' + (entry.id === state.selectedCaseId ? ' active' : '') + '" data-id="' + escapeHtml(entry.id) + '">' +
+            '<div class="case-item-topline">' +
+              '<label class="case-select"><input type="checkbox" data-case-select="' + escapeHtml(entry.id) + '"' + (isSelected ? ' checked' : '') + ' />Select</label>' +
+            '</div>' +
+            '<button class="case-item-open" type="button" data-id="' + escapeHtml(entry.id) + '">' +
+            '<div class="case-item-head">' +
+              '<div class="case-item-ref">' +
+                '<strong>' + escapeHtml(entry.reference) + '</strong>' +
+                '<span class="case-item-subtitle">' + escapeHtml(entry.packageLabel || 'Package not set') + ' · Priority ' + escapeHtml(titleize(entry.priority || 'standard')) + '</span>' +
+              '</div>' +
+              '<div class="case-item-pills">' +
+                (entry.archivedAt ? '<span class="badge alert">Archived</span>' : '') +
+                '<span class="badge">' + escapeHtml(titleize(entry.status || 'workflow_review')) + '</span>' +
+                '<span class="' + queueBadgeClass + '">' + escapeHtml(workflow.queueLabel || 'Workflow review') + '</span>' +
+              '</div>' +
+            '</div>' +
+            '<div class="case-item-grid">' +
+              '<div class="case-fact"><span class="case-fact-label">Client</span><span class="case-fact-value">' + escapeHtml(entry.clientName || 'Not set') + '<br />' + escapeHtml(entry.clientEmail || 'No email') + '</span></div>' +
+              '<div class="case-fact"><span class="case-fact-label">Deceased / owner</span><span class="case-fact-value">' + escapeHtml(entry.deceasedName || 'Not set') + '<br />' + escapeHtml(entry.assignedTo || 'Unassigned') + '</span></div>' +
+              '<div class="case-fact"><span class="case-fact-label">Payment</span><span class="case-fact-value">' + escapeHtml(formatPaymentStatusLabel(entry.paymentStatus || 'pending')) + '<br />' + escapeHtml((entry.documentCount || 0) + ' docs · ' + (entry.platformCount || 0) + ' platforms') + '</span></div>' +
+              '<div class="case-fact"><span class="case-fact-label">Follow-up</span><span class="case-fact-value">' + escapeHtml(workflow.followUpDate || 'Not set') + '<br />' + escapeHtml((workflow.openReminderCount || 0) + ' reminders open') + '</span></div>' +
+            '</div>' +
+            '</button>' +
+            '<div class="case-item-meta">' +
+              '<span><strong>Next:</strong> ' + escapeHtml(workflow.stageLabel || 'Workflow review') + '</span>' +
+              '<span><strong>Health:</strong> ' + escapeHtml(titleize(workflow.healthStatus || 'on_track')) + '</span>' +
+              '<span class="case-item-inline-actions">' +
+                inlineActions.map((item) => (
+                  '<button class="inline-action" type="button" data-inline-action="' + escapeHtml(item.action) + '" data-id="' + escapeHtml(entry.id) + '">' + escapeHtml(item.label) + '</button>'
+                )).join('') +
+              '</span>' +
+            '</div>' +
+          '</article>'
+        );
+      }).join('');
+
+      casesTableWrap.innerHTML = '<div class="case-list">' + rows + '</div>';
+
+      casesTableWrap.querySelectorAll('.case-item-open').forEach((row) => {
+        row.addEventListener('click', async () => {
+          await selectCase(row.getAttribute('data-id'));
         });
       });
+
+      casesTableWrap.querySelectorAll('[data-case-select]').forEach((input) => {
+        input.addEventListener('click', function (event) {
+          event.stopPropagation();
+        });
+        input.addEventListener('change', function () {
+          toggleBulkSelection(input.getAttribute('data-case-select'), input.checked);
+        });
+      });
+
+      casesTableWrap.querySelectorAll('.inline-action').forEach((button) => {
+        button.addEventListener('click', async function (event) {
+          event.stopPropagation();
+          await quickUpdateCase(button.getAttribute('data-id'), button.getAttribute('data-inline-action'));
+        });
+      });
+
+      updateBulkBar();
+      renderSavedViewCounts();
+    }
+
+    async function quickUpdateCase(caseId, action) {
+      const caseSummary = state.cases.find((entry) => entry.id === caseId);
+      if (!caseSummary || !canWriteCases()) {
+        return;
+      }
+
+      let status = caseSummary.status;
+      let paymentStatus = caseSummary.paymentStatus;
+
+      if (action === 'payment_link_sent') {
+        status = 'awaiting_payment';
+        paymentStatus = 'payment_link_sent';
+      } else if (action === 'paid') {
+        status = 'paid';
+        paymentStatus = 'paid';
+      } else if (action === 'awaiting_documents') {
+        status = 'awaiting_documents';
+        paymentStatus = 'paid';
+      } else if (action === 'active') {
+        status = 'active';
+        paymentStatus = 'paid';
+      } else if (action === 'completed') {
+        status = 'completed';
+        paymentStatus = 'paid';
+      } else {
+        return;
+      }
+
+      try {
+        const loadedWorkflowSections = hasLoadedCaseSections(selected.id, ['workflow']);
+        const result = await requestJson('/api/admin/cases', {
+          method: 'PATCH',
+          headers: getHeaders(),
+          credentials: 'same-origin',
+          timeoutMs: 5000,
+          body: JSON.stringify({
+            id: caseId,
+            status,
+            paymentStatus
+          })
+        }, 'Could not update the case.', 3);
+        const payload = result.payload || {};
+
+        applyUpdatedCase(payload.case, { select: state.selectedCaseId === caseId });
+        refreshOperationsSummary().catch(function () {});
+        adminHelper.textContent = 'Case updated.';
+      } catch (error) {
+        adminHelper.textContent = error.message || 'Could not update the case.';
+      }
+    }
+
+    async function runBulkAction(action) {
+      if (!state.bulkSelectedIds.length || !canWriteCases()) {
+        return;
+      }
+
+      let payloadFactory = null;
+
+      if (action === 'payment_link_sent') {
+        payloadFactory = (id) => ({ id, status: 'awaiting_payment', paymentStatus: 'payment_link_sent' });
+      } else if (action === 'paid') {
+        payloadFactory = (id) => ({ id, status: 'paid', paymentStatus: 'paid' });
+      } else if (action === 'awaiting_documents') {
+        payloadFactory = (id) => ({ id, status: 'awaiting_documents', paymentStatus: 'paid' });
+      } else if (action === 'completed') {
+        payloadFactory = (id) => ({ id, status: 'completed', paymentStatus: 'paid' });
+      } else if (action === 'archive') {
+        payloadFactory = (id) => ({ id, action: 'archive', archiveReason: 'Archived from bulk action.' });
+      } else if (action === 'assign_owner') {
+        const owner = bulkOwnerSelect ? bulkOwnerSelect.value : '';
+        if (!owner) {
+          adminHelper.textContent = 'Choose an owner in the bulk bar first.';
+          return;
+        }
+        payloadFactory = (id) => ({ id, assignedTo: owner });
+      } else {
+        return;
+      }
+
+      adminHelper.textContent = 'Running bulk action...';
+
+      try {
+        const selectedIds = [...state.bulkSelectedIds];
+        const results = await Promise.all(selectedIds.map((caseId) => (
+          requestJson('/api/admin/cases', {
+            method: 'PATCH',
+            headers: getHeaders(),
+            credentials: 'same-origin',
+            timeoutMs: 5000,
+            body: JSON.stringify(payloadFactory(caseId))
+          }, 'A bulk action failed.', 3).then((result) => ({ caseId, payload: result.payload || {} }))
+        )));
+
+        for (const result of results) {
+          const payload = result.payload || {};
+          if (payload.case) {
+            state.caseDetailsById[result.caseId] = payload.case;
+            syncCaseSummary(payload.case);
+          }
+        }
+
+        clearBulkSelection();
+        refreshOperationsUI();
+        refreshOperationsSummary().catch(function () {});
+        adminHelper.textContent = 'Bulk action completed for ' + results.length + ' case' + (results.length === 1 ? '' : 's') + '.';
+      } catch (error) {
+        adminHelper.textContent = error.message || 'A bulk action failed.';
+      }
+    }
+
+    function renderEventMetadata(metadata) {
+      if (!metadata || typeof metadata !== 'object') {
+        return '';
+      }
+
+      const diffItems = Array.isArray(metadata.diff) ? metadata.diff : [];
+      const listItems = diffItems.length
+        ? diffItems.map((item) => '<li><strong>' + escapeHtml(item.label || item.field || 'Update') + ':</strong> ' + escapeHtml(item.before || 'Not set') + ' -> ' + escapeHtml(item.after || 'Not set') + '</li>').join('')
+        : Object.entries(metadata)
+            .filter(([key, value]) => key !== 'diff' && value && typeof value !== 'object')
+            .slice(0, 6)
+            .map(([key, value]) => '<li><strong>' + escapeHtml(titleize(key)) + ':</strong> ' + escapeHtml(value) + '</li>').join('');
+
+      return listItems ? '<ul style="margin-top:8px; margin-left:18px; display:grid; gap:6px;">' + listItems + '</ul>' : '';
     }
 
     function quickSet(status, paymentStatus) {
@@ -919,6 +2867,8 @@
       if (paymentField && paymentStatus) {
         paymentField.value = paymentStatus;
       }
+
+      markDetailDirty();
     }
 
     function applyWorkflowDefaults(selected) {
@@ -943,6 +2893,8 @@
       if (priorityField && priorityField.value === 'standard' && selected.selectedPackage === 'estate') {
         priorityField.value = 'priority';
       }
+
+      markDetailDirty();
     }
 
     function setFollowUpDate(days) {
@@ -955,17 +2907,55 @@
       const date = new Date();
       date.setUTCDate(date.getUTCDate() + days);
       nextFollowUpField.value = date.toISOString().slice(0, 10);
+      markDetailDirty();
+    }
+
+    async function persistLifecyclePreset(action) {
+      const selected = getSelectedCase();
+
+      if (!canWriteCases() || !selected) {
+        return;
+      }
+
+      await quickUpdateCase(selected.id, action);
     }
 
     function renderDetail() {
       const selected = getSelectedCase();
+      const summary = getSelectedCaseSummary();
 
-      if (!selected) {
+      if (!summary && !selected) {
         caseDetail.innerHTML = 'Choose a case from the inbox to review the full record, exports, and next action.';
         return;
       }
 
+      if (state.selectedCaseLoading && !selected) {
+        caseDetail.innerHTML = '<div class="section-card"><span class="eyebrow" style="margin-bottom:8px;">Selected case</span><h3 style="font-size:1.28rem; margin-bottom:12px;">Loading full case detail</h3><p class="helper">We are loading the full case workspace for ' + escapeHtml((summary && summary.reference) || 'this case') + '.</p></div>';
+        return;
+      }
+
+      if (state.selectedCaseError) {
+        caseDetail.innerHTML = '<div class="section-card"><span class="eyebrow" style="margin-bottom:8px;">Selected case</span><h3 style="font-size:1.28rem; margin-bottom:12px;">Case detail unavailable</h3><p class="helper">' + escapeHtml(state.selectedCaseError) + '</p><div class="action-row"><button class="primary" type="button" id="retry-case-detail">Retry loading case</button></div></div>';
+        const retryButton = document.getElementById('retry-case-detail');
+        if (retryButton) {
+          retryButton.addEventListener('click', function () {
+            fetchCaseDetail(state.selectedCaseId, { force: true }).catch(function () {});
+          });
+        }
+        return;
+      }
+
+      if (!selected) {
+        caseDetail.innerHTML = '<div class="section-card"><span class="eyebrow" style="margin-bottom:8px;">Selected case</span><h3 style="font-size:1.28rem; margin-bottom:12px;">Choose a case to open the workspace</h3><p class="helper">The inbox is loaded. Click a case to load the full operational record.</p></div>';
+        return;
+      }
+
       const operational = selected.operational || {};
+      const paymentLabels = getPaymentActionLabels();
+      const automatedCheckoutEnabled = hasAutomatedCheckout();
+      const workflowSectionLoaded = hasLoadedCaseSections(selected.id, ['workflow']);
+      const commsSectionLoaded = hasLoadedCaseSections(selected.id, ['workflow', 'comms']);
+      const sectionLoadingLabel = state.selectedCaseLoadingSection;
       const documents = (selected.documents || []).length
         ? '<ul class="documents-list">' + selected.documents.map((document) => (
           '<li><strong>' + escapeHtml(document.documentType.replace(/_/g, ' ')) + '</strong>' +
@@ -976,7 +2966,8 @@
       const timeline = (selected.activity || []).length
         ? '<ul class="timeline">' + selected.activity.map((event) => (
           '<li><strong>' + escapeHtml(event.eventType.replace(/_/g, ' ')) + '</strong>' +
-          escapeHtml(formatDate(event.createdAt)) + '</li>'
+          escapeHtml(formatDate(event.createdAt)) +
+          renderEventMetadata(event.metadata) + '</li>'
         )).join('') + '</ul>'
         : '<p class="empty">No activity logged yet.</p>';
       const emailHealth = (state.stats && state.stats.email) || {};
@@ -986,317 +2977,333 @@
       const defaultOpsSubject = 'Operations note for ' + selected.reference;
       const defaultClientMessage = operational.clientUpdateDraft || '';
       const defaultOpsMessage = operational.agentSummary || '';
-      const sendDisabledAttr = emailEnabled ? '' : ' disabled';
-      const opsDisabledAttr = opsEmailEnabled ? '' : ' disabled';
-      const emailStatusHelper = emailEnabled
+      const canSendNotifications = hasPermission('notifications.send');
+      const sendDisabledAttr = emailEnabled && canSendNotifications ? '' : ' disabled';
+      const opsDisabledAttr = opsEmailEnabled && canSendNotifications ? '' : ' disabled';
+      const emailStatusHelper = !canSendNotifications
+        ? 'Your role cannot send outbound emails from the dashboard.'
+        : emailEnabled
         ? 'Send a client update or an internal ops note from the case record.'
         : 'Email delivery is off until RESEND_API_KEY and EMAIL_FROM are configured in Vercel.';
-      const opsStatusHelper = opsEmailEnabled
+      const opsStatusHelper = !canSendNotifications
+        ? ''
+        : opsEmailEnabled
         ? 'Operations alerts are ready.'
         : 'Set OPERATIONS_ALERT_EMAIL in Vercel to send internal ops emails.';
       const platformTasks = selected.platformTasks || [];
       const platformSummary = operational.platformSummary || {};
       const workflow = selected.workflow || {};
+      const caseLinks = selected.caseLinks || {};
       const automationTasks = workflow.automationTasks || [];
+      const reminders = selected.reminders || [];
+      const canWrite = canWriteCases();
+      const canArchive = canArchiveCases();
+      const canDelete = canDeleteCases();
+      const saveDisabledAttr = canWrite ? '' : ' disabled';
+      const archiveDisabledAttr = canArchive ? '' : ' disabled';
+      const deleteDisabledAttr = canDelete ? '' : ' disabled';
+      const lifecycleActions = [];
 
+      if (canArchive) {
+        lifecycleActions.push('<button class="secondary" type="button" id="archive-case"' + archiveDisabledAttr + '>' + (selected.archivedAt ? 'Restore archive' : 'Archive case') + '</button>');
+      }
+
+      if (canDelete) {
+        lifecycleActions.push('<button class="danger" type="button" id="delete-case"' + deleteDisabledAttr + '>Delete case</button>');
+      }
+
+      const workflowSectionMarkup = workflowSectionLoaded
+        ? (
+            '<div class="section-card">' +
+              '<span class="eyebrow" style="margin-bottom:8px;">Automation</span>' +
+              '<h3 style="font-size:1.28rem; margin-bottom:12px;">Open automation tasks</h3>' +
+              (automationTasks.length
+                ? '<ul class="documents-list">' + automationTasks.map((task) => (
+                  '<li><strong>' + escapeHtml(task.label) + '</strong>' + escapeHtml(task.reason || '') + '<br />Due ' + escapeHtml(task.dueDate || 'today') + ' · Lane ' + escapeHtml(titleize(task.ownerLane || 'intake_desk')) + '</li>'
+                )).join('') + '</ul>'
+                : '<p class="empty">No automatic tasks are currently open on this case.</p>') +
+            '</div>' +
+            '<div class="section-card">' +
+              '<span class="eyebrow" style="margin-bottom:8px;">Reminders</span>' +
+              '<h3 style="font-size:1.28rem; margin-bottom:12px;">Internal reminders and escalations</h3>' +
+              '<p class="helper" style="margin-bottom:14px;">Use manual reminders for client chases, document reviews, partner follow-ups, or any step that should not depend on memory.</p>' +
+              '<div class="reminder-list" id="reminder-editor">' +
+                (reminders.length
+                  ? reminders.map((reminder, index) => createReminderMarkup(reminder, index)).join('')
+                  : createReminderMarkup({ title: '', status: 'open', severity: 'normal', assignedTo: selected.assignedTo || '', ownerLane: selected.operatorLane || workflow.recommendedLane || '', dueDate: workflow.followUpDate || '', escalateAt: '', notes: '' }, 0)) +
+              '</div>' +
+              '<div class="action-row" style="margin-top:14px;">' +
+                '<button class="secondary" id="add-reminder" type="button">Add reminder</button>' +
+                '<button class="secondary" id="add-doc-reminder" type="button">Add document chase</button>' +
+                '<button class="secondary" id="add-client-reminder" type="button">Add client follow-up</button>' +
+              '</div>' +
+            '</div>' +
+            '<div class="section-card">' +
+              '<span class="eyebrow" style="margin-bottom:8px;">Workflow</span>' +
+              '<h3 style="font-size:1.28rem; margin-bottom:12px;">Platform-by-platform tracking</h3>' +
+              '<p class="helper" style="margin-bottom:14px;">Track each platform separately so a VA, operator, or AI agent can see what has been submitted, what is blocked, and what still needs evidence.</p>' +
+              '<div class="platform-editor" id="platform-editor">' +
+                (platformTasks.length
+                  ? platformTasks.map((task, index) => createPlatformTaskMarkup(task, index)).join('')
+                  : createPlatformTaskMarkup({ name: '', status: 'not_started', profileOrHandle: '', outcomeRequested: selected.preferredOutcome || '', evidenceNeeded: '', notes: '', submissionReference: '', submittedAt: '', resolvedAt: '' }, 0)) +
+              '</div>' +
+              '<div class="action-row" style="margin-top:14px;">' +
+                '<button class="secondary" id="add-platform-task" type="button">Add platform</button>' +
+                '<button class="secondary" id="load-platforms-from-intake" type="button">Refresh from intake fields</button>' +
+              '</div>' +
+            '</div>'
+          )
+        : (
+            '<div class="section-card">' +
+              '<span class="eyebrow" style="margin-bottom:8px;">Workflow</span>' +
+              '<h3 style="font-size:1.28rem; margin-bottom:12px;">Load platform workflow</h3>' +
+              '<p class="helper">' + escapeHtml(sectionLoadingLabel ? 'Loading workflow details…' : 'Open this tab to load platform tasks, reminders, and workflow editors only when needed.') + '</p>' +
+            '</div>'
+          );
+      const commsSectionMarkup = commsSectionLoaded
+        ? (
+            '<div class="section-card">' +
+              '<span class="eyebrow" style="margin-bottom:8px;">Email updates</span>' +
+              '<h3 style="font-size:1.28rem; margin-bottom:12px;">Client and ops messages</h3>' +
+              '<p class="helper" id="email-helper">' + escapeHtml(emailStatusHelper + ' ' + opsStatusHelper) + '</p>' +
+              '<div class="field-grid" style="margin-top:14px;">' +
+                '<div class="field full"><label for="detail-email-subject">Email subject</label><input id="detail-email-subject" type="text" value="' + escapeHtml(defaultClientSubject) + '" /></div>' +
+                '<div class="field full"><label for="detail-email-message">Email message</label><textarea id="detail-email-message" style="min-height:180px;">' + escapeHtml(defaultClientMessage) + '</textarea></div>' +
+              '</div>' +
+              '<div class="action-row">' +
+                '<button class="secondary" id="load-client-email" type="button">Load client draft</button>' +
+                '<button class="secondary" id="load-ops-email" type="button">Load ops brief</button>' +
+                '<button class="secondary" id="send-client-email" type="button"' + sendDisabledAttr + '>Email client update</button>' +
+                '<button class="secondary" id="send-ops-email" type="button"' + opsDisabledAttr + '>Email ops summary</button>' +
+              '</div>' +
+              '<p class="helper">Client draft uses the reassurance copy. Ops brief uses the internal agent summary.</p>' +
+            '</div>' +
+            '<div class="section-card">' +
+              '<span class="eyebrow" style="margin-bottom:8px;">Briefs</span>' +
+              '<h3 style="font-size:1.28rem; margin-bottom:12px;">Reusable drafts and exports</h3>' +
+              '<div class="templates-grid">' +
+                '<div class="template-card"><h3>Agent brief</h3><pre>' + escapeHtml(operational.agentSummary || '') + '</pre></div>' +
+                '<div class="template-card"><h3>Client update draft</h3><pre>' + escapeHtml(operational.clientUpdateDraft || '') + '</pre></div>' +
+                '<div class="template-card"><h3>Platform submission brief</h3><pre>' + escapeHtml(operational.platformSubmissionBrief || '') + '</pre></div>' +
+              '</div>' +
+            '</div>' +
+            '<div class="section-card"><span class="eyebrow" style="margin-bottom:8px;">Files</span><h3 style="font-size:1.28rem; margin-bottom:12px;">Supporting files</h3>' + documents + '</div>' +
+            '<div class="section-card"><span class="eyebrow" style="margin-bottom:8px;">Timeline</span><h3 style="font-size:1.28rem; margin-bottom:12px;">Case activity</h3>' + timeline + '</div>'
+          )
+        : (
+            '<div class="section-card">' +
+              '<span class="eyebrow" style="margin-bottom:8px;">Comms and files</span>' +
+              '<h3 style="font-size:1.28rem; margin-bottom:12px;">Load files, timeline, and drafts</h3>' +
+              '<p class="helper">' + escapeHtml(sectionLoadingLabel ? 'Loading communications and file history…' : 'Open this tab to load documents, timeline entries, and operator drafts only when needed.') + '</p>' +
+            '</div>'
+          );
       caseDetail.innerHTML = (
         '<div class="detail-grid">' +
-          '<div class="detail-summary">' +
-            '<div><strong>Reference:</strong> ' + escapeHtml(selected.reference) + '</div>' +
-            '<div><strong>Package:</strong> ' + escapeHtml(selected.packageLabel) + '</div>' +
-            '<div><strong>Client:</strong> ' + escapeHtml(selected.clientName) + '</div>' +
-            '<div><strong>Email:</strong> ' + escapeHtml(selected.clientEmail) + '</div>' +
-            '<div><strong>Deceased:</strong> ' + escapeHtml(selected.deceasedName) + '</div>' +
-            '<div><strong>Outcome:</strong> ' + escapeHtml(selected.preferredOutcome || 'Not set') + '</div>' +
-            '<div><strong>Relationship:</strong> ' + escapeHtml(selected.relationshipToDeceased || 'Not supplied') + '</div>' +
-            '<div><strong>Owner:</strong> ' + escapeHtml(selected.assignedTo || 'Unassigned') + '</div>' +
-            '<div><strong>Priority:</strong> ' + escapeHtml(titleize(selected.priority || 'standard')) + '</div>' +
-            '<div><strong>Due date:</strong> ' + escapeHtml(selected.dueDate || 'Not set') + '</div>' +
-            '<div><strong>Workflow queue:</strong> ' + escapeHtml(workflow.queueLabel || 'Not set') + '</div>' +
-            '<div><strong>Waiting on:</strong> ' + escapeHtml(titleize(workflow.waitingOn || 'operator')) + '</div>' +
-            '<div><strong>Referral source:</strong> ' + escapeHtml(selected.referralSource || 'None recorded') + '</div>' +
-            '<div><strong>Referral partner:</strong> ' + escapeHtml(selected.referralPartnerName || 'None recorded') + '</div>' +
-            '<div><strong>Referral fee:</strong> ' + escapeHtml(titleize(selected.referralFeeStatus || 'not_applicable')) + '</div>' +
-          '</div>' +
-
-          '<div class="signal-grid">' +
-            '<div class="signal-card">' +
-              '<h3>Next best action</h3>' +
-              '<p>' + escapeHtml(operational.nextBestAction || 'Review the case and decide the next step.') + '</p>' +
-            '</div>' +
-            '<div class="signal-card">' +
-              '<h3>Missing items</h3>' +
-              ((operational.missingItems || []).length
-                ? '<ul>' + operational.missingItems.map((item) => '<li>' + escapeHtml(item) + '</li>').join('') + '</ul>'
-                : '<p>No obvious gaps at the moment.</p>') +
-            '</div>' +
-          '</div>' +
-
-          '<div class="signal-grid">' +
-            '<div class="signal-card">' +
-              '<h3>Platform summary</h3>' +
-              '<ul>' +
-                '<li><strong>Total platforms:</strong> ' + escapeHtml(platformSummary.total || 0) + '</li>' +
-                '<li><strong>Active or pending:</strong> ' + escapeHtml(platformSummary.active || 0) + '</li>' +
-                '<li><strong>Resolved:</strong> ' + escapeHtml(platformSummary.resolved || 0) + '</li>' +
-                '<li><strong>Blocked:</strong> ' + escapeHtml(platformSummary.blocked || 0) + '</li>' +
-              '</ul>' +
-            '</div>' +
-            '<div class="signal-card">' +
-              '<h3>Workflow engine</h3>' +
-              '<ul>' +
-                '<li><strong>Stage:</strong> ' + escapeHtml(workflow.stageLabel || 'Workflow review') + '</li>' +
-                '<li><strong>Health:</strong> ' + escapeHtml(titleize(workflow.healthStatus || 'on_track')) + '</li>' +
-                '<li><strong>Service target:</strong> ' + escapeHtml(workflow.serviceTargetDate || 'Not set') + '</li>' +
-                '<li><strong>Next follow-up:</strong> ' + escapeHtml(workflow.followUpDate || 'Not set') + '</li>' +
-                '<li><strong>Recommended lane:</strong> ' + escapeHtml(titleize(workflow.recommendedLane || 'intake_desk')) + '</li>' +
-                '<li><strong>Progress:</strong> ' + escapeHtml(workflow.progressPercent || 0) + '%</li>' +
-              '</ul>' +
-            '</div>' +
-          '</div>' +
-
-          '<div class="quick-actions">' +
-            '<button class="secondary" type="button" id="quick-payment-link">Set payment link sent</button>' +
-            '<button class="secondary" type="button" id="quick-paid">Set paid</button>' +
-            '<button class="secondary" type="button" id="quick-awaiting-docs">Awaiting documents</button>' +
-            '<button class="secondary" type="button" id="quick-active">Set active</button>' +
-            '<button class="secondary" type="button" id="quick-complete">Set completed</button>' +
-            '<button class="secondary" type="button" id="quick-apply-workflow">Apply workflow defaults</button>' +
-            '<button class="secondary" type="button" id="quick-follow-up">Follow up tomorrow</button>' +
-            '<a class="button-link secondary" href="' + escapeHtml(selected.caseLinks.documents) + '" target="_blank" rel="noreferrer">Open documents flow</a>' +
-          '</div>' +
-
-          '<div class="field-grid">' +
-            '<div class="field">' +
-              '<label for="detail-assigned-to">Case owner</label>' +
-              '<input id="detail-assigned-to" type="text" value="' + escapeHtml(selected.assignedTo || '') + '" placeholder="Steven, VA name, agent name" />' +
-            '</div>' +
-            '<div class="field">' +
-              '<label for="detail-priority">Priority</label>' +
-              '<select id="detail-priority">' +
-                '<option value="standard">Standard</option>' +
-                '<option value="priority">Priority</option>' +
-                '<option value="urgent">Urgent</option>' +
-              '</select>' +
-            '</div>' +
-            '<div class="field">' +
-              '<label for="detail-due-date">Due date</label>' +
-              '<input id="detail-due-date" type="date" value="' + escapeHtml(selected.dueDate || '') + '" />' +
-            '</div>' +
-            '<div class="field">' +
-              '<label for="detail-next-follow-up">Next follow-up date</label>' +
-              '<input id="detail-next-follow-up" type="date" value="' + escapeHtml(selected.nextFollowUpAt || '') + '" />' +
-            '</div>' +
-            '<div class="field">' +
-              '<label for="detail-referral-source">Referral source</label>' +
-              '<input id="detail-referral-source" type="text" value="' + escapeHtml(selected.referralSource || '') + '" />' +
-            '</div>' +
-            '<div class="field">' +
-              '<label for="detail-operator-lane">Operator lane</label>' +
-              '<input id="detail-operator-lane" type="text" value="' + escapeHtml(selected.operatorLane || '') + '" placeholder="intake_desk, document_desk, platform_desk..." />' +
-            '</div>' +
-            '<div class="field">' +
-              '<label for="detail-status">Case status</label>' +
-              '<select id="detail-status">' +
-                '<option value="awaiting_payment">Awaiting payment</option>' +
-                '<option value="paid">Paid</option>' +
-                '<option value="awaiting_documents">Awaiting documents</option>' +
-                '<option value="documents_received">Documents received</option>' +
-                '<option value="active">Active</option>' +
-                '<option value="submitted">Submitted</option>' +
-                '<option value="completed">Completed</option>' +
-                '<option value="blocked">Blocked</option>' +
-              '</select>' +
-            '</div>' +
-            '<div class="field">' +
-              '<label for="detail-payment-status">Payment status</label>' +
-              '<select id="detail-payment-status">' +
-                '<option value="pending">Pending</option>' +
-                '<option value="payment_link_sent">Payment link sent</option>' +
-                '<option value="paid">Paid</option>' +
-                '<option value="refunded">Refunded</option>' +
-              '</select>' +
-            '</div>' +
-            '<div class="field">' +
-              '<label for="detail-relationship">Relationship</label>' +
-              '<input id="detail-relationship" type="text" value="' + escapeHtml(selected.relationshipToDeceased || '') + '" />' +
-            '</div>' +
-            '<div class="field">' +
-              '<label for="detail-authority">Authority basis</label>' +
-              '<input id="detail-authority" type="text" value="' + escapeHtml(selected.authorityBasis || '') + '" />' +
-            '</div>' +
-            '<div class="field">' +
-              '<label for="detail-referral-type">Referral partner type</label>' +
-              '<select id="detail-referral-type">' +
-                '<option value="direct">Direct</option>' +
-                '<option value="funeral_director">Funeral director</option>' +
-                '<option value="solicitor">Solicitor</option>' +
-                '<option value="other">Other</option>' +
-              '</select>' +
-            '</div>' +
-            '<div class="field">' +
-              '<label for="detail-referral-fee-status">Referral fee status</label>' +
-              '<select id="detail-referral-fee-status">' +
-                '<option value="not_applicable">Not applicable</option>' +
-                '<option value="pending">Pending</option>' +
-                '<option value="approved">Approved</option>' +
-                '<option value="paid">Paid</option>' +
-              '</select>' +
-            '</div>' +
-            '<div class="field">' +
-              '<label for="detail-referral-name">Partner name</label>' +
-              '<input id="detail-referral-name" type="text" value="' + escapeHtml(selected.referralPartnerName || '') + '" />' +
-            '</div>' +
-            '<div class="field">' +
-              '<label for="detail-referral-email">Partner email</label>' +
-              '<input id="detail-referral-email" type="email" value="' + escapeHtml(selected.referralPartnerEmail || '') + '" />' +
-            '</div>' +
-            '<div class="field full">' +
-              '<label for="detail-referral-phone">Partner phone</label>' +
-              '<input id="detail-referral-phone" type="text" value="' + escapeHtml(selected.referralPartnerPhone || '') + '" />' +
-            '</div>' +
-            '<div class="field full">' +
-              '<label for="detail-referral-notes">Referral notes</label>' +
-              '<textarea id="detail-referral-notes">' + escapeHtml(selected.referralNotes || '') + '</textarea>' +
-            '</div>' +
-            '<div class="field full">' +
-              '<label for="detail-blocker-reason">Blocker reason</label>' +
-              '<textarea id="detail-blocker-reason" placeholder="Use this when the case or a platform task is blocked.">' + escapeHtml(selected.blockerReason || '') + '</textarea>' +
-            '</div>' +
-            '<div class="field full">' +
-              '<label for="detail-known-platforms">Known platforms</label>' +
-              '<textarea id="detail-known-platforms">' + escapeHtml(selected.knownPlatforms || '') + '</textarea>' +
-            '</div>' +
-            '<div class="field full">' +
-              '<label for="detail-profile-urls">Profile URLs or handles</label>' +
-              '<textarea id="detail-profile-urls">' + escapeHtml(selected.profileUrls || '') + '</textarea>' +
-            '</div>' +
-            '<div class="field full">' +
-              '<label for="detail-internal-notes">Internal notes</label>' +
-              '<textarea id="detail-internal-notes">' + escapeHtml(selected.internalNotes || '') + '</textarea>' +
-            '</div>' +
-          '</div>' +
-
-          '<div class="section-card">' +
-            '<span class="eyebrow" style="margin-bottom:8px;">Automation</span>' +
-            '<h3 style="font-size:1.28rem; margin-bottom:12px;">Open automation tasks</h3>' +
-            (
-              automationTasks.length
-                ? '<ul class="documents-list">' + automationTasks.map((task) => (
-                  '<li><strong>' + escapeHtml(task.label) + '</strong>' +
-                  escapeHtml(task.reason || '') +
-                  '<br />Due ' + escapeHtml(task.dueDate || 'today') +
-                  ' · Lane ' + escapeHtml(titleize(task.ownerLane || 'intake_desk')) +
-                  '</li>'
-                )).join('') + '</ul>'
-                : '<p class="empty">No automatic tasks are currently open on this case.</p>'
-            ) +
-          '</div>' +
-
-          '<div class="section-card">' +
-            '<span class="eyebrow" style="margin-bottom:8px;">Workflow</span>' +
-            '<h3 style="font-size:1.28rem; margin-bottom:12px;">Platform-by-platform tracking</h3>' +
-            '<p class="helper" style="margin-bottom:14px;">Track each platform separately so a VA, operator, or AI agent can see what has been submitted, what is blocked, and what still needs evidence.</p>' +
-            '<div class="platform-editor" id="platform-editor">' +
-              (platformTasks.length
-                ? platformTasks.map((task, index) => createPlatformTaskMarkup(task, index)).join('')
-                : createPlatformTaskMarkup({
-                    name: '',
-                    status: 'not_started',
-                    profileOrHandle: '',
-                    outcomeRequested: selected.preferredOutcome || '',
-                    evidenceNeeded: '',
-                    notes: '',
-                    submissionReference: '',
-                    submittedAt: '',
-                    resolvedAt: ''
-                  }, 0)) +
-            '</div>' +
-            '<div class="action-row" style="margin-top:14px;">' +
-              '<button class="secondary" id="add-platform-task" type="button">Add platform</button>' +
-              '<button class="secondary" id="load-platforms-from-intake" type="button">Refresh from intake fields</button>' +
-            '</div>' +
-          '</div>' +
-
-          '<div class="action-row">' +
-            '<button class="primary" id="save-case" type="button">Save case update</button>' +
-            '<button class="secondary" id="copy-agent-brief" type="button">Copy agent brief</button>' +
-            '<button class="secondary" id="copy-client-update" type="button">Copy client update</button>' +
-            '<button class="secondary" id="copy-platform-brief" type="button">Copy platform brief</button>' +
-          '</div>' +
-          '<p class="helper" id="save-helper">Use the copy buttons to hand the case to a VA, live operator, or AI agent without rewriting the context each time.</p>' +
-
-          '<div class="template-card">' +
-            '<h3>Email updates</h3>' +
-            '<p class="helper" id="email-helper">' + escapeHtml(emailStatusHelper + ' ' + opsStatusHelper) + '</p>' +
-            '<div class="field-grid" style="margin-top:14px;">' +
-              '<div class="field full">' +
-                '<label for="detail-email-subject">Email subject</label>' +
-                '<input id="detail-email-subject" type="text" value="' + escapeHtml(defaultClientSubject) + '" />' +
-              '</div>' +
-              '<div class="field full">' +
-                '<label for="detail-email-message">Email message</label>' +
-                '<textarea id="detail-email-message" style="min-height:180px;">' + escapeHtml(defaultClientMessage) + '</textarea>' +
-              '</div>' +
+          '<div class="dirty-bar' + (state.detailDirty ? ' active' : '') + '" id="dirty-bar">' +
+            '<div class="dirty-bar-copy">' +
+              '<strong>Unsaved changes</strong>' +
+              '<span class="helper">Save now or discard before moving to another case.</span>' +
             '</div>' +
             '<div class="action-row">' +
-              '<button class="secondary" id="load-client-email" type="button">Load client draft</button>' +
-              '<button class="secondary" id="load-ops-email" type="button">Load ops brief</button>' +
-              '<button class="secondary" id="send-client-email" type="button"' + sendDisabledAttr + '>Email client update</button>' +
-              '<button class="secondary" id="send-ops-email" type="button"' + opsDisabledAttr + '>Email ops summary</button>' +
-            '</div>' +
-            '<p class="helper">Client draft uses the reassurance copy. Ops brief uses the internal agent summary.</p>' +
-          '</div>' +
-
-          '<div class="templates-grid">' +
-            '<div class="template-card">' +
-              '<h3>Agent brief</h3>' +
-              '<pre>' + escapeHtml(operational.agentSummary || '') + '</pre>' +
-            '</div>' +
-            '<div class="template-card">' +
-              '<h3>Client update draft</h3>' +
-              '<pre>' + escapeHtml(operational.clientUpdateDraft || '') + '</pre>' +
-            '</div>' +
-            '<div class="template-card">' +
-              '<h3>Platform submission brief</h3>' +
-              '<pre>' + escapeHtml(operational.platformSubmissionBrief || '') + '</pre>' +
+              '<button class="secondary" type="button" id="discard-case-changes">Discard changes</button>' +
+              '<button class="primary" type="button" id="save-case-dirty"' + saveDisabledAttr + '>Save now</button>' +
             '</div>' +
           '</div>' +
-
-          '<div>' +
-            '<span class="eyebrow" style="margin-bottom:8px;">Documents</span>' +
-            '<h3 style="font-size:1.28rem; margin-bottom:12px;">Supporting files</h3>' +
-            documents +
+          (!canWrite
+            ? '<div class="callout">This account is in review mode. You can inspect cases and copy briefs, but save, archive, and delete actions are limited by role.</div>'
+            : '') +
+          '<div class="detail-header">' +
+            '<div class="detail-kicker">' +
+              '<div class="detail-title">' +
+                '<h3>' + escapeHtml(selected.deceasedName || selected.reference) + '</h3>' +
+                '<p>' + escapeHtml(selected.reference) + ' · ' + escapeHtml(selected.clientName || 'Client not set') + ' · ' + escapeHtml(selected.clientEmail || 'No email recorded') + '</p>' +
+              '</div>' +
+              '<div class="detail-badge-row">' +
+                '<span class="badge">' + escapeHtml(titleize(selected.status || 'workflow_review')) + '</span>' +
+                '<span class="badge">' + escapeHtml(titleize(selected.paymentStatus || 'pending')) + '</span>' +
+                '<span class="badge' + ((workflow.overdue || workflow.queueKey === 'blocked' || workflow.escalatedReminderCount) ? ' alert' : (!workflow.needsAttention ? ' good' : '')) + '">' + escapeHtml(workflow.queueLabel || 'Workflow review') + '</span>' +
+              '</div>' +
+            '</div>' +
+            '<div class="detail-topline">' +
+              '<div class="mini-card"><h3>Next action</h3><p>' + escapeHtml(operational.nextBestAction || 'Review the case and decide the next step.') + '</p></div>' +
+              '<div class="mini-card"><h3>Owner</h3><p>' + escapeHtml(selected.assignedTo || 'Unassigned') + '</p></div>' +
+              '<div class="mini-card"><h3>Follow-up</h3><p>' + escapeHtml(workflow.followUpDate || 'Not set') + '</p></div>' +
+              '<div class="mini-card"><h3>Scope</h3><p>' + escapeHtml((platformSummary.total || 0) + ' platforms · ' + (selected.documentCount || 0) + ' docs') + '</p></div>' +
+            '</div>' +
           '</div>' +
-
-          '<div>' +
-            '<span class="eyebrow" style="margin-bottom:8px;">Activity</span>' +
-            '<h3 style="font-size:1.28rem; margin-bottom:12px;">Case timeline</h3>' +
-            timeline +
+          '<div class="action-cluster">' +
+            '<h3>Fast actions</h3>' +
+            '<p>' + escapeHtml(automatedCheckoutEnabled
+              ? 'Stripe owns checkout. Use this area to move the case forward and handle exceptions only.'
+              : 'Act first, then work deeper only if the case needs it. Use these buttons to log the customer handoff, not process payment yourself.') + '</p>' +
+            '<div class="quick-actions">' +
+              '<button class="primary" type="button" id="save-case-top"' + saveDisabledAttr + '>Save case update</button>' +
+              '<button class="secondary" type="button" id="quick-payment-link"' + (automatedCheckoutEnabled ? ' disabled' : '') + '>' + escapeHtml(paymentLabels.linkQuick) + '</button>' +
+              '<button class="secondary" type="button" id="quick-paid">' + escapeHtml(paymentLabels.paidQuick) + '</button>' +
+              '<button class="secondary" type="button" id="quick-awaiting-docs">Request documents</button>' +
+              '<button class="secondary" type="button" id="quick-active">Set active</button>' +
+              '<button class="secondary" type="button" id="quick-complete">Set completed</button>' +
+              '<a class="button-link secondary" href="' + escapeHtml(caseLinks.documents || '/documents') + '" target="_blank" rel="noreferrer">Open documents flow</a>' +
+            '</div>' +
+            '<p class="helper">' + escapeHtml(automatedCheckoutEnabled
+              ? 'When Stripe is enabled, payment status should sync automatically. Use "Record offline payment" only if money was taken outside the checkout flow.'
+              : 'Until Stripe is live, the customer requests a checkout handoff by email and you log the handoff and payment here.') + '</p>' +
+            '<div class="quick-actions">' +
+              '<button class="secondary" type="button" id="quick-apply-workflow">Apply workflow defaults</button>' +
+              '<button class="secondary" type="button" id="quick-follow-up">Follow up tomorrow</button>' +
+              lifecycleActions.join('') +
+            '</div>' +
           '</div>' +
+          '<div class="detail-tabs">' +
+            '<button class="detail-tab active" type="button" data-detail-view="overview">Overview</button>' +
+            '<button class="detail-tab" type="button" data-detail-view="case-ops">Case ops</button>' +
+            '<button class="detail-tab" type="button" data-detail-view="workflow">Workflow</button>' +
+            '<button class="detail-tab" type="button" data-detail-view="comms">Comms and files</button>' +
+          '</div>' +
+          '<section class="detail-section active" data-detail-panel="overview">' +
+            '<div class="detail-summary">' +
+              '<div><strong>Reference:</strong> ' + escapeHtml(selected.reference) + '</div>' +
+              '<div><strong>Package:</strong> ' + escapeHtml(selected.packageLabel) + '</div>' +
+              '<div><strong>Client:</strong> ' + escapeHtml(selected.clientName) + '</div>' +
+              '<div><strong>Email:</strong> ' + escapeHtml(selected.clientEmail) + '</div>' +
+              '<div><strong>Deceased:</strong> ' + escapeHtml(selected.deceasedName) + '</div>' +
+              '<div><strong>Outcome:</strong> ' + escapeHtml(selected.preferredOutcome || 'Not set') + '</div>' +
+              '<div><strong>Relationship:</strong> ' + escapeHtml(selected.relationshipToDeceased || 'Not supplied') + '</div>' +
+              '<div><strong>Authority:</strong> ' + escapeHtml(selected.authorityBasis || 'Not set') + '</div>' +
+              '<div><strong>Referral source:</strong> ' + escapeHtml(selected.referralSource || 'None recorded') + '</div>' +
+              '<div><strong>Partner:</strong> ' + escapeHtml(selected.referralPartnerName || 'None recorded') + '</div>' +
+              '<div><strong>Archived:</strong> ' + escapeHtml(selected.archivedAt ? formatDate(selected.archivedAt) : 'No') + '</div>' +
+              '<div><strong>Archived by:</strong> ' + escapeHtml(selected.archivedBy || 'Not archived') + '</div>' +
+            '</div>' +
+            '<div class="signal-grid">' +
+              '<div class="signal-card">' +
+                '<h3>Customer handoff</h3>' +
+                '<ul>' +
+                  '<li><strong>Private case page:</strong> ' + escapeHtml(caseLinks.status || '/case') + '</li>' +
+                  '<li><strong>Documents step:</strong> ' + escapeHtml(caseLinks.documents || '/documents') + '</li>' +
+                  '<li><strong>Payment step:</strong> ' + escapeHtml(caseLinks.payment || '/payment') + '</li>' +
+                '</ul>' +
+                '<div class="action-row" style="margin-top:14px;">' +
+                  '<button class="secondary" id="copy-case-link" type="button">Copy case link</button>' +
+                  '<button class="secondary" id="copy-documents-link" type="button">Copy documents link</button>' +
+                '</div>' +
+              '</div>' +
+              '<div class="signal-card">' +
+                '<h3>Payment handoff</h3>' +
+                '<ul>' +
+                  '<li><strong>Mode:</strong> ' + escapeHtml(automatedCheckoutEnabled ? 'Stripe checkout automation' : 'Manual checkout handoff') + '</li>' +
+                  '<li><strong>Current payment status:</strong> ' + escapeHtml(formatPaymentStatusLabel(selected.paymentStatus || 'pending')) + '</li>' +
+                  '<li><strong>Operator instruction:</strong> ' + escapeHtml(automatedCheckoutEnabled ? 'Let Stripe update the case automatically unless this was an offline payment.' : 'Send the checkout handoff, then record when payment is received.') + '</li>' +
+                '</ul>' +
+              '</div>' +
+            '</div>' +
+            '<div class="signal-grid">' +
+              '<div class="signal-card">' +
+                '<h3>Missing items</h3>' +
+                ((operational.missingItems || []).length
+                  ? '<ul>' + operational.missingItems.map((item) => '<li>' + escapeHtml(item) + '</li>').join('') + '</ul>'
+                  : '<p>No obvious gaps at the moment.</p>') +
+              '</div>' +
+              '<div class="signal-card">' +
+                '<h3>Workflow engine</h3>' +
+                '<ul>' +
+                  '<li><strong>Stage:</strong> ' + escapeHtml(workflow.stageLabel || 'Workflow review') + '</li>' +
+                  '<li><strong>Health:</strong> ' + escapeHtml(titleize(workflow.healthStatus || 'on_track')) + '</li>' +
+                  '<li><strong>Service target:</strong> ' + escapeHtml(workflow.serviceTargetDate || 'Not set') + '</li>' +
+                  '<li><strong>Next follow-up:</strong> ' + escapeHtml(workflow.followUpDate || 'Not set') + '</li>' +
+                  '<li><strong>Recommended lane:</strong> ' + escapeHtml(titleize(workflow.recommendedLane || 'intake_desk')) + '</li>' +
+                  '<li><strong>Open reminders:</strong> ' + escapeHtml(workflow.openReminderCount || 0) + '</li>' +
+                  '<li><strong>Escalated reminders:</strong> ' + escapeHtml(workflow.escalatedReminderCount || 0) + '</li>' +
+                  '<li><strong>Progress:</strong> ' + escapeHtml(workflow.progressPercent || 0) + '%</li>' +
+                '</ul>' +
+              '</div>' +
+            '</div>' +
+            '<div class="signal-grid">' +
+              '<div class="signal-card">' +
+                '<h3>Platform summary</h3>' +
+                '<ul>' +
+                  '<li><strong>Total platforms:</strong> ' + escapeHtml(platformSummary.total || 0) + '</li>' +
+                  '<li><strong>Active or pending:</strong> ' + escapeHtml(platformSummary.active || 0) + '</li>' +
+                  '<li><strong>Resolved:</strong> ' + escapeHtml(platformSummary.resolved || 0) + '</li>' +
+                  '<li><strong>Blocked:</strong> ' + escapeHtml(platformSummary.blocked || 0) + '</li>' +
+                '</ul>' +
+              '</div>' +
+              '<div class="signal-card">' +
+                '<h3>Internal context</h3>' +
+                '<ul>' +
+                  '<li><strong>Queue:</strong> ' + escapeHtml(workflow.queueLabel || 'Workflow review') + '</li>' +
+                  '<li><strong>Waiting on:</strong> ' + escapeHtml(titleize(workflow.waitingOn || 'operator')) + '</li>' +
+                  '<li><strong>Priority:</strong> ' + escapeHtml(titleize(selected.priority || 'standard')) + '</li>' +
+                  '<li><strong>Due date:</strong> ' + escapeHtml(selected.dueDate || 'Not set') + '</li>' +
+                '</ul>' +
+              '</div>' +
+            '</div>' +
+          '</section>' +
+          '<section class="detail-section" data-detail-panel="case-ops">' +
+            '<div class="field-grid">' +
+              '<div class="field"><label for="detail-assigned-to">Case owner</label><select id="detail-assigned-to">' + renderOwnerOptions(selected.assignedTo || '') + '</select></div>' +
+              '<div class="field"><label for="detail-priority">Priority</label><select id="detail-priority"><option value="standard">Standard</option><option value="priority">Priority</option><option value="urgent">Urgent</option></select></div>' +
+              '<div class="field"><label for="detail-due-date">Due date</label><input id="detail-due-date" type="date" value="' + escapeHtml(selected.dueDate || '') + '" /></div>' +
+              '<div class="field"><label for="detail-next-follow-up">Next follow-up date</label><input id="detail-next-follow-up" type="date" value="' + escapeHtml(selected.nextFollowUpAt || '') + '" /></div>' +
+              '<div class="field"><label for="detail-referral-source">Referral source</label><input id="detail-referral-source" type="text" value="' + escapeHtml(selected.referralSource || '') + '" /></div>' +
+              '<div class="field"><label for="detail-operator-lane">Operator lane</label><input id="detail-operator-lane" type="text" value="' + escapeHtml(selected.operatorLane || '') + '" placeholder="intake_desk, document_desk, platform_desk..." /></div>' +
+              '<div class="field"><label for="detail-status">Case status</label><select id="detail-status"><option value="awaiting_payment">Awaiting payment</option><option value="paid">Paid</option><option value="awaiting_documents">Awaiting documents</option><option value="documents_received">Documents received</option><option value="active">Active</option><option value="submitted">Submitted</option><option value="completed">Completed</option><option value="blocked">Blocked</option></select></div>' +
+              '<div class="field"><label for="detail-payment-status">Payment status</label><select id="detail-payment-status"><option value="pending">Pending</option><option value="payment_link_sent">Checkout sent</option><option value="paid">Paid</option><option value="refunded">Refunded</option></select></div>' +
+              '<div class="field"><label for="detail-relationship">Relationship</label><input id="detail-relationship" type="text" value="' + escapeHtml(selected.relationshipToDeceased || '') + '" /></div>' +
+              '<div class="field"><label for="detail-authority">Authority basis</label><input id="detail-authority" type="text" value="' + escapeHtml(selected.authorityBasis || '') + '" /></div>' +
+              '<div class="field"><label for="detail-referral-type">Referral partner type</label><select id="detail-referral-type"><option value="direct">Direct</option><option value="funeral_director">Funeral director</option><option value="solicitor">Solicitor</option><option value="other">Other</option></select></div>' +
+              '<div class="field"><label for="detail-referral-fee-status">Referral fee status</label><select id="detail-referral-fee-status"><option value="not_applicable">Not applicable</option><option value="pending">Pending</option><option value="approved">Approved</option><option value="paid">Paid</option></select></div>' +
+              '<div class="field"><label for="detail-referral-name">Partner name</label><input id="detail-referral-name" type="text" value="' + escapeHtml(selected.referralPartnerName || '') + '" /></div>' +
+              '<div class="field"><label for="detail-referral-email">Partner email</label><input id="detail-referral-email" type="email" value="' + escapeHtml(selected.referralPartnerEmail || '') + '" /></div>' +
+              '<div class="field full"><label for="detail-referral-phone">Partner phone</label><input id="detail-referral-phone" type="text" value="' + escapeHtml(selected.referralPartnerPhone || '') + '" /></div>' +
+              '<div class="field full"><label for="detail-referral-notes">Referral notes</label><textarea id="detail-referral-notes">' + escapeHtml(selected.referralNotes || '') + '</textarea></div>' +
+              '<div class="field full"><label for="detail-blocker-reason">Blocker reason</label><textarea id="detail-blocker-reason" placeholder="Use this when the case or a platform task is blocked.">' + escapeHtml(selected.blockerReason || '') + '</textarea></div>' +
+              '<div class="field full"><label for="detail-archive-reason">Archive reason</label><textarea id="detail-archive-reason" placeholder="Add a short note if this record should move out of the working inbox.">' + escapeHtml(selected.archiveReason || '') + '</textarea></div>' +
+              '<div class="field full"><label for="detail-known-platforms">Known platforms</label><textarea id="detail-known-platforms">' + escapeHtml(selected.knownPlatforms || '') + '</textarea></div>' +
+              '<div class="field full"><label for="detail-profile-urls">Profile URLs or handles</label><textarea id="detail-profile-urls">' + escapeHtml(selected.profileUrls || '') + '</textarea></div>' +
+              '<div class="field full"><label for="detail-internal-notes">Internal notes</label><textarea id="detail-internal-notes">' + escapeHtml(selected.internalNotes || '') + '</textarea></div>' +
+            '</div>' +
+            '<div class="action-row">' +
+              '<button class="primary" id="save-case-form" type="button"' + saveDisabledAttr + '>Save case update</button>' +
+              '<button class="secondary" id="copy-agent-brief" type="button">Copy agent brief</button>' +
+              '<button class="secondary" id="copy-client-update" type="button">Copy client update</button>' +
+              '<button class="secondary" id="copy-platform-brief" type="button">Copy platform brief</button>' +
+            '</div>' +
+            '<p class="helper" id="save-helper">' + escapeHtml(canWrite ? 'Use the copy buttons to hand the case to a VA, live operator, or AI agent without rewriting the context each time.' : 'Your role is read-only for case editing. You can still review the record and copy briefs.') + '</p>' +
+          '</section>' +
+          '<section class="detail-section" data-detail-panel="workflow">' + workflowSectionMarkup + '</section>' +
+          '<section class="detail-section" data-detail-panel="comms">' + commsSectionMarkup + '</section>' +
         '</div>'
       );
 
       document.getElementById('detail-priority').value = selected.priority || 'standard';
+      document.getElementById('detail-assigned-to').value = selected.assignedTo || '';
       document.getElementById('detail-status').value = selected.status || 'awaiting_payment';
       document.getElementById('detail-payment-status').value = selected.paymentStatus || 'pending';
       document.getElementById('detail-referral-type').value = selected.referralPartnerType || 'direct';
       document.getElementById('detail-referral-fee-status').value = selected.referralFeeStatus || 'not_applicable';
 
-      document.getElementById('quick-payment-link').addEventListener('click', function () {
-        quickSet('awaiting_payment', 'payment_link_sent');
+      document.getElementById('quick-payment-link').addEventListener('click', async function () {
+        if (automatedCheckoutEnabled) {
+          const helper = document.getElementById('save-helper');
+          if (helper) {
+            helper.textContent = 'Stripe checkout should update payment automatically. Use offline payment recording only if needed.';
+          }
+          return;
+        }
+        await persistLifecyclePreset('payment_link_sent');
       });
-      document.getElementById('quick-paid').addEventListener('click', function () {
-        quickSet('paid', 'paid');
+      document.getElementById('quick-paid').addEventListener('click', async function () {
+        await persistLifecyclePreset('paid');
       });
-      document.getElementById('quick-awaiting-docs').addEventListener('click', function () {
-        quickSet('awaiting_documents', 'paid');
+      document.getElementById('quick-awaiting-docs').addEventListener('click', async function () {
+        await persistLifecyclePreset('awaiting_documents');
       });
-      document.getElementById('quick-active').addEventListener('click', function () {
-        quickSet('active', 'paid');
+      document.getElementById('quick-active').addEventListener('click', async function () {
+        await persistLifecyclePreset('active');
       });
-      document.getElementById('quick-complete').addEventListener('click', function () {
-        quickSet('completed', 'paid');
+      document.getElementById('quick-complete').addEventListener('click', async function () {
+        await persistLifecyclePreset('completed');
       });
       document.getElementById('quick-apply-workflow').addEventListener('click', function () {
         applyWorkflowDefaults(selected);
@@ -1304,46 +3311,65 @@
       document.getElementById('quick-follow-up').addEventListener('click', function () {
         setFollowUpDate(1);
       });
-      document.getElementById('add-platform-task').addEventListener('click', function () {
-        const editor = document.getElementById('platform-editor');
-        editor.insertAdjacentHTML('beforeend', createPlatformTaskMarkup({
-          name: '',
-          status: 'not_started',
-          profileOrHandle: '',
-          outcomeRequested: selected.preferredOutcome || '',
-          evidenceNeeded: '',
-          notes: '',
-          submissionReference: '',
-          submittedAt: '',
-          resolvedAt: ''
-        }, editor.querySelectorAll('.platform-task').length));
-        bindPlatformTaskButtons();
+      const addPlatformButton = document.getElementById('add-platform-task');
+      if (addPlatformButton) {
+        addPlatformButton.addEventListener('click', function () {
+          const editor = document.getElementById('platform-editor');
+          editor.insertAdjacentHTML('beforeend', createPlatformTaskMarkup({
+            name: '',
+            status: 'not_started',
+            profileOrHandle: '',
+            outcomeRequested: selected.preferredOutcome || '',
+            evidenceNeeded: '',
+            notes: '',
+            submissionReference: '',
+            submittedAt: '',
+            resolvedAt: ''
+          }, editor.querySelectorAll('.platform-task').length));
+          bindPlatformTaskButtons();
+          markDetailDirty();
+        });
+      }
+      const refreshPlatformsButton = document.getElementById('load-platforms-from-intake');
+      if (refreshPlatformsButton) {
+        refreshPlatformsButton.addEventListener('click', function () {
+          const editor = document.getElementById('platform-editor');
+          const knownPlatforms = (document.getElementById('detail-known-platforms').value || '')
+            .split(/\n|,/)
+            .map((value) => value.trim())
+            .filter(Boolean);
+          const profileUrls = (document.getElementById('detail-profile-urls').value || '')
+            .split(/\n/)
+            .map((value) => value.trim())
+            .filter(Boolean);
+          const tasks = knownPlatforms.length ? knownPlatforms : [''];
+          editor.innerHTML = tasks.map((name, index) => createPlatformTaskMarkup({
+            name,
+            status: 'not_started',
+            profileOrHandle: profileUrls[index] || '',
+            outcomeRequested: selected.preferredOutcome || '',
+            evidenceNeeded: '',
+            notes: '',
+            submissionReference: '',
+            submittedAt: '',
+            resolvedAt: ''
+          }, index)).join('');
+          bindPlatformTaskButtons();
+          markDetailDirty();
+        });
+      }
+      caseDetail.querySelectorAll('[data-detail-view]').forEach(function (button) {
+        button.addEventListener('click', function () {
+          setDetailView(button.getAttribute('data-detail-view'));
+        });
       });
-      document.getElementById('load-platforms-from-intake').addEventListener('click', function () {
-        const editor = document.getElementById('platform-editor');
-        const knownPlatforms = (document.getElementById('detail-known-platforms').value || '')
-          .split(/\n|,/)
-          .map((value) => value.trim())
-          .filter(Boolean);
-        const profileUrls = (document.getElementById('detail-profile-urls').value || '')
-          .split(/\n/)
-          .map((value) => value.trim())
-          .filter(Boolean);
-        const tasks = knownPlatforms.length ? knownPlatforms : [''];
-        editor.innerHTML = tasks.map((name, index) => createPlatformTaskMarkup({
-          name,
-          status: 'not_started',
-          profileOrHandle: profileUrls[index] || '',
-          outcomeRequested: selected.preferredOutcome || '',
-          evidenceNeeded: '',
-          notes: '',
-          submissionReference: '',
-          submittedAt: '',
-          resolvedAt: ''
-        }, index)).join('');
-        bindPlatformTaskButtons();
+      document.getElementById('save-case-top').addEventListener('click', saveSelectedCase);
+      document.getElementById('save-case-dirty').addEventListener('click', saveSelectedCase);
+      document.getElementById('save-case-form').addEventListener('click', saveSelectedCase);
+      document.getElementById('discard-case-changes').addEventListener('click', function () {
+        clearDetailDirty();
+        fetchCaseDetail(selected.id, { force: true }).catch(function () {});
       });
-      document.getElementById('save-case').addEventListener('click', saveSelectedCase);
       document.getElementById('copy-agent-brief').addEventListener('click', function () {
         copyText(operational.agentSummary || '', 'Agent brief', 'save-helper');
       });
@@ -1353,45 +3379,178 @@
       document.getElementById('copy-platform-brief').addEventListener('click', function () {
         copyText(operational.platformSubmissionBrief || '', 'Platform brief', 'save-helper');
       });
-      document.getElementById('load-client-email').addEventListener('click', function () {
-        document.getElementById('detail-email-subject').value = defaultClientSubject;
-        document.getElementById('detail-email-message').value = defaultClientMessage;
-        document.getElementById('email-helper').textContent = 'Client draft loaded.';
+      document.getElementById('copy-case-link').addEventListener('click', function () {
+        copyText(window.location.origin + (caseLinks.status || '/case'), 'Case link', 'save-helper');
       });
-      document.getElementById('load-ops-email').addEventListener('click', function () {
-        document.getElementById('detail-email-subject').value = defaultOpsSubject;
-        document.getElementById('detail-email-message').value = defaultOpsMessage;
-        document.getElementById('email-helper').textContent = opsEmailEnabled
-          ? 'Ops brief loaded.'
-          : 'Operations email is not configured yet.';
+      document.getElementById('copy-documents-link').addEventListener('click', function () {
+        copyText(window.location.origin + (caseLinks.documents || '/documents'), 'Documents link', 'save-helper');
       });
-      document.getElementById('send-client-email').addEventListener('click', function () {
-        sendCaseEmail('client_update');
-      });
-      document.getElementById('send-ops-email').addEventListener('click', function () {
-        sendCaseEmail('operations_summary');
-      });
-      bindPlatformTaskButtons();
+      const loadClientEmailButton = document.getElementById('load-client-email');
+      if (loadClientEmailButton) {
+        loadClientEmailButton.addEventListener('click', function () {
+          document.getElementById('detail-email-subject').value = defaultClientSubject;
+          document.getElementById('detail-email-message').value = defaultClientMessage;
+          document.getElementById('email-helper').textContent = 'Client draft loaded.';
+        });
+      }
+      const loadOpsEmailButton = document.getElementById('load-ops-email');
+      if (loadOpsEmailButton) {
+        loadOpsEmailButton.addEventListener('click', function () {
+          document.getElementById('detail-email-subject').value = defaultOpsSubject;
+          document.getElementById('detail-email-message').value = defaultOpsMessage;
+          document.getElementById('email-helper').textContent = opsEmailEnabled
+            ? 'Ops brief loaded.'
+            : 'Operations email is not configured yet.';
+        });
+      }
+      const sendClientEmailButton = document.getElementById('send-client-email');
+      if (sendClientEmailButton) {
+        sendClientEmailButton.addEventListener('click', function () {
+          sendCaseEmail('client_update');
+        });
+      }
+      const sendOpsEmailButton = document.getElementById('send-ops-email');
+      if (sendOpsEmailButton) {
+        sendOpsEmailButton.addEventListener('click', function () {
+          sendCaseEmail('operations_summary');
+        });
+      }
+      if (workflowSectionLoaded) {
+        bindPlatformTaskButtons();
+        document.querySelectorAll('.platform-task').forEach(function (node, index) {
+          const task = platformTasks[index] || {};
+          const statusField = node.querySelector('[data-platform-field="status"]');
+          if (statusField) statusField.value = task.status || 'not_started';
+        });
+        bindReminderButtons();
+
+        document.querySelectorAll('.reminder-card').forEach(function (node, index) {
+          const reminder = reminders[index] || {};
+          const statusField = node.querySelector('[data-reminder-field="status"]');
+          const severityField = node.querySelector('[data-reminder-field="severity"]');
+          if (statusField) statusField.value = reminder.status || 'open';
+          if (severityField) severityField.value = reminder.severity || 'normal';
+        });
+
+        const addReminderButton = document.getElementById('add-reminder');
+        if (addReminderButton) {
+          addReminderButton.addEventListener('click', function () {
+            const editor = document.getElementById('reminder-editor');
+            editor.insertAdjacentHTML('beforeend', createReminderMarkup({
+              title: '',
+              status: 'open',
+              severity: 'normal',
+              assignedTo: selected.assignedTo || '',
+              ownerLane: selected.operatorLane || workflow.recommendedLane || '',
+              dueDate: workflow.followUpDate || '',
+              escalateAt: '',
+              notes: ''
+            }, editor.querySelectorAll('.reminder-card').length));
+            bindReminderButtons();
+            markDetailDirty();
+          });
+        }
+        const addDocReminderButton = document.getElementById('add-doc-reminder');
+        if (addDocReminderButton) {
+          addDocReminderButton.addEventListener('click', function () {
+            const editor = document.getElementById('reminder-editor');
+            editor.insertAdjacentHTML('beforeend', createReminderMarkup({
+              title: 'Check documents and authority proof',
+              status: 'open',
+              severity: 'priority',
+              assignedTo: selected.assignedTo || '',
+              ownerLane: 'document_desk',
+              dueDate: document.getElementById('detail-next-follow-up').value || workflow.followUpDate || '',
+              escalateAt: '',
+              notes: 'Confirm the death certificate and proof of authority are complete.'
+            }, editor.querySelectorAll('.reminder-card').length));
+            bindReminderButtons();
+            markDetailDirty();
+          });
+        }
+
+        const addClientReminderButton = document.getElementById('add-client-reminder');
+        if (addClientReminderButton) {
+          addClientReminderButton.addEventListener('click', function () {
+            const editor = document.getElementById('reminder-editor');
+            editor.insertAdjacentHTML('beforeend', createReminderMarkup({
+              title: 'Send client reassurance follow-up',
+              status: 'open',
+              severity: 'normal',
+              assignedTo: selected.assignedTo || '',
+              ownerLane: selected.operatorLane || workflow.recommendedLane || 'intake_desk',
+              dueDate: document.getElementById('detail-next-follow-up').value || workflow.followUpDate || '',
+              escalateAt: '',
+              notes: 'Keep the client updated if the case is still waiting on payment, documents, or platform response.'
+            }, editor.querySelectorAll('.reminder-card').length));
+            bindReminderButtons();
+            markDetailDirty();
+          });
+        }
+      }
+
+      const archiveButton = document.getElementById('archive-case');
+      if (archiveButton) {
+        archiveButton.addEventListener('click', function () {
+          if (selected.archivedAt) {
+            restoreSelectedCase();
+            return;
+          }
+
+          archiveSelectedCase();
+        });
+      }
+
+      const deleteButton = document.getElementById('delete-case');
+      if (deleteButton) {
+        deleteButton.addEventListener('click', deleteSelectedCase);
+      }
+
+      if (!canWrite) {
+        caseDetail.querySelectorAll('input, select, textarea, button#save-case-top, button#save-case-form, button#quick-payment-link, button#quick-paid, button#quick-awaiting-docs, button#quick-active, button#quick-complete, button#quick-apply-workflow, button#quick-follow-up, button#add-platform-task, button#load-platforms-from-intake, button#add-reminder, button#add-doc-reminder, button#add-client-reminder, .remove-platform-task, .remove-reminder').forEach(function (element) {
+          element.disabled = true;
+        });
+      }
+
+      if (canWrite) {
+        caseDetail.querySelectorAll('input, select, textarea').forEach(function (field) {
+          field.addEventListener('input', markDetailDirty);
+          field.addEventListener('change', markDetailDirty);
+        });
+      }
+
+      setDetailView(state.activeDetailView || 'overview');
     }
 
     async function saveSelectedCase() {
       const selected = getSelectedCase();
       const helper = document.getElementById('save-helper');
-      const saveButton = document.getElementById('save-case');
+      const saveButtons = [
+        document.getElementById('save-case-top'),
+        document.getElementById('save-case-form')
+      ].filter(Boolean);
 
       if (!selected) {
         return;
       }
 
-      saveButton.disabled = true;
-      saveButton.textContent = 'Saving...';
+      if (!canWriteCases()) {
+        helper.textContent = 'Your role cannot edit cases.';
+        return;
+      }
+
+      saveButtons.forEach(function (button) {
+        button.disabled = true;
+        button.textContent = 'Saving...';
+      });
       helper.textContent = 'Saving case updates...';
 
       try {
-        const response = await fetch('/api/admin/cases', {
+        const result = await requestJson('/api/admin/cases', {
           method: 'PATCH',
           headers: getHeaders(),
           credentials: 'same-origin',
+          timeoutMs: 6000,
           body: JSON.stringify({
             id: selected.id,
             assignedTo: document.getElementById('detail-assigned-to').value,
@@ -1411,26 +3570,219 @@
             referralFeeStatus: document.getElementById('detail-referral-fee-status').value,
             referralNotes: document.getElementById('detail-referral-notes').value,
             blockerReason: document.getElementById('detail-blocker-reason').value,
+            archiveReason: document.getElementById('detail-archive-reason').value,
             knownPlatforms: document.getElementById('detail-known-platforms').value,
             profileUrls: document.getElementById('detail-profile-urls').value,
-            platformTasks: collectPlatformTasks(),
-            internalNotes: document.getElementById('detail-internal-notes').value
+            internalNotes: document.getElementById('detail-internal-notes').value,
+            ...(loadedWorkflowSections
+              ? {
+                  platformTasks: collectPlatformTasks(),
+                  reminders: collectReminders()
+                }
+              : {})
           })
-        });
+        }, 'Could not save the case.', 3);
+        const payload = result.payload || {};
 
-        const payload = await response.json();
-
-        if (!response.ok || !payload.ok) {
-          throw new Error(payload.error || 'Could not save the case.');
-        }
-
-        await loadDashboard();
+        applyUpdatedCase(payload.case);
+        refreshOperationsSummary().catch(function () {});
         helper.textContent = 'Case updated successfully.';
       } catch (error) {
         helper.textContent = error.message || 'Could not save the case.';
       } finally {
-        saveButton.disabled = false;
-        saveButton.textContent = 'Save case update';
+        saveButtons.forEach(function (button) {
+          button.disabled = false;
+          button.textContent = 'Save case update';
+        });
+      }
+    }
+
+    async function archiveSelectedCase() {
+      const selected = getSelectedCase();
+      const helper = document.getElementById('save-helper');
+
+      if (!selected || !canArchiveCases()) {
+        if (helper) {
+          helper.textContent = 'Your role cannot archive cases.';
+        }
+        return;
+      }
+
+      try {
+        const result = await requestJson('/api/admin/cases', {
+          method: 'PATCH',
+          headers: getHeaders(),
+          credentials: 'same-origin',
+          timeoutMs: 5000,
+          body: JSON.stringify({
+            id: selected.id,
+            action: 'archive',
+            archiveReason: document.getElementById('detail-archive-reason').value
+          })
+        }, 'Could not archive the case.', 3);
+        const payload = result.payload || {};
+
+        applyUpdatedCase(payload.case, { select: false });
+        refreshOperationsSummary().catch(function () {});
+        if (helper) {
+          helper.textContent = 'Case archived.';
+        }
+      } catch (error) {
+        if (helper) {
+          helper.textContent = error.message || 'Could not archive the case.';
+        }
+      }
+    }
+
+    async function restoreSelectedCase() {
+      const selected = getSelectedCase();
+      const helper = document.getElementById('save-helper');
+
+      if (!selected || !canArchiveCases()) {
+        if (helper) {
+          helper.textContent = 'Your role cannot restore cases.';
+        }
+        return;
+      }
+
+      try {
+        const result = await requestJson('/api/admin/cases', {
+          method: 'PATCH',
+          headers: getHeaders(),
+          credentials: 'same-origin',
+          timeoutMs: 5000,
+          body: JSON.stringify({
+            id: selected.id,
+            action: 'restore'
+          })
+        }, 'Could not restore the case.', 3);
+        const payload = result.payload || {};
+
+        applyUpdatedCase(payload.case, { select: false });
+        refreshOperationsSummary().catch(function () {});
+        if (helper) {
+          helper.textContent = 'Case restored to the working inbox.';
+        }
+      } catch (error) {
+        if (helper) {
+          helper.textContent = error.message || 'Could not restore the case.';
+        }
+      }
+    }
+
+    async function deleteSelectedCase() {
+      const selected = getSelectedCase();
+      const helper = document.getElementById('save-helper');
+
+      if (!selected || !canDeleteCases()) {
+        if (helper) {
+          helper.textContent = 'Your role cannot delete cases.';
+        }
+        return;
+      }
+
+      const confirmed = window.confirm('Delete ' + selected.reference + ' permanently? This also removes any uploaded documents.');
+      if (!confirmed) {
+        return;
+      }
+
+      try {
+        const result = await requestJson('/api/admin/cases', {
+          method: 'DELETE',
+          headers: getHeaders(),
+          credentials: 'same-origin',
+          timeoutMs: 5000,
+          body: JSON.stringify({
+            id: selected.id
+          })
+        }, 'Could not delete the case.', 3);
+        const payload = result.payload || {};
+
+        removeCaseSummary(selected.id);
+        clearDetailDirty();
+        state.selectedCaseId = state.cases[0] ? state.cases[0].id : '';
+        refreshOperationsUI();
+        refreshOperationsSummary().catch(function () {});
+        if (helper) {
+          helper.textContent = 'Case deleted permanently.';
+        }
+      } catch (error) {
+        if (helper) {
+          helper.textContent = error.message || 'Could not delete the case.';
+        }
+      }
+    }
+
+    async function createUser() {
+      const helper = document.getElementById('team-helper');
+
+      if (!canManageUsers()) {
+        if (helper) {
+          helper.textContent = 'Only founder admins can create users.';
+        }
+        return;
+      }
+
+      try {
+        const result = await requestJson('/api/admin/users', {
+          method: 'POST',
+          headers: getHeaders(),
+          credentials: 'same-origin',
+          timeoutMs: 5000,
+          body: JSON.stringify({
+            name: document.getElementById('new-user-name').value,
+            username: document.getElementById('new-user-username').value,
+            role: document.getElementById('new-user-role').value,
+            password: document.getElementById('new-user-password').value
+          })
+        }, 'Could not create the user.', 3);
+        const payload = result.payload || {};
+
+        await loadDashboard();
+        if (helper) {
+          helper.textContent = 'User created successfully.';
+        }
+      } catch (error) {
+        if (helper) {
+          helper.textContent = error.message || 'Could not create the user.';
+        }
+      }
+    }
+
+    async function saveUser(userId) {
+      const helper = document.getElementById('team-helper');
+
+      if (!canManageUsers()) {
+        if (helper) {
+          helper.textContent = 'Only founder admins can update users.';
+        }
+        return;
+      }
+
+      try {
+        const result = await requestJson('/api/admin/users', {
+          method: 'PATCH',
+          headers: getHeaders(),
+          credentials: 'same-origin',
+          timeoutMs: 5000,
+          body: JSON.stringify({
+            id: userId,
+            name: document.querySelector('[data-user-name="' + userId + '"]').value,
+            role: document.querySelector('[data-user-role="' + userId + '"]').value,
+            status: document.querySelector('[data-user-status="' + userId + '"]').value,
+            password: document.querySelector('[data-user-password="' + userId + '"]').value
+          })
+        }, 'Could not update the user.', 3);
+        const payload = result.payload || {};
+
+        await loadDashboard();
+        if (helper) {
+          helper.textContent = 'User updated successfully.';
+        }
+      } catch (error) {
+        if (helper) {
+          helper.textContent = error.message || 'Could not update the user.';
+        }
       }
     }
 
@@ -1450,28 +3802,23 @@
       helper.textContent = 'Sending email...';
 
       try {
-        const response = await fetch('/api/admin/notifications', {
+        const result = await requestJson('/api/admin/notifications', {
           method: 'POST',
           headers: getHeaders(),
           credentials: 'same-origin',
+          timeoutMs: 7000,
           body: JSON.stringify({
             id: selected.id,
             kind,
             subject: subjectField.value,
             message: messageField.value
           })
-        });
-
-        const payload = await response.json();
-
-        if (!response.ok || !payload.ok) {
-          throw new Error(payload.error || 'Could not send the email.');
-        }
+        }, 'Could not send the email.', 3);
+        const payload = result.payload || {};
 
         helper.textContent = kind === 'operations_summary'
           ? 'Operations email sent.'
           : 'Client update sent.';
-        await loadDashboard();
       } catch (error) {
         helper.textContent = error.message || 'Could not send the email.';
       } finally {
@@ -1479,73 +3826,142 @@
       }
     }
 
-    async function loadDashboard() {
+    function mergeDashboardPayload(bootstrapPayload, requestedView) {
+      if (bootstrapPayload.stats) {
+        state.stats = {
+          ...(state.stats || {}),
+          ...bootstrapPayload.stats
+        };
+      }
+
+      if (requestedView === 'operations' || requestedView === 'all') {
+        state.cases = bootstrapPayload.cases || [];
+        const allowedIds = new Set(state.cases.map((entry) => entry.id));
+        state.caseDetailsById = Object.fromEntries(Object.entries(state.caseDetailsById).filter(([id]) => allowedIds.has(id)));
+      }
+
+      if (requestedView === 'partners' || requestedView === 'all') {
+        state.partners = bootstrapPayload.partners || [];
+      }
+
+      if (requestedView === 'team' || requestedView === 'all') {
+        state.users = bootstrapPayload.users || [];
+        state.teamRoles = bootstrapPayload.roles || [];
+      }
+
+      saveDashboardCache();
+    }
+
+    async function loadDashboard(isBackgroundRefresh = false, requestedView = 'operations') {
       if (!state.authenticated) {
         adminHelper.textContent = 'Sign in first so the dashboard can load.';
         return;
       }
 
-      adminHelper.textContent = 'Loading the operations dashboard...';
+      if (!isBackgroundRefresh) {
+        adminHelper.textContent = 'Loading the operations dashboard...';
+        if (!readDashboardCache()) {
+          renderDashboardLoadingState();
+        }
+      }
 
       try {
-        const [statsResponse, casesResponse] = await Promise.all([
-          fetch('/api/admin/stats', { headers: getHeaders(), credentials: 'same-origin' }),
-          fetch('/api/admin/cases', { headers: getHeaders(), credentials: 'same-origin' })
-        ]);
+        state.loadIssues = {};
+        let bootstrapPayload = {};
 
-        const statsPayload = await statsResponse.json();
-        const casesPayload = await casesResponse.json();
-
-        if (!statsResponse.ok || !statsPayload.ok) {
-          throw new Error(statsPayload.error || 'Could not load stats.');
+        if (requestedView === 'operations') {
+          const bootstrapResult = await requestJson('/api/admin/stats?view=summary', {
+            headers: getHeaders(),
+            credentials: 'same-origin',
+            timeoutMs: 5500
+          }, 'We could not load the operations dashboard.', 2);
+          bootstrapPayload = bootstrapResult.payload || {};
+        } else {
+          const bootstrapResult = await requestJson('/api/admin/stats?view=' + encodeURIComponent(requestedView), { headers: getHeaders(), credentials: 'same-origin' }, 'We could not load the operations dashboard.', 2);
+          bootstrapPayload = bootstrapResult.payload || {};
         }
 
-        if (!casesResponse.ok || !casesPayload.ok) {
-          throw new Error(casesPayload.error || 'Could not load cases.');
+        mergeDashboardPayload(bootstrapPayload, requestedView);
+
+        renderDashboardSectionsForView(requestedView);
+        if ((requestedView === 'operations' || requestedView === 'all') && state.selectedCaseId) {
+          fetchCaseDetail(state.selectedCaseId, { sections: ['core'] }).catch(function () {});
         }
-
-        state.stats = statsPayload.stats;
-        state.cases = casesPayload.cases;
-
-        if (!state.selectedCaseId && state.cases.length) {
-          state.selectedCaseId = state.cases[0].id;
+        const loadIssueSummary = summarizeLoadIssues();
+        if (!isBackgroundRefresh) {
+          if (loadIssueSummary) {
+            adminHelper.textContent = 'Dashboard loaded with some gaps. ' + loadIssueSummary;
+          } else {
+            adminHelper.textContent = (state.stats.email && state.stats.email.enabled)
+              ? 'Dashboard loaded. Email delivery is configured.'
+              : 'Dashboard loaded. Email delivery still needs configuration.';
+          }
         }
-
-        renderStats();
-        renderAnalytics();
-        renderQueueBoard();
-        renderCases();
-
-        if (!getSelectedCase() && state.filteredCases.length) {
-          state.selectedCaseId = state.filteredCases[0].id;
-        }
-
-        renderDetail();
-        adminHelper.textContent = (state.stats.email && state.stats.email.enabled)
-          ? 'Dashboard loaded. Email delivery is configured.'
-          : 'Dashboard loaded. Email delivery still needs configuration.';
       } catch (error) {
         if (String(error.message || '').includes('Admin login required')) {
+          try {
+            const retryResult = await requestJson('/api/admin/session', {
+              method: 'GET',
+              headers: getHeaders(),
+              credentials: 'same-origin'
+            }, 'We could not check the admin session.', 2);
+
+            if (retryResult.payload && retryResult.payload.authenticated && retryResult.payload.session) {
+              applySessionState(retryResult.payload.session);
+              saveSessionHint();
+              return loadDashboard(isBackgroundRefresh, requestedView);
+            }
+          } catch (retryError) {
+            // Fall through to signed-out state below.
+          }
+
           state.authenticated = false;
           state.sessionExpiresAt = '';
+          clearSessionHint();
           updateSessionNote();
           resetDashboardView();
+          adminHelper.textContent = 'Your admin session expired. Please sign in again.';
+          return;
         }
+        renderDashboardLoadFailure(error.message || 'We could not load the dashboard.');
         adminHelper.textContent = error.message || 'We could not load the dashboard.';
       }
     }
 
     async function hydrateSession() {
-      try {
-        const response = await fetch('/api/admin/session', {
-          method: 'GET',
-          credentials: 'same-origin'
-        });
-        const payload = await response.json();
+      const sessionHint = readSessionHint();
+      const sessionToken = readSessionToken();
 
-        if (!response.ok || !payload.ok) {
-          throw new Error(payload.error || 'Could not load the admin session.');
+      if (sessionHint && (!sessionHint.sessionExpiresAt || new Date(sessionHint.sessionExpiresAt).getTime() > Date.now())) {
+        applySessionState(sessionHint);
+        adminUsernameInput.value = sessionHint.username || state.username;
+        updateSessionNote();
+        adminHelper.textContent = 'Restoring your admin session...';
+        const hasCachedDashboard = hydrateDashboardCache();
+        if (hasCachedDashboard) {
+          adminHelper.textContent = 'Showing your last dashboard view while fresh data loads...';
+        } else {
+          renderDashboardLoadingState();
         }
+
+        if (sessionToken) {
+          try {
+            await loadDashboard(hasCachedDashboard, 'operations');
+            return;
+          } catch (error) {
+            clearSessionHint();
+            resetDashboardView();
+          }
+        }
+      }
+
+      try {
+        const result = await requestJson('/api/admin/session', {
+          method: 'GET',
+          headers: getHeaders(),
+          credentials: 'same-origin'
+        }, 'We could not check the admin session.', 3);
+        const payload = result.payload;
 
         if (payload.username) {
           state.username = payload.username;
@@ -1553,16 +3969,28 @@
         }
 
         state.authenticated = Boolean(payload.authenticated);
+        state.name = payload.session && payload.session.name ? payload.session.name : (payload.username || state.name);
+        state.role = payload.session && payload.session.role ? payload.session.role : 'founder_admin';
+        state.permissions = payload.session && payload.session.permissions ? payload.session.permissions : [];
         state.sessionExpiresAt = payload.session && payload.session.expiresAt ? payload.session.expiresAt : '';
         updateSessionNote();
 
         if (state.authenticated) {
+          saveSessionHint();
           adminPasswordInput.value = '';
-          await loadDashboard();
+          await loadDashboard(false, 'operations');
         } else {
+          clearSessionHint();
           resetDashboardView();
         }
       } catch (error) {
+        if (sessionHint) {
+          adminHelper.textContent = 'We are reconnecting your admin session. If this persists, refresh once more.';
+          loadDashboard(true, 'operations').catch(function () {});
+          return;
+        }
+
+        clearSessionHint();
         adminHelper.textContent = error.message || 'We could not check the admin session.';
       }
     }
@@ -1580,7 +4008,7 @@
       adminHelper.textContent = 'Signing in...';
 
       try {
-        const response = await fetch('/api/admin/session', {
+        const result = await requestJson('/api/admin/session', {
           method: 'POST',
           headers: getHeaders(),
           credentials: 'same-origin',
@@ -1588,20 +4016,29 @@
             username,
             password
           })
-        });
-        const payload = await response.json();
-
-        if (!response.ok || !payload.ok) {
-          throw new Error(payload.error || 'We could not sign you in.');
-        }
-
+        }, 'We could not sign you in.', 1);
+        const payload = result.payload;
+        saveSessionToken(payload.sessionToken || '');
         state.authenticated = true;
         state.username = payload.session.username;
+        state.name = payload.session.name || payload.session.username;
+        state.role = payload.session.role || 'founder_admin';
+        state.permissions = payload.session.permissions || [];
         state.sessionExpiresAt = payload.session.expiresAt || '';
+        try {
+          localStorage.setItem('departedDigitalOperatorBrowser', 'true');
+        } catch (error) {
+          // Ignore storage errors for operator marking.
+        }
+        saveSessionHint();
+        adminHelper.textContent = 'Opening the operations dashboard...';
         adminPasswordInput.value = '';
         updateSessionNote();
-        await loadDashboard();
+        renderDashboardLoadingState();
+        await loadDashboard(false, 'operations');
+        return;
       } catch (error) {
+        saveSessionToken('');
         adminHelper.textContent = error.message || 'We could not sign you in.';
       } finally {
         loginDashboardButton.disabled = false;
@@ -1615,6 +4052,7 @@
       try {
         await fetch('/api/admin/session', {
           method: 'DELETE',
+          headers: getHeaders(),
           credentials: 'same-origin'
         });
       } catch (error) {
@@ -1622,9 +4060,13 @@
       }
 
       state.authenticated = false;
+      state.name = 'Admin';
+      state.role = 'founder_admin';
+      state.permissions = [];
       state.sessionExpiresAt = '';
       state.cases = [];
       state.selectedCaseId = '';
+      clearSessionHint();
       adminPasswordInput.value = '';
       updateSessionNote();
       resetDashboardView();
@@ -1642,38 +4084,95 @@
     });
 
     statusFilter.addEventListener('change', function () {
+      state.activeSavedView = 'custom';
+      savedViewButtons.forEach((button) => button.classList.remove('active'));
       renderCases();
-      if (!getSelectedCase() && state.filteredCases.length) {
-        state.selectedCaseId = state.filteredCases[0].id;
-      }
+      ensureVisibleSelection();
       renderDetail();
     });
 
     packageFilter.addEventListener('change', function () {
+      state.activeSavedView = 'custom';
+      savedViewButtons.forEach((button) => button.classList.remove('active'));
       renderCases();
-      if (!getSelectedCase() && state.filteredCases.length) {
-        state.selectedCaseId = state.filteredCases[0].id;
-      }
+      ensureVisibleSelection();
       renderDetail();
     });
 
     queueFilter.addEventListener('change', function () {
+      state.activeSavedView = 'custom';
+      savedViewButtons.forEach((button) => button.classList.remove('active'));
       renderCases();
-      if (!getSelectedCase() && state.filteredCases.length) {
-        state.selectedCaseId = state.filteredCases[0].id;
-      }
+      ensureVisibleSelection();
+      renderDetail();
+    });
+
+    lifecycleFilter.addEventListener('change', function () {
+      state.activeSavedView = 'custom';
+      savedViewButtons.forEach((button) => button.classList.remove('active'));
+      renderCases();
+      ensureVisibleSelection();
       renderDetail();
     });
 
     caseSearch.addEventListener('input', function () {
       renderCases();
-      if (!getSelectedCase() && state.filteredCases.length) {
-        state.selectedCaseId = state.filteredCases[0].id;
-      }
+      ensureVisibleSelection();
       renderDetail();
     });
 
+    savedViewButtons.forEach(function (button) {
+      button.addEventListener('click', function () {
+        applySavedView(button.getAttribute('data-saved-view'));
+      });
+    });
+
+    document.getElementById('bulk-clear').addEventListener('click', clearBulkSelection);
+    document.getElementById('bulk-payment-link').addEventListener('click', function () {
+      runBulkAction('payment_link_sent').catch(function (error) {
+        adminHelper.textContent = error.message || 'Could not run the bulk action.';
+      });
+    });
+    document.getElementById('bulk-paid').addEventListener('click', function () {
+      runBulkAction('paid').catch(function (error) {
+        adminHelper.textContent = error.message || 'Could not run the bulk action.';
+      });
+    });
+    document.getElementById('bulk-awaiting-docs').addEventListener('click', function () {
+      runBulkAction('awaiting_documents').catch(function (error) {
+        adminHelper.textContent = error.message || 'Could not run the bulk action.';
+      });
+    });
+    document.getElementById('bulk-complete').addEventListener('click', function () {
+      runBulkAction('completed').catch(function (error) {
+        adminHelper.textContent = error.message || 'Could not run the bulk action.';
+      });
+    });
+    document.getElementById('bulk-archive').addEventListener('click', function () {
+      runBulkAction('archive').catch(function (error) {
+        adminHelper.textContent = error.message || 'Could not run the bulk action.';
+      });
+    });
+    document.getElementById('bulk-assign-owner').addEventListener('click', function () {
+      runBulkAction('assign_owner').catch(function (error) {
+        adminHelper.textContent = error.message || 'Could not run the bulk action.';
+      });
+    });
+
+    viewButtons.forEach(function (button) {
+      button.addEventListener('click', function () {
+        setDashboardView(button.getAttribute('data-dashboard-view'));
+      });
+    });
+    refreshDashboardButton.addEventListener('click', function () {
+      adminHelper.textContent = 'Refreshing dashboard data...';
+      loadDashboard(false, state.activeView === 'operations' ? 'operations' : state.activeView).catch(function (error) {
+        adminHelper.textContent = error.message || 'Could not refresh the dashboard.';
+      });
+    });
+
     updateSessionNote();
+    setDashboardView(state.activeView);
     resetDashboardView();
     hydrateSession();
   </script>

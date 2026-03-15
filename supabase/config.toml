@@ -1,0 +1,47 @@
+project_id = "departed-digital"
+
+[api]
+enabled = true
+schemas = ["public"]
+extra_search_path = ["public"]
+max_rows = 1000
+
+[db]
+port = 54322
+shadow_port = 54320
+major_version = 17
+
+[db.pooler]
+enabled = false
+
+[studio]
+enabled = true
+port = 54323
+
+[inbucket]
+enabled = true
+port = 54324
+
+[storage]
+enabled = true
+file_size_limit = "10MiB"
+
+[auth]
+enabled = true
+site_url = "https://www.departed.digital"
+additional_redirect_urls = [
+  "https://www.departed.digital/admin",
+  "https://www.departed.digital/studio",
+  "http://127.0.0.1:3000",
+  "http://localhost:3000"
+]
+jwt_expiry = 3600
+enable_signup = false
+
+[auth.email]
+enable_signup = false
+double_confirm_changes = true
+enable_confirmations = false
+
+[analytics]
+enabled = false

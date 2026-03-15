@@ -6,7 +6,7 @@ function normalizeString(value, maxLength = 240) {
 }
 
 module.exports = async function handler(req, res) {
-  allowCors(res);
+  allowCors(res, req);
 
   if (req.method === 'OPTIONS') {
     res.statusCode = 204;

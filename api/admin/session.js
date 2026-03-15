@@ -3,8 +3,10 @@ const {
   buildLogoutCookie,
   buildSessionCookie,
   createAdminSession,
+  invalidateAdminSession,
   getAdminSession,
-  getConfiguredAdminCredentials,
+  getRolePermissions,
+  getLoginDefaults,
   verifyAdminCredentials
 } = require('../_lib/security');
 
@@ -13,7 +15,7 @@ function normalizeString(value, maxLength = 240) {
 }
 
 module.exports = async function handler(req, res) {
-  allowCors(res);
+  allowCors(res, req);
 
   if (req.method === 'OPTIONS') {
     res.statusCode = 204;
@@ -23,13 +25,14 @@ module.exports = async function handler(req, res) {
 
   try {
     if (req.method === 'GET') {
-      const session = getAdminSession(req);
+      const session = await getAdminSession(req);
+      const defaults = await getLoginDefaults();
 
       if (!session) {
         sendJson(res, 200, {
           ok: true,
           authenticated: false,
-          username: getConfiguredAdminCredentials().username
+          username: defaults.username
         });
         return;
       }
@@ -37,8 +40,13 @@ module.exports = async function handler(req, res) {
       sendJson(res, 200, {
         ok: true,
         authenticated: true,
+        username: session.username,
         session: {
+          id: session.userId,
           username: session.username,
+          name: session.name,
+          role: session.role,
+          permissions: getRolePermissions(session.role),
           expiresAt: session.expiresAt
         }
       });
@@ -49,20 +57,25 @@ module.exports = async function handler(req, res) {
       const body = await parseJsonBody(req);
       const username = normalizeString(body.username, 120);
       const password = normalizeString(body.password, 240);
-      const auth = verifyAdminCredentials(username, password);
+      const auth = await verifyAdminCredentials(username, password);
 
       if (!auth.ok) {
         sendError(res, auth.statusCode, auth.message);
         return;
       }
 
-      const session = createAdminSession(auth.username);
+      const session = await createAdminSession(auth.user);
       res.setHeader('Set-Cookie', buildSessionCookie(session.token));
       sendJson(res, 200, {
         ok: true,
         authenticated: true,
+        sessionToken: session.token,
         session: {
-          username: auth.username,
+          id: auth.user.id,
+          username: auth.user.username,
+          name: auth.user.name,
+          role: auth.user.role,
+          permissions: auth.user.permissions,
           expiresAt: session.expiresAt
         }
       });
@@ -70,6 +83,7 @@ module.exports = async function handler(req, res) {
     }
 
     if (req.method === 'DELETE') {
+      await invalidateAdminSession(req);
       res.setHeader('Set-Cookie', buildLogoutCookie());
       sendJson(res, 200, {
         ok: true,

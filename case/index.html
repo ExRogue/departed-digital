@@ -22,6 +22,7 @@
       --gold: #c9a84c;
       --gold-light: #e0c06a;
       --cream: #f9f6f0;
+      --paper: #fffdf8;
       --white: #ffffff;
       --text: #2d3a4a;
       --text-muted: #6b7a8d;
@@ -30,7 +31,9 @@
     }
     body {
       font-family: 'Inter', sans-serif;
-      background: var(--cream);
+      background:
+        radial-gradient(circle at top left, rgba(224,192,106,0.14), transparent 26%),
+        linear-gradient(180deg, #fcf8f1 0%, #f7efe4 100%);
       color: var(--text);
       line-height: 1.7;
     }
@@ -185,6 +188,11 @@
       background: transparent;
       color: var(--navy);
     }
+    .copy-note {
+      margin-top: 14px;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
     .empty-state {
       display: none;
       padding: 22px;
@@ -208,6 +216,24 @@
         grid-template-columns: 1fr;
       }
     }
+
+    .panel,
+    .status-card,
+    .support-note,
+    .timeline li,
+    .platform-list li {
+      box-shadow: 0 18px 44px rgba(26,39,68,0.06);
+    }
+    .panel,
+    .status-card,
+    .support-note,
+    .timeline li,
+    .platform-list li {
+      background: rgba(255,255,255,0.88);
+    }
+    .button.secondary {
+      background: rgba(255,255,255,0.72);
+    }
   </style>
 </head>
 <body>
@@ -215,8 +241,9 @@
     <div class="nav-inner">
       <a href="/" class="logo">Departed<span>.</span>Digital</a>
       <div class="nav-links">
-        <a href="/payment">Payment step</a>
-        <a href="/documents">Documents</a>
+        <a href="/payment" id="payment-nav-link">Payment step</a>
+        <a href="/documents" id="documents-nav-link">Documents</a>
+        <a href="/about">About</a>
         <a href="/blog">Resources</a>
       </div>
     </div>
@@ -225,7 +252,7 @@
   <main>
     <div class="container">
       <span class="eyebrow">Case status</span>
-      <h1>Track what is happening with this case.</h1>
+      <h1>See exactly where this case stands.</h1>
       <p class="intro">This private case page shows the current status, what happens next, and which platforms are already in progress. You do not need passwords for any of the steps shown here.</p>
       <div class="support-note">This page is designed to reduce chasing and uncertainty. Use it to see the current stage, the next action, and whether anything else is needed from you.</div>
 
@@ -246,7 +273,9 @@
             <div class="cta-row">
               <a class="button secondary" id="payment-link" href="/payment">Open payment step</a>
               <a class="button secondary" id="documents-link" href="/documents">Open documents step</a>
+              <button class="button secondary" id="copy-case-link" type="button">Copy private case link</button>
             </div>
+            <p class="copy-note" id="copy-case-link-helper">Save or bookmark the private case link so you can return to this page later from the same email or browser.</p>
           </section>
 
           <aside class="panel">
@@ -268,6 +297,7 @@
   <footer>
     <div class="footer-inner">
       <a href="/">Home</a>
+      <a href="/about">About</a>
       <a href="/privacy">Privacy</a>
       <a href="/terms">Terms</a>
       <a href="/cookies">Cookies</a>
@@ -287,6 +317,10 @@
     const platformList = document.getElementById('platform-list');
     const paymentLink = document.getElementById('payment-link');
     const documentsLink = document.getElementById('documents-link');
+    const paymentNavLink = document.getElementById('payment-nav-link');
+    const documentsNavLink = document.getElementById('documents-nav-link');
+    const copyCaseLinkButton = document.getElementById('copy-case-link');
+    const copyCaseLinkHelper = document.getElementById('copy-case-link-helper');
 
     function escapeHtml(value) {
       return String(value || '')
@@ -301,6 +335,28 @@
       return String(value || '')
         .replace(/_/g, ' ')
         .replace(/\b\w/g, (character) => character.toUpperCase());
+    }
+
+    async function copyText(value) {
+      if (!value) {
+        return false;
+      }
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(value);
+        return true;
+      }
+
+      const probe = document.createElement('textarea');
+      probe.value = value;
+      probe.setAttribute('readonly', '');
+      probe.style.position = 'absolute';
+      probe.style.left = '-9999px';
+      document.body.appendChild(probe);
+      probe.select();
+      const ok = document.execCommand('copy');
+      document.body.removeChild(probe);
+      return ok;
     }
 
     function renderCase(caseData) {
@@ -346,8 +402,12 @@
         : '<li>No platform-specific workflow has been created yet.</li>';
 
       if (caseData.id && tokenFromUrl) {
-        paymentLink.href = '/payment?case=' + encodeURIComponent(caseData.id) + '&token=' + encodeURIComponent(tokenFromUrl) + '&package=' + encodeURIComponent(caseData.selectedPackage || 'standard');
-        documentsLink.href = '/documents?case=' + encodeURIComponent(caseData.id) + '&token=' + encodeURIComponent(tokenFromUrl);
+        const paymentHref = '/payment?case=' + encodeURIComponent(caseData.id) + '&token=' + encodeURIComponent(tokenFromUrl) + '&package=' + encodeURIComponent(caseData.selectedPackage || 'standard');
+        const documentsHref = '/documents?case=' + encodeURIComponent(caseData.id) + '&token=' + encodeURIComponent(tokenFromUrl);
+        paymentLink.href = paymentHref;
+        documentsLink.href = documentsHref;
+        paymentNavLink.href = paymentHref;
+        documentsNavLink.href = documentsHref;
       }
     }
 
@@ -387,6 +447,25 @@
       }
 
       renderCase(caseData);
+
+      if (copyCaseLinkButton) {
+        copyCaseLinkButton.addEventListener('click', async () => {
+          const caseToken = tokenFromUrl || caseData.publicToken || '';
+          if (!caseData.id || !caseToken) {
+            copyCaseLinkHelper.textContent = 'We could not build the private case link just now. Please bookmark this page instead.';
+            return;
+          }
+
+          const privateHref = window.location.origin + '/case?case=' + encodeURIComponent(caseData.id) + '&token=' + encodeURIComponent(caseToken);
+
+          try {
+            await copyText(privateHref);
+            copyCaseLinkHelper.textContent = 'Private case link copied. Save or bookmark it to return later.';
+          } catch (error) {
+            copyCaseLinkHelper.textContent = 'We could not copy the private link automatically. Please bookmark this page instead.';
+          }
+        });
+      }
     })();
   </script>
 </body>

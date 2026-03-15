@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About Departed Digital | A calmer way to handle digital accounts after a loss</title>
+  <meta name="description" content="Learn why Departed Digital exists, how the service is designed, and why the process is built to feel calm, private, and respectful for UK families." />
+  <link rel="canonical" href="https://www.departed.digital/about" />
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <link rel="manifest" href="/site.webmanifest" />
+  <meta name="theme-color" content="#1a2744" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy: #1a2744;
+      --navy-dark: #111b35;
+      --gold: #c9a84c;
+      --gold-light: #e0c06a;
+      --cream: #f7efdf;
+      --paper: #fffaf2;
+      --white: #ffffff;
+      --text: #2d3a4a;
+      --text-muted: #6b7a8d;
+      --border: #e4ddd0;
+      --shadow: 0 18px 48px rgba(26,39,68,0.08);
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(224,192,106,0.14), transparent 24%),
+        linear-gradient(180deg, #f7efdf 0%, #f2e7d8 48%, #ece0cf 100%);
+      color: var(--text);
+      line-height: 1.75;
+    }
+    nav, footer {
+      background: var(--navy-dark);
+      padding: 20px 24px;
+    }
+    .nav-inner, .container, .footer-inner {
+      max-width: 1080px;
+      margin: 0 auto;
+    }
+    .nav-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .logo {
+      font-family: 'Playfair Display', serif;
+      color: var(--white);
+      text-decoration: none;
+      font-size: 1.2rem;
+    }
+    .logo span { color: var(--gold); }
+    .nav-links {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+    .nav-links a {
+      color: rgba(255,255,255,0.78);
+      text-decoration: none;
+      font-size: 0.92rem;
+    }
+    .nav-links a:hover { color: var(--gold-light); }
+    main {
+      padding: 84px 24px 96px;
+    }
+    .hero {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 34px;
+      align-items: stretch;
+      margin-bottom: 46px;
+    }
+    .hero-copy,
+    .hero-card,
+    .panel {
+      border-radius: 28px;
+      border: 1px solid rgba(228,221,208,0.92);
+      box-shadow: var(--shadow);
+    }
+    .hero-copy {
+      background: linear-gradient(180deg, rgba(255,252,247,0.94) 0%, rgba(248,240,229,0.9) 100%);
+      padding: 42px;
+    }
+    .hero-card {
+      background: linear-gradient(155deg, rgba(17,27,53,0.98), rgba(33,49,84,0.95));
+      color: var(--white);
+      padding: 34px;
+    }
+    .eyebrow {
+      display: inline-block;
+      margin-bottom: 14px;
+      color: var(--gold);
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      font-size: 0.74rem;
+      font-weight: 700;
+    }
+    h1, h2, h3 {
+      font-family: 'Playfair Display', serif;
+      line-height: 1.15;
+    }
+    h1 {
+      color: var(--navy-dark);
+      font-size: clamp(2.2rem, 5vw, 4rem);
+      margin-bottom: 18px;
+      max-width: 12ch;
+    }
+    .hero-copy p {
+      color: var(--text-muted);
+      font-size: 1.06rem;
+      max-width: 60ch;
+    }
+    .hero-card h2 {
+      color: var(--white);
+      font-size: 2rem;
+      margin-bottom: 14px;
+    }
+    .hero-card p,
+    .hero-card li {
+      color: rgba(255,255,255,0.82);
+      font-size: 0.98rem;
+    }
+    .hero-card ul {
+      list-style: none;
+      display: grid;
+      gap: 12px;
+      margin-top: 20px;
+    }
+    .hero-card li::before {
+      content: "";
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--gold-light);
+      margin-right: 10px;
+      vertical-align: middle;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 28px;
+      margin-bottom: 28px;
+    }
+    .panel {
+      background: linear-gradient(180deg, rgba(255,252,247,0.94) 0%, rgba(248,240,229,0.88) 100%);
+      padding: 32px;
+    }
+    .panel h2 {
+      color: var(--navy);
+      font-size: 1.9rem;
+      margin-bottom: 14px;
+    }
+    .panel h3 {
+      color: var(--navy);
+      font-size: 1.25rem;
+      margin-bottom: 12px;
+    }
+    .panel p,
+    .panel li {
+      color: var(--text);
+      margin-bottom: 14px;
+    }
+    .panel ul {
+      padding-left: 20px;
+    }
+    .principles {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+      margin-top: 24px;
+    }
+    .principle {
+      background: rgba(255,255,255,0.72);
+      border: 1px solid rgba(228,221,208,0.92);
+      border-radius: 20px;
+      padding: 22px;
+    }
+    .principle strong {
+      display: block;
+      color: var(--navy);
+      margin-bottom: 8px;
+      font-size: 1rem;
+    }
+    .principle p {
+      margin: 0;
+      color: var(--text-muted);
+      font-size: 0.94rem;
+    }
+    .cta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 24px;
+    }
+    .btn-primary,
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      border-radius: 999px;
+      padding: 14px 22px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+    }
+    .btn-primary {
+      background: var(--gold);
+      color: var(--navy-dark);
+      box-shadow: 0 8px 24px rgba(201,168,76,0.24);
+    }
+    .btn-primary:hover {
+      background: var(--gold-light);
+      transform: translateY(-1px);
+    }
+    .btn-secondary {
+      border: 1px solid rgba(26,39,68,0.14);
+      color: var(--navy);
+      background: rgba(255,255,255,0.74);
+    }
+    .btn-secondary:hover {
+      border-color: rgba(201,168,76,0.48);
+      color: var(--navy-dark);
+    }
+    footer {
+      text-align: center;
+      color: rgba(255,255,255,0.6);
+    }
+    footer a {
+      color: rgba(255,255,255,0.78);
+      text-decoration: none;
+      margin: 0 10px;
+    }
+    footer a:hover { color: var(--gold); }
+    @media (max-width: 900px) {
+      .hero,
+      .grid,
+      .principles {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="nav-inner">
+      <a class="logo" href="/">Departed<span>.</span>Digital</a>
+      <div class="nav-links">
+        <a href="/">Home</a>
+        <a href="/start">Start a case</a>
+        <a href="/blog">Resources</a>
+        <a href="/partners">Partners</a>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <div class="container">
+      <section class="hero">
+        <div class="hero-copy">
+          <span class="eyebrow">About Departed Digital</span>
+          <h1>A calmer way to handle the digital admin after a loss.</h1>
+          <p>Departed Digital exists because the digital side of bereavement is often much harder than people expect. Social media profiles, email accounts, and other digital services can remain active long after someone has died, leaving families to navigate platform forms, document requests, and repeated follow-up at exactly the wrong time.</p>
+          <div class="cta-row">
+            <a href="/start" class="btn-primary">Start a case</a>
+            <a href="/partners" class="btn-secondary">See partnerships</a>
+          </div>
+        </div>
+        <aside class="hero-card">
+          <span class="eyebrow" style="color: var(--gold-light);">Why it exists</span>
+          <h2>Built from a simple but important problem.</h2>
+          <p>The service grew from a real experience close to home: seeing how difficult it can be when someone's social media and digital accounts remain live after they have died, and how little clear, practical support exists for families who just want it handled properly.</p>
+          <ul>
+            <li>No passwords required</li>
+            <li>Short first step for families</li>
+            <li>Documents requested later, not upfront</li>
+            <li>A written case record at the end</li>
+          </ul>
+        </aside>
+      </section>
+
+      <section class="grid">
+        <div class="panel">
+          <span class="eyebrow">What the service is</span>
+          <h2>Done-for-you digital aftercare.</h2>
+          <p>Departed Digital is designed to handle the platform side of the process for UK families. That means helping with removal or memorialisation requests, gathering the right supporting evidence at the right stage, and keeping a clear record of what has been submitted and resolved.</p>
+          <p>The point is not more administration. The point is to give families a calmer handoff and reduce the chance that a difficult task gets left hanging for months.</p>
+        </div>
+        <div class="panel">
+          <span class="eyebrow">What it is not</span>
+          <h2>Not a generic form-filling website.</h2>
+          <p>This is not built to feel like another portal or a cold software product. The process is deliberately structured so families can begin with the essentials, move into payment when ready, and only deal with sensitive documents once the case is underway.</p>
+          <p>It is also not based on asking for direct account access. Wherever possible, the service works through formal platform procedures rather than passwords.</p>
+        </div>
+      </section>
+
+      <section class="panel" style="margin-bottom: 28px;">
+        <span class="eyebrow">Principles</span>
+        <h2>How the service is designed.</h2>
+        <div class="principles">
+          <div class="principle">
+            <strong>Calm first step</strong>
+            <p>The first interaction should feel manageable, even when everything else does not.</p>
+          </div>
+          <div class="principle">
+            <strong>Respectful handling</strong>
+            <p>Cases should feel private, measured, and properly documented from start to finish.</p>
+          </div>
+          <div class="principle">
+            <strong>Useful for partners too</strong>
+            <p>Funeral directors need a clear handoff, not another service that creates more admin for their team.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <span class="eyebrow">Trust</span>
+        <h2>Why families and partners should feel comfortable using it.</h2>
+        <ul>
+          <li>The service is built for UK cases and UK grieving families.</li>
+          <li>The process avoids asking for passwords or direct account control.</li>
+          <li>Supporting documents come later in the journey, not in the very first step.</li>
+          <li>Each case is designed to end with a written outcome record for family files.</li>
+          <li>The same process is structured so it can work for families directly or through a funeral director referral.</li>
+        </ul>
+        <div class="cta-row">
+          <a href="/start" class="btn-primary">Start the short form</a>
+          <a href="/blog" class="btn-secondary">Read the guides</a>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <a href="/">Home</a>
+      <a href="/about">About</a>
+      <a href="/blog">Resources</a>
+      <a href="/privacy">Privacy</a>
+      <a href="/terms">Terms</a>
+      <a href="/cookies">Cookies</a>
+    </div>
+  </footer>
+</body>
+</html>

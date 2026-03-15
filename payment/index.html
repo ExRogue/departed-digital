@@ -24,6 +24,7 @@
       --gold: #c9a84c;
       --gold-light: #e0c06a;
       --cream: #f9f6f0;
+      --paper: #fffdf8;
       --white: #ffffff;
       --text: #2d3a4a;
       --text-muted: #6b7a8d;
@@ -32,7 +33,9 @@
     }
     body {
       font-family: 'Inter', sans-serif;
-      background: var(--cream);
+      background:
+        radial-gradient(circle at top left, rgba(224,192,106,0.14), transparent 26%),
+        linear-gradient(180deg, #fcf8f1 0%, #f7efe4 100%);
       color: var(--text);
       line-height: 1.7;
     }
@@ -227,6 +230,16 @@
       color: var(--text-muted);
       font-size: 0.9rem;
     }
+    .status-note {
+      margin-top: 10px;
+      color: var(--text-muted);
+      font-size: 0.88rem;
+    }
+    .copy-note {
+      margin-top: 12px;
+      color: var(--text-muted);
+      font-size: 0.88rem;
+    }
     .notice {
       margin-top: 18px;
       padding: 16px;
@@ -237,21 +250,7 @@
       font-size: 0.92rem;
     }
     .sticky-paybar {
-      position: fixed;
-      left: 24px;
-      right: 24px;
-      bottom: 18px;
-      z-index: 40;
-      background: rgba(17,27,53,0.96);
-      color: var(--white);
-      border: 1px solid rgba(255,255,255,0.08);
-      box-shadow: 0 18px 56px rgba(17,27,53,0.28);
-      border-radius: 20px;
-      padding: 14px 16px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
+      display: none;
     }
     .sticky-paybar strong {
       display: block;
@@ -293,18 +292,51 @@
       }
     }
     @media (max-width: 640px) {
+      main {
+        padding-bottom: 148px;
+      }
       .sticky-paybar {
+        position: fixed;
         left: 12px;
         right: 12px;
         bottom: 12px;
+        z-index: 40;
+        background: rgba(17,27,53,0.92);
+        backdrop-filter: blur(14px);
+        color: var(--white);
+        border: 1px solid rgba(255,255,255,0.08);
+        box-shadow: 0 18px 56px rgba(17,27,53,0.28);
         border-radius: 18px;
         padding: 12px;
+        display: flex;
         flex-direction: column;
         align-items: stretch;
+        gap: 12px;
+      }
+      .sticky-paybar {
+        left: 12px;
+        right: 12px;
       }
       .sticky-paybar .btn-primary {
         width: 100%;
       }
+    }
+
+    .reassurance-card,
+    .panel,
+    .package-option {
+      background: rgba(255,255,255,0.88);
+      box-shadow: 0 18px 44px rgba(26,39,68,0.06);
+    }
+    .package-option.active {
+      background: linear-gradient(180deg, #fffdf7 0%, #f5ead1 100%);
+      box-shadow: 0 20px 46px rgba(201,168,76,0.18);
+    }
+    .btn-secondary {
+      background: rgba(255,255,255,0.72);
+    }
+    .notice {
+      background: linear-gradient(180deg, #fff8e7 0%, #fff3d6 100%);
     }
   </style>
 </head>
@@ -315,6 +347,7 @@
       <div style="display:flex; gap:18px; flex-wrap:wrap;">
         <a class="nav-link" href="/start">Back to intake</a>
         <a class="nav-link" id="status-nav-link" href="/case">Case status</a>
+        <a class="nav-link" href="/about">About</a>
         <a class="nav-link" href="/blog">Resources</a>
       </div>
     </div>
@@ -323,8 +356,8 @@
   <main>
     <div class="container">
       <span class="eyebrow">Step 2</span>
-      <h1>Choose the right package and continue to secure payment.</h1>
-      <p class="intro">This is the decision step. Review the case, confirm the right package, and continue to payment. Supporting documents only come after payment has been confirmed.</p>
+      <h1>Review the case and choose the right level of support.</h1>
+      <p class="intro">This is the decision step. Review the case, confirm the right package, and continue to payment when you are ready. Supporting documents only come after payment has been confirmed.</p>
 
       <div class="reassurance-strip">
         <div class="reassurance-card">
@@ -338,6 +371,10 @@
         <div class="reassurance-card">
           <strong>No passwords required</strong>
           <span>We work through platform processes rather than asking for account access.</span>
+        </div>
+        <div class="reassurance-card">
+          <strong>Less chasing later</strong>
+          <span>This is designed to reduce repeated forms, resurfaced profile reminders, and unmanaged accounts staying live.</span>
         </div>
       </div>
 
@@ -371,13 +408,16 @@
           </div>
           <ul class="feature-list" id="package-features"></ul>
           <div class="cta-row">
-            <a class="btn-primary" id="payment-link" href="#" data-track="payment_cta" data-track-label="Payment continue secure payment">Continue to secure payment</a>
-            <a class="btn-secondary" id="status-link" href="/case">Open case status</a>
+            <a class="btn-primary" id="payment-link" href="#" data-track="payment_cta" data-track-label="Payment continue to checkout">Continue to checkout</a>
+            <a class="btn-secondary" id="status-link" href="/case">Track case progress</a>
+            <button class="btn-secondary" id="copy-case-link" type="button">Copy private case link</button>
             <a class="btn-secondary" href="/start" data-track="payment_edit" data-track-label="Payment edit intake details">Edit intake details</a>
           </div>
+          <p class="status-note">The case-status page is the customer's private tracking page. A customer can reopen it later from the same device or by using their saved private case link.</p>
+          <p class="copy-note" id="copy-case-link-helper">Save or bookmark the private case link if you want to return to this case later before email updates are live.</p>
           <p class="helper" id="payment-helper">After payment, we request the death certificate and proof of authority in the next step.</p>
           <div class="notice" id="payment-notice">
-            Secure checkout will appear here once online payments are enabled. Until then, you can use the same case details to request the payment link by email.
+            This step turns the saved case into an active handoff. Once payment is confirmed, we request the documents, take over the platform process, and keep the private case page updated so the family does not have to keep chasing forms or reminders.
           </div>
         </section>
 
@@ -404,12 +444,13 @@
       <strong id="sticky-package">Standard · £249</strong>
       <span>Continue when you are ready</span>
     </div>
-    <a class="btn-primary" id="sticky-payment-link" href="#" data-track="payment_cta_sticky" data-track-label="Payment sticky continue secure payment">Continue</a>
+    <a class="btn-primary" id="sticky-payment-link" href="#" data-track="payment_cta_sticky" data-track-label="Payment sticky continue to checkout">Continue</a>
   </div>
 
   <footer>
     <div class="footer-inner">
       <a href="/">Home</a>
+      <a href="/about">About</a>
       <a href="/privacy">Privacy</a>
       <a href="/terms">Terms</a>
       <a href="/cookies">Cookies</a>
@@ -468,6 +509,8 @@
     const paymentLink = document.getElementById('payment-link');
     const statusLink = document.getElementById('status-link');
     const statusNavLink = document.getElementById('status-nav-link');
+    const copyCaseLinkButton = document.getElementById('copy-case-link');
+    const copyCaseLinkHelper = document.getElementById('copy-case-link-helper');
     const paymentNotice = document.getElementById('payment-notice');
     const paymentHelper = document.getElementById('payment-helper');
     const summaryList = document.getElementById('summary-list');
@@ -483,6 +526,36 @@
       publicToken: tokenFromUrl || '',
       storageRequiresConfiguration: false
     };
+
+    function getCaseStatusHref() {
+      if (!state.caseData || !state.caseData.id || !state.publicToken) {
+        return '';
+      }
+
+      return window.location.origin + '/case?case=' + encodeURIComponent(state.caseData.id) + '&token=' + encodeURIComponent(state.publicToken);
+    }
+
+    async function copyText(value) {
+      if (!value) {
+        return false;
+      }
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(value);
+        return true;
+      }
+
+      const probe = document.createElement('textarea');
+      probe.value = value;
+      probe.setAttribute('readonly', '');
+      probe.style.position = 'absolute';
+      probe.style.left = '-9999px';
+      document.body.appendChild(probe);
+      probe.select();
+      const ok = document.execCommand('copy');
+      document.body.removeChild(probe);
+      return ok;
+    }
 
     function escapeHtml(value) {
       return String(value || '')
@@ -533,7 +606,9 @@
               sessionId: window.DepartedAnalytics.sessionId,
               pageTitle: document.title,
               referrer: document.referrer,
-              metadata
+              metadata: typeof window.DepartedAnalytics.buildContext === 'function'
+                ? window.DepartedAnalytics.buildContext(metadata)
+                : metadata
             } : null
           })
         });
@@ -586,10 +661,10 @@
         'Preferred outcome: ' + (caseData.preferredOutcome || 'Not provided'),
         'Case details: ' + (caseData.caseDetails || 'Not provided'),
         '',
-        'Please send the payment link for this case.'
+        'Please send the secure checkout handoff for this case.'
       ].join('\n');
 
-      return 'mailto:hello@departed.digital?subject=' + encodeURIComponent('Send payment link for ' + details.label + ' case') + '&body=' + encodeURIComponent(mailBody);
+      return 'mailto:hello@departed.digital?subject=' + encodeURIComponent('Send checkout handoff for ' + details.label + ' case') + '&body=' + encodeURIComponent(mailBody);
     }
 
     function configureCta(packageKey) {
@@ -606,17 +681,17 @@
       }
 
       if (configuredLink) {
-        paymentLink.textContent = 'Continue to secure payment in Stripe';
-        stickyPaymentLink.textContent = 'Continue to secure payment';
+        paymentLink.textContent = 'Continue to card checkout';
+        stickyPaymentLink.textContent = 'Continue to checkout';
         paymentNotice.style.display = 'none';
         paymentHelper.textContent = 'After payment, we request the death certificate and proof of authority in the next step.';
       } else {
-        paymentLink.textContent = 'Request the secure payment link';
-        stickyPaymentLink.textContent = 'Request payment link';
+        paymentLink.textContent = 'Request secure checkout by email';
+        stickyPaymentLink.textContent = 'Request checkout';
         paymentNotice.style.display = 'block';
         paymentNotice.textContent = state.storageRequiresConfiguration
-          ? 'The secure checkout handoff is temporarily unavailable, but your case details are still on record and the request link remains available.'
-          : 'Secure card checkout will appear here once online payments are enabled. Until then, you can use this page to request the payment link by email without re-entering the case details.';
+          ? 'The checkout handoff is temporarily unavailable, but the case is still on record and the private case page remains available.'
+          : 'Online card checkout is not enabled yet. Use this page to request the secure checkout handoff by email without re-entering the case details.';
         paymentHelper.textContent = 'After payment is confirmed, the next step is the secure document upload page.';
       }
     }
@@ -715,6 +790,24 @@
       packageOptions.forEach((option) => {
         option.addEventListener('click', () => renderPackage(option.getAttribute('data-package')));
       });
+
+      if (copyCaseLinkButton) {
+        copyCaseLinkButton.addEventListener('click', async () => {
+          const privateHref = getCaseStatusHref();
+
+          if (!privateHref) {
+            copyCaseLinkHelper.textContent = 'We could not build the private case link just now.';
+            return;
+          }
+
+          try {
+            await copyText(privateHref);
+            copyCaseLinkHelper.textContent = 'Private case link copied. You can save or bookmark it to return later.';
+          } catch (error) {
+            copyCaseLinkHelper.textContent = 'We could not copy the private link automatically. Please bookmark this page instead.';
+          }
+        });
+      }
 
       const initialPackage = PACKAGE_DETAILS[requestedPackage]
         ? requestedPackage

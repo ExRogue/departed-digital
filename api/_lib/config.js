@@ -93,6 +93,56 @@ const PLATFORM_STATUSES = [
   'blocked'
 ];
 
+const REMINDER_STATUSES = [
+  'open',
+  'done',
+  'dismissed'
+];
+
+const REMINDER_SEVERITIES = [
+  'normal',
+  'priority',
+  'urgent'
+];
+
+const ADMIN_ROLES = [
+  'founder_admin',
+  'case_manager',
+  'document_specialist',
+  'partner_manager',
+  'read_only'
+];
+
+const ADMIN_ROLE_PERMISSIONS = {
+  founder_admin: [
+    'dashboard.view',
+    'cases.write',
+    'cases.archive',
+    'cases.delete',
+    'users.manage',
+    'notifications.send'
+  ],
+  case_manager: [
+    'dashboard.view',
+    'cases.write',
+    'cases.archive',
+    'notifications.send'
+  ],
+  document_specialist: [
+    'dashboard.view',
+    'cases.write',
+    'notifications.send'
+  ],
+  partner_manager: [
+    'dashboard.view',
+    'cases.write',
+    'notifications.send'
+  ],
+  read_only: [
+    'dashboard.view'
+  ]
+};
+
 const MAX_DOCUMENT_COUNT = 6;
 const MAX_DOCUMENT_SIZE_BYTES = 4 * 1024 * 1024;
 const MAX_ANALYTICS_EVENTS = 5000;
@@ -122,6 +172,8 @@ function getPublicConfig() {
 
 module.exports = {
   ADMIN_ENTRY_PATH,
+  ADMIN_ROLES,
+  ADMIN_ROLE_PERMISSIONS,
   CASE_PRIORITIES,
   CASE_STATUSES,
   MAX_ANALYTICS_EVENTS,
@@ -130,6 +182,8 @@ module.exports = {
   PACKAGE_CONFIG,
   PAYMENT_STATUSES,
   PLATFORM_STATUSES,
+  REMINDER_SEVERITIES,
+  REMINDER_STATUSES,
   REFERRAL_FEE_STATUSES,
   TRUST_SIGNALS,
   getPublicConfig
