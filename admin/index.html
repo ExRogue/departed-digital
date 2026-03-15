@@ -468,6 +468,100 @@
     .bulk-bar strong {
       color: var(--navy);
     }
+    .case-action-tray {
+      display: none;
+      gap: 16px;
+      padding: 18px;
+      margin-bottom: 16px;
+      border-radius: 22px;
+      border: 1px solid rgba(201,168,76,0.42);
+      background: linear-gradient(180deg, #fff9ec 0%, #fffdf7 100%);
+      box-shadow: 0 20px 36px rgba(26,39,68,0.08);
+      transform: translateY(8px);
+      opacity: 0;
+      transition: opacity 0.22s ease, transform 0.22s ease, box-shadow 0.22s ease;
+    }
+    .case-action-tray.active {
+      display: grid;
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .case-action-tray-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .case-action-tray-copy {
+      display: grid;
+      gap: 8px;
+      max-width: 760px;
+    }
+    .case-action-tray-copy p {
+      margin: 0;
+      color: var(--text-muted);
+      font-size: 0.96rem;
+    }
+    .case-action-tray-meta {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .case-action-tray-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+    }
+    .tray-signal {
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: rgba(255,255,255,0.86);
+      padding: 14px;
+      display: grid;
+      gap: 6px;
+    }
+    .tray-signal h4 {
+      margin: 0;
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      font-family: 'Inter', sans-serif;
+    }
+    .tray-signal p {
+      margin: 0;
+      color: var(--navy);
+      font-weight: 700;
+    }
+    .case-action-tray-actions {
+      display: grid;
+      gap: 10px;
+    }
+    .case-action-tray-actions h4 {
+      margin: 0;
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      font-family: 'Inter', sans-serif;
+    }
+    .case-action-tray-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-top: 1px solid rgba(26,39,68,0.08);
+      padding-top: 12px;
+    }
+    .case-action-tray-helper {
+      margin: 0;
+      color: var(--text-muted);
+      font-size: 0.92rem;
+      max-width: 640px;
+    }
     .bulk-actions {
       display: flex;
       gap: 10px;
@@ -1293,6 +1387,7 @@
                   <button class="secondary" type="button" id="bulk-clear">Clear selection</button>
                 </div>
               </div>
+              <div id="selected-case-tray" class="case-action-tray" aria-live="polite"></div>
               <div id="cases-table-wrap">
                 <p class="empty">Load the dashboard to see cases.</p>
               </div>
@@ -1362,6 +1457,7 @@
     const partnersPanel = document.getElementById('partners-panel');
     const teamPanel = document.getElementById('team-panel');
     const casesTableWrap = document.getElementById('cases-table-wrap');
+    const selectedCaseTray = document.getElementById('selected-case-tray');
     const caseDetail = document.getElementById('case-detail');
     const detailPanel = document.querySelector('.detail-panel');
     const casesPanel = document.querySelector('.cases-panel');
@@ -3039,6 +3135,108 @@
       });
     }
 
+    function renderCaseActionTray() {
+      if (!selectedCaseTray) {
+        return;
+      }
+
+      const summary = getSelectedCaseSummary();
+      const selected = getSelectedCase();
+      const source = selected || summary;
+
+      if (!source) {
+        selectedCaseTray.classList.remove('active');
+        selectedCaseTray.innerHTML = '';
+        return;
+      }
+
+      const workflow = source.workflow || {};
+      const paymentLabels = getPaymentActionLabels();
+      const queueBadgeClass = (workflow.overdue || workflow.queueKey === 'blocked' || workflow.escalatedReminderCount)
+        ? 'badge alert'
+        : (!workflow.needsAttention ? 'badge good' : 'badge');
+      const badges = [
+        '<span class="badge">' + escapeHtml(titleize(source.status || 'workflow_review')) + '</span>',
+        '<span class="badge">' + escapeHtml(formatPaymentStatusLabel(source.paymentStatus || 'pending')) + '</span>',
+        '<span class="' + queueBadgeClass + '">' + escapeHtml(workflow.queueLabel || 'Workflow review') + '</span>'
+      ].join('');
+
+      const actions = [];
+      if (source.status === 'active' || source.status === 'submitted') {
+        actions.push({ action: 'completed', label: 'Set completed' });
+      } else if (source.status === 'awaiting_documents' || source.status === 'documents_received' || source.paymentStatus === 'paid' || source.status === 'paid') {
+        actions.push({ action: 'active', label: 'Set active' });
+        actions.push({ action: 'completed', label: 'Set completed' });
+      } else {
+        actions.push({ action: 'payment_link_sent', label: paymentLabels.linkQuick });
+        actions.push({ action: 'paid', label: paymentLabels.paidQuick });
+        actions.push({ action: 'awaiting_documents', label: 'Request documents' });
+      }
+
+      selectedCaseTray.innerHTML = (
+        '<div class="case-action-tray-head">' +
+          '<div class="case-action-tray-copy">' +
+            '<span class="eyebrow">Selected case</span>' +
+            '<h3 style="font-size:1.35rem;">' + escapeHtml(source.reference || 'Case selected') + '</h3>' +
+            '<p>' + escapeHtml(source.deceasedName || source.clientName || 'Case selected') + ' · ' + escapeHtml(source.clientName || 'Client not set') + (source.clientEmail ? ' · ' + escapeHtml(source.clientEmail) : '') + '</p>' +
+          '</div>' +
+          '<div class="case-action-tray-meta">' + badges + '</div>' +
+        '</div>' +
+        '<div class="case-action-tray-grid">' +
+          '<div class="tray-signal"><h4>Next action</h4><p>' + escapeHtml((source.operational && source.operational.nextBestAction) || workflow.stageLabel || 'Review the case and choose the next step.') + '</p></div>' +
+          '<div class="tray-signal"><h4>Waiting on</h4><p>' + escapeHtml(titleize(workflow.waitingOn || 'operator')) + '</p></div>' +
+          '<div class="tray-signal"><h4>Owner</h4><p>' + escapeHtml(source.assignedTo || 'Unassigned') + '</p></div>' +
+          '<div class="tray-signal"><h4>Scope</h4><p>' + escapeHtml(((source.platformCount || 0) + ' platforms · ' + (source.documentCount || 0) + ' docs')) + '</p></div>' +
+        '</div>' +
+        '<div class="case-action-tray-actions">' +
+          '<h4>Fast actions</h4>' +
+          '<div class="quick-actions">' +
+            actions.map((item) => (
+              '<button class="secondary" type="button" data-tray-action="' + escapeHtml(item.action) + '" data-id="' + escapeHtml(source.id) + '">' + escapeHtml(item.label) + '</button>'
+            )).join('') +
+            '<button class="primary" type="button" id="open-full-workspace">Open full workspace</button>' +
+          '</div>' +
+        '</div>' +
+        '<div class="case-action-tray-footer">' +
+          '<p class="case-action-tray-helper">This tray is for the immediate founder step. Open the full workspace only when you need fields, files, briefs, or workflow detail.</p>' +
+          '<button class="secondary" type="button" id="clear-selected-case">Close tray</button>' +
+        '</div>'
+      );
+
+      selectedCaseTray.classList.add('active');
+
+      selectedCaseTray.querySelectorAll('[data-tray-action]').forEach((button) => {
+        button.addEventListener('click', async function (event) {
+          event.stopPropagation();
+          await quickUpdateCase(button.getAttribute('data-id'), button.getAttribute('data-tray-action'), button);
+        });
+      });
+
+      const openWorkspaceButton = document.getElementById('open-full-workspace');
+      if (openWorkspaceButton) {
+        openWorkspaceButton.addEventListener('click', function () {
+          if (detailPanel) {
+            detailPanel.scrollIntoView({
+              behavior: 'smooth',
+              block: 'start'
+            });
+          }
+        });
+      }
+
+      const clearSelectedCaseButton = document.getElementById('clear-selected-case');
+      if (clearSelectedCaseButton) {
+        clearSelectedCaseButton.addEventListener('click', function () {
+          state.selectedCaseId = '';
+          clearDetailDirty();
+          syncWorkspaceFocusMode();
+          renderCases();
+          renderDetail();
+          renderCaseActionTray();
+        });
+      }
+    }
+
     function renderCases() {
       if (state.loadIssues.cases) {
         casesTableWrap.innerHTML =
@@ -3054,6 +3252,7 @@
             loadDashboard(false, 'operations').catch(function () {});
           });
         }
+        renderCaseActionTray();
         return;
       }
 
@@ -3069,6 +3268,7 @@
         }
         updateBulkBar();
         renderSavedViewCounts();
+        renderCaseActionTray();
         return;
       }
 
@@ -3157,6 +3357,7 @@
 
       updateBulkBar();
       renderSavedViewCounts();
+      renderCaseActionTray();
     }
 
     async function quickUpdateCase(caseId, action, actionButton) {
@@ -3357,6 +3558,8 @@
     function renderDetail() {
       const selected = getSelectedCase();
       const summary = getSelectedCaseSummary();
+
+      renderCaseActionTray();
 
       if (!summary && !selected) {
         caseDetail.innerHTML = 'Choose a case from the inbox to review the full record, exports, and next action.';
