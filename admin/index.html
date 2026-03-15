@@ -521,8 +521,11 @@
     }
     .detail-topline {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      grid-template-columns: minmax(0, 1.7fr) repeat(3, minmax(120px, 1fr));
       gap: 12px;
+    }
+    .detail-topline .mini-card:first-child {
+      grid-column: span 2;
     }
     .detail-topline .mini-card {
       padding: 14px 16px;
@@ -573,8 +576,31 @@
     }
     .overview-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      grid-template-columns: 1fr;
       gap: 14px;
+    }
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px 20px;
+    }
+    .summary-grid div {
+      display: grid;
+      gap: 3px;
+      min-width: 0;
+    }
+    .summary-grid strong {
+      color: var(--text-muted);
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-family: 'Inter', sans-serif;
+    }
+    .summary-grid span {
+      color: var(--navy);
+      font-weight: 600;
+      overflow-wrap: anywhere;
+      line-height: 1.45;
     }
     .overview-card {
       border-radius: 18px;
@@ -609,6 +635,28 @@
     .overview-stack {
       display: grid;
       gap: 14px;
+    }
+    .link-actions {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 10px;
+    }
+    .link-action {
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.8);
+      padding: 14px 16px;
+      display: grid;
+      gap: 8px;
+    }
+    .link-action h4 {
+      font-size: 1rem;
+      color: var(--navy);
+    }
+    .link-action p {
+      color: var(--text-muted);
+      font-size: 0.88rem;
+      line-height: 1.45;
     }
     .link-list {
       list-style: none;
@@ -661,6 +709,17 @@
       padding: 18px;
       display: grid;
       gap: 12px;
+    }
+    .action-group {
+      display: grid;
+      gap: 10px;
+    }
+    .action-group h4 {
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      font-family: 'Inter', sans-serif;
     }
     .action-cluster h3 {
       font-size: 1.18rem;
@@ -1025,9 +1084,15 @@
       .detail-panel {
         order: -1;
       }
+      .detail-topline {
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      }
+      .detail-topline .mini-card:first-child {
+        grid-column: auto;
+      }
     }
     @media (max-width: 1180px) {
-      .kpi-grid, .ops-secondary-strip, .stats-grid, .analytics-layout, .signal-grid, .queue-board, .operations-main-grid, .detail-topline {
+      .kpi-grid, .ops-secondary-strip, .stats-grid, .analytics-layout, .signal-grid, .queue-board, .operations-main-grid, .detail-topline, .summary-grid {
         grid-template-columns: 1fr;
       }
     }
@@ -3334,22 +3399,31 @@
             '<p>' + escapeHtml(automatedCheckoutEnabled
               ? 'Stripe owns checkout. Use this area to move the case forward and handle exceptions only.'
               : 'Act first, then work deeper only if the case needs it. Use these buttons to log the customer handoff, not process payment yourself.') + '</p>' +
-            '<div class="quick-actions">' +
-              '<button class="primary" type="button" id="save-case-top"' + saveDisabledAttr + '>Save case update</button>' +
-              '<button class="secondary" type="button" id="quick-payment-link"' + (automatedCheckoutEnabled ? ' disabled' : '') + '>' + escapeHtml(paymentLabels.linkQuick) + '</button>' +
-              '<button class="secondary" type="button" id="quick-paid">' + escapeHtml(paymentLabels.paidQuick) + '</button>' +
-              '<button class="secondary" type="button" id="quick-awaiting-docs">Request documents</button>' +
-              '<button class="secondary" type="button" id="quick-active">Set active</button>' +
-              '<button class="secondary" type="button" id="quick-complete">Set completed</button>' +
-              '<a class="button-link secondary" href="' + escapeHtml(caseLinks.documents || '/documents') + '" target="_blank" rel="noreferrer">Open documents flow</a>' +
+            '<div class="action-group">' +
+              '<h4>Primary actions</h4>' +
+              '<div class="quick-actions">' +
+                '<button class="primary" type="button" id="save-case-top"' + saveDisabledAttr + '>Save case update</button>' +
+                '<button class="secondary" type="button" id="quick-payment-link"' + (automatedCheckoutEnabled ? ' disabled' : '') + '>' + escapeHtml(paymentLabels.linkQuick) + '</button>' +
+                '<button class="secondary" type="button" id="quick-paid">' + escapeHtml(paymentLabels.paidQuick) + '</button>' +
+                '<button class="secondary" type="button" id="quick-awaiting-docs">Request documents</button>' +
+                '<button class="secondary" type="button" id="quick-active">Set active</button>' +
+                '<button class="secondary" type="button" id="quick-complete">Set completed</button>' +
+              '</div>' +
             '</div>' +
-            '<p class="helper">' + escapeHtml(automatedCheckoutEnabled
-              ? 'When Stripe is enabled, payment status should sync automatically. Use "Record offline payment" only if money was taken outside the checkout flow.'
-              : 'Until Stripe is live, the customer requests a checkout handoff by email and you log the handoff and payment here.') + '</p>' +
-            '<div class="quick-actions">' +
-              '<button class="secondary" type="button" id="quick-apply-workflow">Apply workflow defaults</button>' +
-              '<button class="secondary" type="button" id="quick-follow-up">Follow up tomorrow</button>' +
-              lifecycleActions.join('') +
+            '<div class="action-group">' +
+              '<h4>Support actions</h4>' +
+              '<div class="quick-actions">' +
+                '<a class="button-link secondary" href="' + escapeHtml(caseLinks.documents || '/documents') + '" target="_blank" rel="noreferrer">Open documents flow</a>' +
+                '<button class="secondary" type="button" id="quick-apply-workflow">Apply workflow defaults</button>' +
+                '<button class="secondary" type="button" id="quick-follow-up">Follow up tomorrow</button>' +
+                lifecycleActions.join('') +
+              '</div>' +
+            '</div>' +
+            '<div class="action-group">' +
+              '<h4>Current checkout mode</h4>' +
+              '<p class="helper">' + escapeHtml(automatedCheckoutEnabled
+                ? 'When Stripe is enabled, payment status should sync automatically. Use "Record offline payment" only if money was taken outside the checkout flow.'
+                : 'Until Stripe is live, the customer requests a checkout handoff by email and you log the handoff and payment here.') + '</p>' +
             '</div>' +
           '</div>' +
           '<div class="detail-tabs">' +
@@ -3362,16 +3436,16 @@
             '<div class="overview-grid">' +
               '<div class="overview-card">' +
                 '<h3>Case summary</h3>' +
-                '<ul class="overview-list">' +
-                  '<li><strong>Reference:</strong> ' + escapeHtml(selected.reference) + '</li>' +
-                  '<li><strong>Package:</strong> ' + escapeHtml(selected.packageLabel) + '</li>' +
-                  '<li><strong>Client:</strong> ' + escapeHtml(selected.clientName) + '</li>' +
-                  '<li><strong>Email:</strong> ' + escapeHtml(selected.clientEmail) + '</li>' +
-                  '<li><strong>Deceased:</strong> ' + escapeHtml(selected.deceasedName) + '</li>' +
-                  '<li><strong>Outcome:</strong> ' + escapeHtml(selected.preferredOutcome || 'Not set') + '</li>' +
-                  '<li><strong>Relationship:</strong> ' + escapeHtml(selected.relationshipToDeceased || 'Not supplied') + '</li>' +
-                  '<li><strong>Authority:</strong> ' + escapeHtml(selected.authorityBasis || 'Not set') + '</li>' +
-                '</ul>' +
+                '<div class="summary-grid">' +
+                  '<div><strong>Reference</strong><span>' + escapeHtml(selected.reference) + '</span></div>' +
+                  '<div><strong>Package</strong><span>' + escapeHtml(selected.packageLabel) + '</span></div>' +
+                  '<div><strong>Client</strong><span>' + escapeHtml(selected.clientName) + '</span></div>' +
+                  '<div><strong>Email</strong><span>' + escapeHtml(selected.clientEmail) + '</span></div>' +
+                  '<div><strong>Deceased</strong><span>' + escapeHtml(selected.deceasedName) + '</span></div>' +
+                  '<div><strong>Outcome</strong><span>' + escapeHtml(selected.preferredOutcome || 'Not set') + '</span></div>' +
+                  '<div><strong>Relationship</strong><span>' + escapeHtml(selected.relationshipToDeceased || 'Not supplied') + '</span></div>' +
+                  '<div><strong>Authority</strong><span>' + escapeHtml(selected.authorityBasis || 'Not set') + '</span></div>' +
+                '</div>' +
               '</div>' +
               '<div class="overview-card">' +
                 '<h3>Operational snapshot</h3>' +
@@ -3394,14 +3468,22 @@
             '<div class="overview-stack">' +
               '<div class="overview-card">' +
                 '<h3>Customer links</h3>' +
-                '<ul class="link-list">' +
-                  '<li><strong>Private case page</strong><br /><code>' + escapeHtml(caseLinks.status || '/case') + '</code></li>' +
-                  '<li><strong>Documents step</strong><br /><code>' + escapeHtml(caseLinks.documents || '/documents') + '</code></li>' +
-                  '<li><strong>Case review step</strong><br /><code>' + escapeHtml(caseLinks.payment || '/review') + '</code></li>' +
-                '</ul>' +
-                '<div class="action-row" style="margin-top:8px;">' +
-                  '<button class="secondary" id="copy-case-link" type="button">Copy case link</button>' +
-                  '<button class="secondary" id="copy-documents-link" type="button">Copy documents link</button>' +
+                '<div class="link-actions">' +
+                  '<div class="link-action">' +
+                    '<h4>Private case page</h4>' +
+                    '<p>Use this when the customer wants to check progress later.</p>' +
+                    '<button class="secondary" id="copy-case-link" type="button">Copy case link</button>' +
+                  '</div>' +
+                  '<div class="link-action">' +
+                    '<h4>Documents step</h4>' +
+                    '<p>Share this only after documents are needed for the case.</p>' +
+                    '<button class="secondary" id="copy-documents-link" type="button">Copy documents link</button>' +
+                  '</div>' +
+                  '<div class="link-action">' +
+                    '<h4>Case review step</h4>' +
+                    '<p>Return the customer to the review and checkout handoff step.</p>' +
+                    '<a class="button-link secondary" href="' + escapeHtml(caseLinks.payment || '/review') + '" target="_blank" rel="noreferrer">Open review step</a>' +
+                  '</div>' +
                 '</div>' +
               '</div>' +
               '<details class="compact-details">' +
