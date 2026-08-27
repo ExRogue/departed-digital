@@ -282,8 +282,8 @@ function buildStatusTimeline(caseRecord) {
     },
     {
       key: 'payment',
-      label: 'Case review',
-      description: 'The private case review and checkout handoff are completed before sensitive document requests.',
+      label: 'Package chosen and paid',
+      description: 'You choose the package and pay. We only ask for documents after this step.',
       completed: caseRecord.paymentStatus === 'paid',
       completedAt: caseRecord.paymentStatus === 'paid' ? caseRecord.updatedAt : ''
     },

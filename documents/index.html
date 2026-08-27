@@ -372,6 +372,12 @@
       maxDocumentSizeBytes: 4 * 1024 * 1024
     };
 
+    function titleize(value) {
+      return String(value || '')
+        .replace(/_/g, ' ')
+        .replace(/\b\w/g, (char) => char.toUpperCase());
+    }
+
     function escapeHtml(value) {
       return String(value || '')
         .replace(/&/g, '&amp;')
@@ -388,7 +394,7 @@
         ['Email', caseData.clientEmail || 'Not provided'],
         ['Deceased', caseData.deceasedName || 'Not provided'],
         ['Package', caseData.packageLabel || caseData.selectedPackage || 'Not provided'],
-        ['Outcome', caseData.preferredOutcome || 'Not provided'],
+        ['Outcome', titleize(caseData.preferredOutcome) || 'Not provided'],
         ['Relationship', caseData.relationshipToDeceased || 'Not provided'],
         ['Known platforms', caseData.knownPlatforms || 'Not provided']
       ];
