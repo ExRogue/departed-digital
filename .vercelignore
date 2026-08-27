@@ -1,0 +1,8 @@
+# Internal files that must not be publicly served or uploaded
+docs
+db
+supabase
+scripts/*
+!scripts/site-analytics.js
+node_modules
+.claude
