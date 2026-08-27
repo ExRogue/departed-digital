@@ -8,6 +8,7 @@ const {
   CASE_PRIORITIES,
   CASE_STATUSES,
   MAX_ANALYTICS_EVENTS,
+  MAX_DOCUMENT_SIZE_BYTES,
   PACKAGE_CONFIG,
   PAYMENT_STATUSES,
   PLATFORM_STATUSES,
@@ -34,6 +35,14 @@ class StoreConfigurationError extends Error {
   constructor(message) {
     super(message);
     this.name = 'StoreConfigurationError';
+  }
+}
+
+class DocumentValidationError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = 'DocumentValidationError';
+    this.statusCode = 400;
   }
 }
 
@@ -80,6 +89,17 @@ function slugifyFileName(fileName) {
 
 function ensureArray(value) {
   return Array.isArray(value) ? value : [];
+}
+
+function timingSafeEqualStrings(a, b) {
+  const bufA = Buffer.from(String(a || ''), 'utf8');
+  const bufB = Buffer.from(String(b || ''), 'utf8');
+
+  if (!bufA.length || bufA.length !== bufB.length) {
+    return false;
+  }
+
+  return crypto.timingSafeEqual(bufA, bufB);
 }
 
 function isUuidLike(value) {
@@ -950,8 +970,62 @@ async function syncAdminCaseReadModel(client, caseRecord) {
   ]);
 }
 
+// Family-voiced status guidance for the public case page. Never expose the
+// operator kit (buildOperationalKit) to customers.
+function buildFamilyGuidance(caseRecord) {
+  const documents = ensureArray(caseRecord.documents);
+  const documentCount = documents.length || Number(caseRecord.documentCount || 0);
+  const status = caseRecord.status;
+  const paid = caseRecord.paymentStatus === 'paid';
+
+  if (status === 'completed') {
+    return {
+      headline: 'Your case is complete',
+      detail: 'Every account in this case has been actioned and your written record is ready. If anything else comes up, just reply to any of our emails.',
+      actionRequired: false
+    };
+  }
+
+  if (status === 'blocked') {
+    return {
+      headline: 'We are resolving a query with a platform',
+      detail: 'One of the platforms has asked for something extra. We are handling it, and we will email you if we need anything from you.',
+      actionRequired: false
+    };
+  }
+
+  if (!paid) {
+    return {
+      headline: 'Waiting for payment to be confirmed',
+      detail: 'Once payment is confirmed, we will ask for the supporting documents and begin work. If you have already paid, confirmation can take a short while to reach us.',
+      actionRequired: true
+    };
+  }
+
+  if (!documentCount) {
+    return {
+      headline: 'Please send the supporting documents',
+      detail: 'Payment is confirmed. The next step is yours: upload the death certificate and proof of your authority on the documents page, and we take it from there.',
+      actionRequired: true
+    };
+  }
+
+  if (status === 'submitted') {
+    return {
+      headline: 'Your requests are with the platforms',
+      detail: 'We have submitted the requests and are following up with each platform until it confirms. You do not need to do anything.',
+      actionRequired: false
+    };
+  }
+
+  return {
+    headline: 'We are working on your case',
+    detail: 'We have everything we need and are preparing and submitting the requests to each platform. We will update you as each one is resolved.',
+    actionRequired: false
+  };
+}
+
 function buildPublicCase(caseRecord) {
-  const operational = buildOperationalKit(caseRecord);
   const workflow = buildWorkflowKit(caseRecord);
   const platformTasks = ensureArray(caseRecord.platformTasks);
 
@@ -991,7 +1065,7 @@ function buildPublicCase(caseRecord) {
     })),
     reminders: ensureArray(caseRecord.reminders).map((reminder, index) => normalizeReminder(reminder, index, caseRecord.updatedAt || caseRecord.createdAt)),
     statusTimeline: buildStatusTimeline(caseRecord),
-    operational,
+    guidance: buildFamilyGuidance(caseRecord),
     workflow: {
       stageLabel: workflow.stageLabel,
       queueLabel: workflow.queueLabel,
@@ -1010,6 +1084,7 @@ function buildAdminCase(caseRecord) {
   return {
     ...buildPublicCase(caseRecord),
     workflow,
+    operational: buildOperationalKit(caseRecord),
     publicToken: caseRecord.publicToken,
     caseLinks: {
       payment: `/review?case=${caseRecord.id}&token=${caseRecord.publicToken}&package=${caseRecord.selectedPackage}`,
@@ -2506,7 +2581,7 @@ async function createCase(input) {
 async function getCaseForPublic(id, publicToken) {
   const caseRecord = await readCase(id);
 
-  if (!caseRecord || caseRecord.publicToken !== publicToken) {
+  if (!caseRecord || !timingSafeEqualStrings(caseRecord.publicToken, publicToken)) {
     return null;
   }
 
@@ -2973,6 +3048,11 @@ async function updateCase(id, updater) {
   }
 
   const nextCase = await updater(caseRecord);
+
+  if (!nextCase) {
+    return null;
+  }
+
   nextCase.updatedAt = new Date().toISOString();
   await writeCase(nextCase);
   return nextCase;
@@ -2980,8 +3060,8 @@ async function updateCase(id, updater) {
 
 async function updatePublicCase(id, publicToken, updates) {
   return updateCase(id, async (caseRecord) => {
-    if (caseRecord.publicToken !== publicToken) {
-      return caseRecord;
+    if (!timingSafeEqualStrings(caseRecord.publicToken, publicToken)) {
+      return null;
     }
 
     const updateStamp = new Date().toISOString();
@@ -2993,10 +3073,6 @@ async function updatePublicCase(id, publicToken, updates) {
 
     if (typeof updates.relationshipToDeceased === 'string') {
       caseRecord.relationshipToDeceased = trimTo(updates.relationshipToDeceased, 140);
-    }
-
-    if (typeof updates.referralSource === 'string') {
-      caseRecord.referralSource = trimTo(updates.referralSource, 180);
     }
 
     if (typeof updates.referralSource === 'string') {
@@ -3636,7 +3712,12 @@ async function getAnalyticsOverview() {
 function parseBase64Payload(data) {
   const source = String(data || '');
   const match = source.match(/^data:(.*?);base64,(.*)$/);
-  const base64 = match ? match[2] : source;
+  const base64 = (match ? match[2] : source).replace(/\s+/g, '');
+
+  if (!base64 || !/^[A-Za-z0-9+/]+={0,2}$/.test(base64)) {
+    throw new DocumentValidationError('One of the files could not be read. Please try attaching it again.');
+  }
+
   return Buffer.from(base64, 'base64');
 }
 
@@ -3691,6 +3772,15 @@ async function uploadDocuments(id, publicToken, payload) {
 
   for (const file of ensureArray(payload.files)) {
     const buffer = parseBase64Payload(file.data);
+
+    if (!buffer.byteLength) {
+      throw new DocumentValidationError('One of the files was empty. Please try attaching it again.');
+    }
+
+    if (buffer.byteLength > MAX_DOCUMENT_SIZE_BYTES) {
+      throw new DocumentValidationError(`Each file must be ${Math.round(MAX_DOCUMENT_SIZE_BYTES / (1024 * 1024))}MB or smaller.`);
+    }
+
     const stored = await storeDocumentBuffer(id, file.name, file.type, buffer);
 
     uploadedDocuments.push({
@@ -3705,8 +3795,8 @@ async function uploadDocuments(id, publicToken, payload) {
   }
 
   return updateCase(id, async (existingCase) => {
-    if (existingCase.publicToken !== publicToken) {
-      return existingCase;
+    if (!timingSafeEqualStrings(existingCase.publicToken, publicToken)) {
+      return null;
     }
 
     if (existingCase.paymentStatus !== 'paid') {
@@ -3926,6 +4016,7 @@ async function getAdminCaseDocumentAsset(caseId, documentId) {
 }
 
 module.exports = {
+  DocumentValidationError,
   PaymentRequiredError,
   StoreConfigurationError,
   archiveAdminCase,
@@ -3944,6 +4035,7 @@ module.exports = {
   getDocumentInventory,
   getOpsJobSummary,
   getStorageHealth,
+  isUuidLike,
   listPartnerAccounts,
   listAnalyticsEventsForMigration,
   listAdminCases,

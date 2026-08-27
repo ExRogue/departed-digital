@@ -461,6 +461,7 @@ module.exports = async function handler(req, res) {
 
     methodNotAllowed(res, ['GET', 'PATCH', 'DELETE', 'OPTIONS']);
   } catch (error) {
+    console.error('admin cases failed', error);
     sendError(res, 500, 'We could not load the case dashboard.');
   }
 };

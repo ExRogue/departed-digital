@@ -783,13 +783,11 @@
         window.location.href = nextUrl.toString();
         return;
       } catch (error) {
-        localStorage.setItem('departedDigitalIntake', JSON.stringify(intakeData));
-        intakeHelper.textContent = 'We could not reach the live case system just now, so we saved your details in this browser and moved you to the next step.';
-        trackIntakeEvent('intake_submitted', {
-          label: 'Start form submitted with fallback',
+        intakeHelper.textContent = 'Sorry — we could not save your details just now. Please try again in a moment, or email us at hello@departed.digital and we will set the case up for you.';
+        trackIntakeEvent('intake_submit_failed', {
+          label: 'Start form submit failed',
           packageKey: intakeData.selectedPackage || 'standard'
         });
-        window.location.href = '/review?package=' + encodeURIComponent(intakeData.selectedPackage || 'standard');
       } finally {
         submitButton.disabled = false;
         submitButton.textContent = 'Continue to Package and Payment';

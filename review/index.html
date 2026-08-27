@@ -345,8 +345,8 @@
     <div class="nav-inner">
       <a href="/" class="logo">Departed<span>.</span>Digital</a>
       <div style="display:flex; gap:18px; flex-wrap:wrap;">
-        <a class="nav-link" href="/start">Back to intake</a>
-        <a class="nav-link" id="status-nav-link" href="/case">Case status</a>
+        <a class="nav-link" href="/start">Back to the form</a>
+        <a class="nav-link" id="status-nav-link" href="/case">Your case</a>
         <a class="nav-link" href="/about">About</a>
         <a class="nav-link" href="/blog">Resources</a>
       </div>
@@ -357,12 +357,12 @@
     <div class="container">
       <span class="eyebrow">Step 2</span>
       <h1>Review the case and choose the right level of support.</h1>
-      <p class="intro">This is the private review step. Confirm the package, request the secure checkout handoff when you are ready, and keep the case joined up under one reference. Supporting documents only come after payment has been confirmed.</p>
+      <p class="intro">Check the details you gave us, choose the package that fits, and pay when you are ready. We only ask for the death certificate and other documents after payment.</p>
 
       <div class="reassurance-strip">
-        <div class="reassurance-card">
-          <strong>Case already created</strong>
-          <span>Your details are already on record, so you do not need to start again.</span>
+        <div class="reassurance-card" id="case-created-card" style="display:none;">
+          <strong>Your case is saved</strong>
+          <span>Your details are on record under your case reference, so you will not need to enter them again.</span>
         </div>
         <div class="reassurance-card">
           <strong>Documents come later</strong>
@@ -373,8 +373,8 @@
           <span>We work through platform processes rather than asking for account access.</span>
         </div>
         <div class="reassurance-card">
-          <strong>Less chasing later</strong>
-          <span>This is designed to reduce repeated forms, resurfaced profile reminders, and unmanaged accounts staying live.</span>
+          <strong>We do the chasing</strong>
+          <span>Once your case is active, we handle the platform forms and follow-ups so you do not have to.</span>
         </div>
       </div>
 
@@ -408,16 +408,16 @@
           </div>
           <ul class="feature-list" id="package-features"></ul>
           <div class="cta-row">
-            <a class="btn-primary" id="payment-link" href="#" data-track="review_cta" data-track-label="Review request checkout handoff">Request secure checkout handoff</a>
-            <a class="btn-secondary" id="status-link" href="/case">Track case progress</a>
+            <a class="btn-primary" id="payment-link" href="#" data-track="review_cta" data-track-label="Review payment CTA">Email us to arrange payment</a>
+            <a class="btn-secondary" id="status-link" href="/case">View your case</a>
             <button class="btn-secondary" id="copy-case-link" type="button">Copy private case link</button>
-            <a class="btn-secondary" href="/start" data-track="payment_edit" data-track-label="Payment edit intake details">Edit intake details</a>
+            <a class="btn-secondary" href="/start" data-track="payment_edit" data-track-label="Payment edit intake details">Edit your details</a>
           </div>
-          <p class="status-note">The case-status page is the customer's private tracking page. A customer can reopen it later from the same device or by using their saved private case link.</p>
-          <p class="copy-note" id="copy-case-link-helper">Save or bookmark the private case link if you want to return to this case later before email updates are live.</p>
+          <p class="status-note">Your case page shows where things stand at any time. You can come back to it from this device, or from anywhere using your private case link.</p>
+          <p class="copy-note" id="copy-case-link-helper">Copy your private case link and keep it somewhere safe — it is the easiest way to get back to your case from any device.</p>
           <p class="helper" id="payment-helper">After payment, we request the death certificate and proof of authority in the next step.</p>
           <div class="notice" id="payment-notice">
-            This step turns the saved case into an active handoff. Once payment is confirmed, we request the documents, take over the platform process, and keep the private case page updated so the family does not have to keep chasing forms or reminders.
+            Once payment is confirmed, we ask for the supporting documents, take over the platform process, and keep your case page updated.
           </div>
         </section>
 
@@ -444,7 +444,7 @@
       <strong id="sticky-package">Standard · £249</strong>
       <span>Continue when you are ready</span>
     </div>
-    <a class="btn-primary" id="sticky-payment-link" href="#" data-track="review_cta_sticky" data-track-label="Review sticky request checkout handoff">Continue</a>
+    <a class="btn-primary" id="sticky-payment-link" href="#" data-track="review_cta_sticky" data-track-label="Review sticky payment CTA">Continue</a>
   </div>
 
   <footer>
@@ -524,6 +524,7 @@
       },
       caseData: null,
       publicToken: tokenFromUrl || '',
+      syncedPackage: '',
       storageRequiresConfiguration: false
     };
 
@@ -566,6 +567,12 @@
         .replace(/'/g, '&#39;');
     }
 
+    function titleize(value) {
+      return String(value || '')
+        .replace(/_/g, ' ')
+        .replace(/\b\w/g, (char) => char.toUpperCase());
+    }
+
     function updateSummary(caseData) {
       const summaryItems = [
         ['Reference', caseData.reference || 'Generated after backend save'],
@@ -573,9 +580,8 @@
         ['Email', caseData.clientEmail || 'Not provided'],
         ['Deceased', caseData.deceasedName || 'Not provided'],
         ['Relationship', caseData.relationshipToDeceased || 'Not provided'],
-        ['Preferred outcome', caseData.preferredOutcome || 'Not provided'],
+        ['Preferred outcome', titleize(caseData.preferredOutcome) || 'Not provided'],
         ['Known platforms', caseData.knownPlatforms || 'Not provided'],
-        ['Platform workflow', (caseData.platformTasks || []).length ? caseData.platformTasks.map((task) => task.name + ' (' + task.status.replace(/_/g, ' ') + ')').join(', ') : 'Not yet created'],
         ['Profiles or handles', caseData.profileUrls || 'Not provided'],
         ['Case details', caseData.caseDetails || 'Not provided']
       ];
@@ -640,6 +646,7 @@
         const payload = await response.json();
         if (response.ok && payload.ok) {
           state.caseData = payload.case;
+          state.syncedPackage = payload.case.selectedPackage || state.syncedPackage;
           localStorage.setItem('departedDigitalIntake', JSON.stringify({
             ...payload.case,
             publicToken: state.publicToken
@@ -652,19 +659,21 @@
     }
 
     function buildFallbackHref(caseData, details) {
+      const caseLink = getCaseStatusHref();
       const mailBody = [
-        'Reference: ' + (caseData.reference || 'Not generated yet'),
-        'Package: ' + details.label,
-        'Client: ' + (caseData.clientName || 'Not provided'),
-        'Email: ' + (caseData.clientEmail || 'Not provided'),
-        'Deceased: ' + (caseData.deceasedName || 'Not provided'),
-        'Preferred outcome: ' + (caseData.preferredOutcome || 'Not provided'),
-        'Case details: ' + (caseData.caseDetails || 'Not provided'),
+        'Hello,',
         '',
-        'Please send the secure checkout handoff for this case.'
-      ].join('\n');
+        'I would like to pay for my case and get started.',
+        '',
+        'Reference: ' + (caseData.reference || 'Not available'),
+        'Package: ' + details.label + ' (£' + details.price + ')',
+        'Name: ' + (caseData.clientName || 'Not provided'),
+        caseLink ? 'Case link: ' + caseLink : '',
+        '',
+        'Thank you.'
+      ].filter(Boolean).join('\n');
 
-      return 'mailto:hello@departed.digital?subject=' + encodeURIComponent('Send checkout handoff for ' + details.label + ' case') + '&body=' + encodeURIComponent(mailBody);
+      return 'mailto:hello@departed.digital?subject=' + encodeURIComponent('Payment for case ' + (caseData.reference || details.label)) + '&body=' + encodeURIComponent(mailBody);
     }
 
     function configureCta(packageKey) {
@@ -681,18 +690,18 @@
       }
 
       if (configuredLink) {
-        paymentLink.textContent = 'Continue to card checkout';
-        stickyPaymentLink.textContent = 'Continue to checkout';
+        paymentLink.textContent = 'Pay securely by card';
+        stickyPaymentLink.textContent = 'Pay securely';
         paymentNotice.style.display = 'none';
-        paymentHelper.textContent = 'After payment, we request the death certificate and proof of authority in the next step.';
+        paymentHelper.textContent = 'After payment, we ask for the death certificate and proof of authority in the next step.';
       } else {
-        paymentLink.textContent = 'Request secure checkout handoff';
-        stickyPaymentLink.textContent = 'Request checkout';
+        paymentLink.textContent = 'Email us to arrange payment';
+        stickyPaymentLink.textContent = 'Arrange payment';
         paymentNotice.style.display = 'block';
         paymentNotice.textContent = state.storageRequiresConfiguration
-          ? 'The checkout handoff is temporarily unavailable, but the case is still on record and the private case page remains available.'
-          : 'Online card checkout is not enabled yet. Use this page to request the secure checkout handoff by email without re-entering the case details.';
-        paymentHelper.textContent = 'After payment is confirmed, the next step is the secure document upload page.';
+          ? 'Payment is temporarily unavailable, but your case is safely on record. Please try again shortly or email hello@departed.digital.'
+          : 'Online card payment is not available just yet. Click the button and we will send you a secure payment link by email — your details are already saved, so the email only needs your case reference.';
+        paymentHelper.textContent = 'After payment is confirmed, the next step is the document upload page.';
       }
     }
 
@@ -717,7 +726,10 @@
       }));
 
       configureCta(packageKey);
-      await syncSelectedPackage(packageKey);
+
+      if (packageKey !== state.syncedPackage) {
+        await syncSelectedPackage(packageKey);
+      }
     }
 
     async function loadConfig() {
@@ -784,6 +796,15 @@
       }
 
       await loadConfig();
+      state.syncedPackage = state.caseData.selectedPackage || '';
+
+      if (state.caseData.id && state.caseData.reference) {
+        const savedCard = document.getElementById('case-created-card');
+        if (savedCard) {
+          savedCard.style.display = '';
+        }
+      }
+
       updateSummary(state.caseData);
       attachPaymentTracking();
 

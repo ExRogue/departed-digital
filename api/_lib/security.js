@@ -586,26 +586,28 @@ function sanitizeAdminUser(user) {
 async function ensureAdminUsers() {
   if (hasDatabaseConnection()) {
     const timestamp = new Date().toISOString();
-    const seedUser = getDefaultSeedUser();
+    const configured = getConfiguredAdminCredentials();
 
-    if (seedUser) {
-      const ensureKey = `${seedUser.username}:${seedUser.passwordHash}`;
+    if (configured.password) {
+      const ensureKey = configured.username;
 
       if (databaseSeedEnsureState.expiresAt <= Date.now() || databaseSeedEnsureState.username !== ensureKey) {
-        const existing = await readDatabaseUserByIdentity(seedUser.username);
-        const nextSeed = normalizeStoredUser({
-          ...seedUser,
-          id: existing && existing.id ? existing.id : seedUser.id,
-          updatedAt: timestamp
-        }, timestamp);
+        const existing = await readDatabaseUserByIdentity(configured.username);
+        const seedMatches = Boolean(
+          existing
+          && existing.role === 'founder_admin'
+          && existing.status === 'active'
+          && verifyPasswordHash(configured.password, existing.passwordHash)
+        );
 
-        if (
-          !existing
-          || existing.name !== nextSeed.name
-          || existing.role !== nextSeed.role
-          || existing.status !== nextSeed.status
-          || !safeEqual(existing.passwordHash, nextSeed.passwordHash)
-        ) {
+        if (!seedMatches) {
+          const seedUser = getDefaultSeedUser();
+          const nextSeed = normalizeStoredUser({
+            ...seedUser,
+            id: existing && existing.id ? existing.id : seedUser.id,
+            name: existing && existing.name ? existing.name : seedUser.name,
+            updatedAt: timestamp
+          }, timestamp);
           await writeDatabaseUser(nextSeed);
         }
 
@@ -641,34 +643,31 @@ async function ensureAdminUsers() {
     : [];
 
   let changed = !Array.isArray(rawUsers) || normalizedUsers.length !== rawUsers.length;
-  const seedUser = getDefaultSeedUser();
+  const configuredSeed = getConfiguredAdminCredentials();
 
-  if (seedUser) {
-    const existingIndex = normalizedUsers.findIndex((entry) => entry.username === seedUser.username);
+  if (configuredSeed.password) {
+    const existingIndex = normalizedUsers.findIndex((entry) => entry.username === configuredSeed.username);
 
     if (existingIndex >= 0) {
       const existing = normalizedUsers[existingIndex];
-      const nextSeed = {
-        ...existing,
-        id: existing.id || seedUser.id,
-        name: seedUser.name,
-        role: 'founder_admin',
-        status: 'active',
-        passwordHash: seedUser.passwordHash,
-        updatedAt: timestamp
-      };
+      const seedMatches = existing.role === 'founder_admin'
+        && existing.status === 'active'
+        && verifyPasswordHash(configuredSeed.password, existing.passwordHash);
 
-      if (
-        existing.name !== nextSeed.name
-        || existing.role !== nextSeed.role
-        || existing.status !== nextSeed.status
-        || !safeEqual(existing.passwordHash, nextSeed.passwordHash)
-      ) {
-        normalizedUsers[existingIndex] = nextSeed;
+      if (!seedMatches) {
+        const seedUser = getDefaultSeedUser();
+        normalizedUsers[existingIndex] = {
+          ...existing,
+          id: existing.id || seedUser.id,
+          role: 'founder_admin',
+          status: 'active',
+          passwordHash: seedUser.passwordHash,
+          updatedAt: timestamp
+        };
         changed = true;
       }
     } else {
-      normalizedUsers.unshift(seedUser);
+      normalizedUsers.unshift(getDefaultSeedUser());
       changed = true;
     }
   }

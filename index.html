@@ -443,47 +443,6 @@
       50% { transform: translateX(-50%) translateY(8px); }
     }
 
-    /* ── STATS BAR ── */
-    .stats-bar {
-      background: var(--white);
-      border-bottom: 1px solid var(--border);
-      padding: 40px 24px;
-    }
-    .stats-inner {
-      max-width: 900px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 32px;
-      text-align: center;
-    }
-    .stat-item { position: relative; }
-    .stat-item:not(:last-child)::after {
-      content: '';
-      position: absolute;
-      right: 0; top: 20%; bottom: 20%;
-      width: 1px;
-      background: var(--border);
-    }
-    .stat-number {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.45rem;
-      color: var(--navy);
-      font-weight: 600;
-      line-height: 1.2;
-    }
-    .stat-label {
-      font-size: 0.92rem;
-      color: var(--text-muted);
-      margin-top: 10px;
-      letter-spacing: 0;
-      font-weight: 400;
-      line-height: 1.6;
-      max-width: 220px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
     /* ── SECTIONS COMMON ── */
     section { padding: 80px 24px; }
     .container { max-width: 1100px; margin: 0 auto; }
@@ -525,9 +484,7 @@
     .reveal-delay-3 { transition-delay: 0.3s; }
     .reveal-delay-4 { transition-delay: 0.4s; }
 
-    /* ── WHAT WE DO ── */
-    .what-we-do { background: var(--white); }
-    .what-we-do .section-sub { margin-bottom: 56px; }
+    /* ── SERVICES GRID ── */
     .services-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -579,34 +536,6 @@
       font-size: 0.93rem;
       color: var(--text-muted);
       line-height: 1.7;
-    }
-
-    /* ── PLATFORMS ── */
-    .platforms { background: var(--navy-dark); }
-    .platforms .section-title { color: var(--white); }
-    .platforms .section-label { color: var(--gold); }
-    .platform-pills {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-top: 40px;
-    }
-    .platform-pill {
-      background: rgba(255,255,255,0.07);
-      border: 1px solid rgba(255,255,255,0.14);
-      color: rgba(255,255,255,0.9);
-      padding: 10px 22px;
-      border-radius: 50px;
-      font-size: 0.9rem;
-      font-weight: 500;
-      transition: background var(--transition), border-color var(--transition), transform var(--transition);
-      cursor: default;
-    }
-    .platform-pill:hover {
-      background: rgba(201,168,76,0.15);
-      border-color: var(--gold);
-      color: var(--gold-light);
-      transform: translateY(-2px);
     }
 
     /* ── HOW IT WORKS ── */
@@ -779,126 +708,96 @@
       background: var(--gold-light);
     }
 
-    /* ── TESTIMONIALS ── */
-    .testimonials { background: var(--cream); }
-    .testimonials-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 28px;
-      margin-top: 56px;
-    }
-    .testimonial-card {
-      background: var(--white);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 36px;
-      position: relative;
-      transition: transform var(--transition), box-shadow var(--transition);
-    }
-    .testimonial-card:hover {
-      transform: translateY(-4px);
-      box-shadow: var(--shadow-lg);
-    }
-    .testimonial-card::before {
-      content: '\201C';
-      position: absolute;
-      top: 20px; right: 28px;
-      font-family: 'Playfair Display', serif;
-      font-size: 5rem;
-      color: var(--gold);
-      opacity: 0.25;
-      line-height: 1;
-    }
-    .stars {
-      color: var(--gold);
-      font-size: 1rem;
-      margin-bottom: 16px;
-      letter-spacing: 2px;
-    }
-    .testimonial-text {
-      font-size: 0.93rem;
-      color: var(--text);
-      line-height: 1.75;
-      font-style: italic;
-      margin-bottom: 24px;
-    }
-    .testimonial-author {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-    .founder-note {
+    /* ── TRUST & CONTACT ── */
+    .trust {
       background: linear-gradient(135deg, rgba(17,27,53,0.98), rgba(26,39,68,0.95));
       color: var(--white);
     }
-    .founder-grid {
+    .trust-grid {
       display: grid;
       grid-template-columns: 1.15fr 0.85fr;
       gap: 28px;
       align-items: start;
     }
-    .founder-note .section-title {
+    .trust .section-title {
       color: var(--white);
     }
-    .founder-note .section-sub {
+    .trust .section-sub {
       color: rgba(255,255,255,0.74);
     }
-    .founder-card {
+    .trust-card {
       background: rgba(255,255,255,0.08);
       border: 1px solid rgba(255,255,255,0.12);
       border-radius: 24px;
       padding: 28px;
       backdrop-filter: blur(10px);
     }
-    .founder-card p {
+    .trust-card p {
       color: rgba(255,255,255,0.82);
       line-height: 1.8;
     }
-    .founder-signoff {
+    .trust-signoff {
       margin-top: 18px;
       color: var(--gold-light);
       font-weight: 600;
       letter-spacing: 0.04em;
     }
-    .founder-points {
+    .trust-points {
       list-style: none;
       display: grid;
       gap: 12px;
+      margin-top: 28px;
     }
-    .founder-points li {
+    .trust-points li {
       padding: 16px 18px;
       border-radius: 18px;
       background: rgba(255,255,255,0.07);
       border: 1px solid rgba(255,255,255,0.12);
       color: rgba(255,255,255,0.82);
     }
-    .founder-points strong {
+    .trust-points strong {
       display: block;
       color: var(--white);
       margin-bottom: 6px;
     }
-    .author-avatar {
-      width: 44px; height: 44px;
-      border-radius: 50%;
-      background: var(--navy);
-      display: flex;
+    .trust-email {
+      display: inline-flex;
       align-items: center;
-      justify-content: center;
-      color: var(--gold);
-      font-family: 'Playfair Display', serif;
+      gap: 10px;
+      margin-top: 14px;
+      padding: 14px 24px;
+      border-radius: 50px;
+      border: 1.5px solid rgba(201,168,76,0.7);
+      background: rgba(201,168,76,0.12);
+      color: var(--gold-light);
       font-weight: 600;
       font-size: 1rem;
-      flex-shrink: 0;
+      text-decoration: none;
+      transition: background var(--transition), color var(--transition), transform var(--transition);
     }
-    .author-info strong {
-      display: block;
-      font-size: 0.88rem;
-      color: var(--navy);
-      font-weight: 600;
+    .trust-email:hover {
+      background: var(--gold);
+      color: var(--navy-dark);
+      transform: translateY(-1px);
     }
-    .author-info span {
-      font-size: 0.78rem;
-      color: var(--text-muted);
+    .trust-contact p {
+      margin-top: 22px;
+      color: rgba(255,255,255,0.82);
+    }
+    .trust-guides {
+      margin-top: 16px;
+      font-size: 0.92rem;
+      color: rgba(255,255,255,0.7);
+    }
+    .trust-guides a {
+      color: var(--gold-light);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(224,192,106,0.5);
+      transition: color var(--transition), border-color var(--transition);
+    }
+    .trust-guides a:hover {
+      color: var(--white);
+      border-color: var(--white);
     }
 
     /* ── FAQ ── */
@@ -959,138 +858,35 @@
       padding-bottom: 22px;
     }
 
-    /* ── FD PARTNER ── */
-    .fd-partner {
-      background: linear-gradient(160deg, var(--navy-dark), var(--navy));
-      position: relative;
-      overflow: hidden;
+    /* ── FAQ CTA ── */
+    .faq-cta {
+      margin-top: 44px;
     }
-    .fd-partner::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background-image:
-        linear-gradient(rgba(201,168,76,0.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(201,168,76,0.04) 1px, transparent 1px);
-      background-size: 40px 40px;
-    }
-    .fd-inner {
-      position: relative;
-      z-index: 1;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 64px;
-      align-items: center;
-    }
-    .fd-partner .section-title { color: var(--white); }
-    .fd-partner .section-sub { color: rgba(255,255,255,0.7); margin-bottom: 40px; }
-    .fd-partner .section-label { color: var(--gold-light); }
-    .fd-benefit {
-      display: flex;
-      align-items: flex-start;
-      gap: 16px;
-      margin-bottom: 24px;
-    }
-    .fd-benefit-icon {
-      width: 44px; height: 44px;
-      background: rgba(201,168,76,0.15);
-      border: 1px solid rgba(201,168,76,0.3);
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.2rem;
-      flex-shrink: 0;
-    }
-    .fd-benefit-text strong {
-      display: block;
-      color: var(--white);
-      font-size: 0.95rem;
-      margin-bottom: 4px;
-    }
-    .fd-benefit-text span {
-      font-size: 0.85rem;
-      color: rgba(255,255,255,0.6);
-      line-height: 1.6;
-    }
-    .fd-card {
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(201,168,76,0.25);
-      border-radius: var(--radius-lg);
-      padding: 44px;
-      text-align: center;
-    }
-    .fd-card .big-number {
-      font-family: 'Playfair Display', serif;
-      font-size: 5rem;
-      color: var(--gold);
-      line-height: 1;
-      font-weight: 600;
-    }
-    .fd-card .big-number sup { font-size: 2rem; vertical-align: super; }
-    .fd-card .big-label {
-      color: rgba(255,255,255,0.8);
-      font-size: 1rem;
-      margin: 10px 0 28px;
-    }
-    .fd-card p {
-      font-size: 0.85rem;
-      color: rgba(255,255,255,0.55);
-      line-height: 1.7;
-      margin-bottom: 32px;
-    }
-    .fd-card .btn-outline-gold {
-      border-color: rgba(201,168,76,0.92);
-      color: var(--gold-light);
-      background: rgba(255,255,255,0.04);
-    }
-    .fd-card .btn-outline-gold:hover {
-      background: var(--gold);
-      color: var(--navy-dark);
-      border-color: var(--gold);
+    .faq-cta .btn-primary {
+      display: inline-block;
     }
 
-    /* ── CONTACT ── */
-    .contact { background: var(--cream); }
-    .contact-box {
-      max-width: 620px;
-      margin: 0 auto;
-      background: var(--white);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 48px;
+    /* ── PARTNER LINE ── */
+    .partner-line {
+      padding: 32px 24px;
       text-align: center;
-      box-shadow: var(--shadow);
+      background: linear-gradient(180deg, rgba(243,234,220,0.8), rgba(238,226,210,0.95));
+      border-top: 1px solid rgba(26,39,68,0.06);
     }
-    .contact-box .section-title { margin-bottom: 12px; }
-    .contact-box .section-sub { margin: 0 auto 40px; }
-    .contact-links {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-      align-items: center;
+    .partner-line p {
+      font-size: 0.95rem;
+      color: var(--text);
     }
-    .contact-link {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-size: 1rem;
+    .partner-line a {
       color: var(--navy);
+      font-weight: 600;
       text-decoration: none;
-      font-weight: 500;
-      padding: 14px 28px;
-      border: 1.5px solid var(--border);
-      border-radius: 50px;
-      transition: border-color var(--transition), color var(--transition), background var(--transition), transform var(--transition);
-      width: 100%;
-      max-width: 340px;
-      justify-content: center;
+      border-bottom: 1px solid rgba(201,168,76,0.6);
+      transition: color var(--transition), border-color var(--transition);
     }
-    .contact-link:hover {
+    .partner-line a:hover {
+      color: var(--gold);
       border-color: var(--gold);
-      color: var(--navy);
-      background: rgba(201,168,76,0.07);
-      transform: translateY(-1px);
     }
 
     /* ── FOOTER ── */
@@ -1203,8 +999,7 @@
 
     /* ── RESPONSIVE ── */
     @media (max-width: 900px) {
-      .founder-grid,
-      .fd-inner { grid-template-columns: 1fr; gap: 40px; }
+      .trust-grid { grid-template-columns: 1fr; gap: 40px; }
       .steps::before { display: none; }
     }
     @media (max-width: 700px) {
@@ -1215,7 +1010,6 @@
       .hero { padding: 100px 20px 60px; }
       .hero-btns { flex-direction: column; align-items: center; }
       section { padding: 72px 20px; }
-      .contact-box { padding: 36px 24px; }
       .footer-links { gap: 32px; }
       #floating-cta { bottom: 20px; right: 20px; padding: 12px 22px; font-size: 0.85rem; }
     }
@@ -1456,53 +1250,15 @@
       color: rgba(26,39,68,0.42);
       display: none;
     }
-    .stats-bar {
-      background: linear-gradient(180deg, rgba(240,230,214,0.48) 0%, rgba(246,239,227,0.88) 100%);
-      border-bottom: none;
-      padding: 0 24px 14px;
-      margin-top: -8px;
-      position: relative;
-      z-index: 3;
-    }
-    .stats-inner {
-      max-width: 1240px;
-      padding: 24px 28px;
-      gap: 20px;
-      border-radius: 28px;
-      border: 1px solid rgba(223,212,194,0.92);
-      background:
-        linear-gradient(180deg, rgba(255,252,246,0.92) 0%, rgba(250,244,234,0.88) 100%);
-      backdrop-filter: blur(12px);
-      box-shadow:
-        0 22px 60px rgba(26,39,68,0.08),
-        inset 0 1px 0 rgba(255,255,255,0.6);
-      text-align: left;
-    }
-    .stat-item:not(:last-child)::after {
-      display: none;
-    }
-    .stat-item {
-      padding-right: 12px;
-    }
-    .stat-label {
-      margin-left: 0;
-      margin-right: 0;
-    }
-    .what-we-do,
+    .how-it-works,
     .pricing,
     .faq {
       position: relative;
       background: transparent;
     }
-    .what-we-do::before,
-    .platforms::before,
     .how-it-works::before,
     .pricing::before,
-    .testimonials::before,
-    .faq::before,
-    .fd-partner::before,
-    .resources-section::before,
-    .contact::before {
+    .faq::before {
       content: "";
       position: absolute;
       top: 0;
@@ -1511,7 +1267,7 @@
       height: 1px;
       background: linear-gradient(90deg, transparent, rgba(26,39,68,0.08), transparent);
     }
-    .what-we-do {
+    .how-it-works {
       background:
         radial-gradient(circle at top right, rgba(224,192,106,0.08), transparent 26%),
         linear-gradient(180deg, rgba(246,239,227,0.78) 0%, rgba(251,247,240,0.92) 100%);
@@ -1525,25 +1281,6 @@
       background:
         radial-gradient(circle at 88% 0%, rgba(224,192,106,0.1), transparent 20%),
         linear-gradient(180deg, rgba(251,246,238,0.96) 0%, rgba(244,235,221,0.92) 100%);
-    }
-    .platforms {
-      background:
-        radial-gradient(circle at top left, rgba(26,39,68,0.08), transparent 20%),
-        linear-gradient(180deg, #ede2d0 0%, #f5edde 100%);
-    }
-    .platforms .section-title,
-    .platforms .section-label {
-      color: var(--navy);
-    }
-    .platform-pill {
-      background: rgba(255,255,255,0.88);
-      border-color: rgba(26,39,68,0.08);
-      color: var(--navy);
-      box-shadow: 0 10px 24px rgba(26,39,68,0.04);
-    }
-    .platform-pill:hover {
-      background: rgba(255,255,255,1);
-      color: var(--navy);
     }
     .steps {
       gap: 22px;
@@ -1600,156 +1337,14 @@
       background: var(--navy);
       color: var(--white);
     }
-    .testimonials-grid,
     .pricing-grid,
     .services-grid {
       margin-top: 34px;
     }
-    .testimonial-card {
-      background: linear-gradient(180deg, rgba(255,252,247,0.92) 0%, rgba(248,241,231,0.86) 100%);
-      box-shadow: 0 18px 44px rgba(26,39,68,0.08);
-    }
-    .testimonial-card::before {
-      content: "";
-      width: 54px;
-      height: 54px;
-      top: 26px;
-      right: 26px;
-      border-radius: 16px;
-      background: linear-gradient(135deg, rgba(201,168,76,0.18), rgba(201,168,76,0.05));
-      opacity: 1;
-    }
-    .founder-note {
+    .trust {
       background:
         radial-gradient(circle at top right, rgba(224,192,106,0.14), transparent 24%),
         linear-gradient(135deg, rgba(17,27,53,0.98), rgba(26,39,68,0.95));
-    }
-    .fd-partner {
-      background:
-        radial-gradient(circle at top left, rgba(224,192,106,0.16), transparent 28%),
-        linear-gradient(180deg, #f5ecdf 0%, #efe4d3 100%);
-    }
-    .fd-partner::before {
-      display: none;
-    }
-    .fd-partner .section-title,
-    .fd-benefit-text strong,
-    .fd-partner .section-label {
-      color: var(--navy);
-    }
-    .fd-partner .section-sub,
-    .fd-benefit-text span {
-      color: rgba(45,58,74,0.76);
-    }
-    .fd-benefit-icon {
-      background: rgba(255,255,255,0.84);
-      border-color: rgba(26,39,68,0.1);
-      box-shadow: 0 10px 24px rgba(26,39,68,0.05);
-    }
-    .fd-card {
-      background: linear-gradient(160deg, rgba(17,27,53,0.96), rgba(33,49,84,0.95));
-      box-shadow: 0 28px 56px rgba(17,27,53,0.18);
-    }
-    .fd-card .big-label {
-      color: rgba(255,255,255,0.86);
-    }
-    .fd-card p {
-      color: rgba(255,255,255,0.7);
-    }
-    .contact-box {
-      max-width: 760px;
-      background:
-        linear-gradient(180deg, rgba(255,255,255,0.9) 0%, rgba(255,250,241,0.96) 100%);
-      box-shadow: 0 24px 56px rgba(26,39,68,0.08);
-    }
-    .resources-section {
-      background:
-        radial-gradient(circle at top left, rgba(224,192,106,0.08), transparent 22%),
-        linear-gradient(180deg, rgba(248,240,228,0.86) 0%, rgba(253,249,242,0.96) 100%);
-    }
-    .resources-link {
-      color: var(--navy);
-      text-decoration: none;
-      font-weight: 600;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding-bottom: 2px;
-      border-bottom: 1px solid rgba(201,168,76,0.42);
-      transition: color var(--transition), border-color var(--transition);
-    }
-    .resources-link:hover {
-      color: var(--gold);
-      border-color: var(--gold);
-    }
-    .resource-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 28px;
-    }
-    .resource-card {
-      background: linear-gradient(180deg, rgba(255,252,247,0.95) 0%, rgba(247,239,228,0.9) 100%);
-      border: 1px solid rgba(223,212,194,0.92);
-      border-radius: 20px;
-      overflow: hidden;
-      transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
-      box-shadow: 0 14px 34px rgba(26,39,68,0.06);
-    }
-    .resource-card:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 18px 48px rgba(26,39,68,0.14);
-      border-color: rgba(201,168,76,0.5);
-    }
-    .resource-card-top {
-      background: linear-gradient(135deg, #efe2cb, #f6ecdb);
-      padding: 36px 32px;
-      position: relative;
-      overflow: hidden;
-    }
-    .resource-card-top::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background:
-        radial-gradient(circle at top right, rgba(201,168,76,0.18), transparent 42%),
-        linear-gradient(135deg, rgba(255,255,255,0.26), transparent 68%);
-    }
-    .resource-card-icon {
-      position: relative;
-      z-index: 1;
-      font-size: 2.5rem;
-    }
-    .resource-card-body {
-      padding: 28px 32px;
-    }
-    .resource-card-label {
-      font-size: 0.72rem;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--gold);
-    }
-    .resource-card-title {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.2rem;
-      color: var(--navy);
-      margin: 10px 0 12px;
-      line-height: 1.35;
-    }
-    .resource-card-copy {
-      font-size: 0.88rem;
-      color: var(--text-muted);
-      line-height: 1.65;
-      margin-bottom: 20px;
-    }
-    .resource-card-link {
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: var(--navy);
-      transition: color var(--transition);
-    }
-    .resource-card:hover .resource-card-link {
-      color: var(--gold);
     }
     @media (max-width: 700px) {
       body::before {
@@ -1792,13 +1387,6 @@
       }
       .hero-scroll {
         display: none;
-      }
-      .stats-bar {
-        margin-top: 0;
-        padding-bottom: 8px;
-      }
-      .stats-inner {
-        padding: 20px;
       }
     }
   </style>
@@ -1845,32 +1433,29 @@
       <div class="hero-shell">
         <div class="hero-copy">
           <div class="hero-badge">For UK families after a loss</div>
-          <h1>The easier way to manage the digital accounts left behind.</h1>
-          <p>Departed Digital helps bereaved families across the UK close or memorialise social media and digital accounts without another confusing process. The first step is short, the service is done for you, and sensitive documents only come later.</p>
+          <h1>We close or memorialise a loved one's online accounts, <em>so you don't have to</em>.</h1>
+          <p>When someone dies, their Facebook, Instagram, email and other accounts stay open. Tell us about your loved one and we handle it all for you, from £149.</p>
           <div class="hero-btns">
-            <a href="/start" class="btn-primary" data-track="hero_cta" data-track-label="Homepage hero start">Start the Short Form</a>
-            <a href="#pricing" class="btn-secondary" data-track="hero_secondary" data-track-label="Homepage see packages">Compare Packages</a>
+            <a href="/start" class="btn-primary" data-track="hero_cta" data-track-label="Homepage hero start">Start a case</a>
+            <a href="#pricing" class="btn-secondary" data-track="hero_secondary" data-track-label="Homepage see packages">See pricing</a>
           </div>
           <div class="hero-trust">
             <span>No passwords needed</span>
-            <span>No death certificate in the first step</span>
-            <span>Written case record at the end</span>
+            <span>Documents only after payment</span>
+            <span>A written record at the end</span>
           </div>
-          <p style="margin: 22px 0 0; max-width: 620px; font-size: 0.98rem; color: rgba(45,58,74,0.76);">For many families, the hardest part is not deciding what to do. It is dealing with profile reminders, platform forms, and accounts that stay live when they no longer should. The service is designed to take that burden off their plate.</p>
         </div>
         <aside class="hero-sidecard">
-          <span class="hero-sidecard-label">Handled with care</span>
-          <h2>A private, structured handoff from first enquiry to final record.</h2>
-          <p>You begin with a short form, we scope the case clearly, and the sensitive evidence only comes when the case is already underway.</p>
+          <span class="hero-sidecard-label">What we handle</span>
+          <h2>You tell us once. We do the rest.</h2>
           <ul>
-            <li>UK-focused handling and case tracking</li>
-            <li>Less chasing through platform forms and support queues</li>
-            <li>Removal or memorialisation depending on the platform</li>
-            <li>Clear outcome record for the family files</li>
+            <li>Facebook, Instagram, TikTok, X, LinkedIn, Google, Apple and more</li>
+            <li>Accounts closed, or turned into memorial pages where the platform allows it</li>
+            <li>Every form and every follow-up done for you</li>
           </ul>
           <div class="hero-sidecard-foot">
-            <strong>Typical path</strong>
-            <span>Short form → package → documents → handled case</span>
+            <strong>Simple pricing</strong>
+            <span>Three packages. One payment per case.</span>
           </div>
         </aside>
       </div>
@@ -1881,103 +1466,54 @@
     </div>
   </section>
 
-  <!-- Stats Bar -->
-  <div class="stats-bar">
-    <div class="stats-inner">
-      <div class="stat-item reveal">
-        <div class="stat-number">No passwords</div>
-        <div class="stat-label">We work through platform procedures, not account access.</div>
-      </div>
-      <div class="stat-item reveal reveal-delay-1">
-        <div class="stat-number">Short first step</div>
-        <div class="stat-label">The case starts with a simple form, not a long admin process.</div>
-      </div>
-      <div class="stat-item reveal reveal-delay-2">
-        <div class="stat-number">Documents later</div>
-        <div class="stat-label">Sensitive documents are requested after payment, not before.</div>
-      </div>
-      <div class="stat-item reveal reveal-delay-3">
-        <div class="stat-number">Clear records</div>
-        <div class="stat-label">Every case ends with a written outcome record for your files.</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Services -->
-  <section class="what-we-do" id="services">
-    <div class="container">
-      <span class="section-label reveal">What we do</span>
-      <h2 class="section-title reveal">What this takes off a family's plate</h2>
-      <p class="section-sub reveal">The point is not more admin. It is a calm, done-for-you route through the accounts that often remain active after a death, with clearer handling and less chasing.</p>
-      <div class="services-grid">
-        <div class="service-card reveal reveal-delay-1">
-          <div class="service-icon">🔒</div>
-          <h3>Account Removal</h3>
-          <p>We submit formal removal requests to Facebook, Instagram, X, TikTok, LinkedIn, and other platforms so you do not have to keep chasing them yourself.</p>
-        </div>
-        <div class="service-card reveal reveal-delay-2">
-          <div class="service-icon">🕊️</div>
-          <h3>Memorialisation</h3>
-          <p>If you want to preserve the profile rather than remove it, we handle memorialisation where the platform allows it.</p>
-        </div>
-        <div class="service-card reveal reveal-delay-3">
-          <div class="service-icon">📋</div>
-          <h3>Full Documentation</h3>
-          <p>We manage the forms, the document requirements, and the correspondence, then keep a clear record of what was submitted and resolved.</p>
-        </div>
-        <div class="service-card reveal reveal-delay-4">
-          <div class="service-icon">💬</div>
-          <h3>Ongoing Support</h3>
-          <p>When platforms are slow or unclear, we follow up and keep the case moving instead of leaving you to do the emotional admin alone.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Platforms -->
-  <section class="platforms" id="platforms">
-    <div class="container">
-      <span class="section-label reveal">Platforms covered</span>
-      <h2 class="section-title reveal">From Facebook and Instagram to Gmail and Apple</h2>
-      <div class="platform-pills">
-        <div class="platform-pill reveal">Facebook</div>
-        <div class="platform-pill reveal reveal-delay-1">Instagram</div>
-        <div class="platform-pill reveal reveal-delay-2">Twitter / X</div>
-        <div class="platform-pill reveal reveal-delay-3">TikTok</div>
-        <div class="platform-pill reveal reveal-delay-4">LinkedIn</div>
-        <div class="platform-pill reveal">Snapchat</div>
-        <div class="platform-pill reveal reveal-delay-1">YouTube</div>
-        <div class="platform-pill reveal reveal-delay-2">Pinterest</div>
-        <div class="platform-pill reveal reveal-delay-3">Reddit</div>
-        <div class="platform-pill reveal reveal-delay-4">WhatsApp / Meta</div>
-        <div class="platform-pill reveal">Google Account</div>
-        <div class="platform-pill reveal reveal-delay-1">Apple ID</div>
-        <div class="platform-pill reveal reveal-delay-2">Spotify</div>
-        <div class="platform-pill reveal reveal-delay-3">+ More on request</div>
-      </div>
-    </div>
-  </section>
-
   <!-- How it works -->
   <section class="how-it-works" id="how">
     <div class="container">
-      <span class="section-label reveal">Process</span>
-      <h2 class="section-title reveal">A calmer three-step handoff</h2>
+      <span class="section-label reveal">How it works</span>
+      <h2 class="section-title reveal">Three simple steps</h2>
+      <p class="section-sub reveal">You do the first two steps online. We take care of everything after that.</p>
       <div class="steps">
         <div class="step reveal reveal-delay-1">
           <div class="step-num">1</div>
-          <h3>Start with the short form</h3>
-          <p>Tell us who the case is for, the deceased's name, and any accounts or profile links you already know about.</p>
+          <h3>Tell us about your loved one</h3>
+          <p>Fill in a short form. It takes about a minute — just their name and any accounts you know about. It is fine if you do not know them all.</p>
         </div>
         <div class="step reveal reveal-delay-2">
           <div class="step-num">2</div>
-          <h3>Choose the package and confirm the next step</h3>
-          <p>Pick Essential, Standard, or Estate on the private review screen and request the secure checkout handoff when you are ready.</p>
+          <h3>Choose a package and pay securely</h3>
+          <p>Pick Essential, Standard or Estate, whichever fits the number of accounts. Pay by card when you are ready.</p>
         </div>
         <div class="step reveal reveal-delay-3">
           <div class="step-num">3</div>
-          <h3>Send the documents and let us take over</h3>
-          <p>After payment, we request the death certificate and proof of authority needed for the case, then manage the submissions and follow-up.</p>
+          <h3>Send us the documents and we handle everything</h3>
+          <p>We ask for the death certificate and proof that you can act for them. Then we deal with each platform and keep you updated until everything is resolved.</p>
+        </div>
+      </div>
+
+      <div id="services" style="margin-top: 72px;">
+        <span class="section-label reveal">What we can do</span>
+        <h2 class="section-title reveal" style="font-size: clamp(1.5rem, 3vw, 2rem);">Four things we take off your plate</h2>
+        <div class="services-grid">
+          <div class="service-card reveal reveal-delay-1">
+            <div class="service-icon">🔒</div>
+            <h3>Closing accounts</h3>
+            <p>We submit the request to close each account and see it through until the platform confirms it is done.</p>
+          </div>
+          <div class="service-card reveal reveal-delay-2">
+            <div class="service-icon">🕊️</div>
+            <h3>Memorial pages</h3>
+            <p>Some platforms can keep a profile as a place to remember someone. If you would rather keep it than close it, we arrange that.</p>
+          </div>
+          <div class="service-card reveal reveal-delay-3">
+            <div class="service-icon">📋</div>
+            <h3>All the paperwork</h3>
+            <p>Every platform asks for different forms and evidence. We prepare and submit it all, so you only have to send things to us once.</p>
+          </div>
+          <div class="service-card reveal reveal-delay-4">
+            <div class="service-icon">💬</div>
+            <h3>All the chasing</h3>
+            <p>Platforms can be slow. We follow up on every request so you never have to chase anyone yourself.</p>
+          </div>
         </div>
       </div>
     </div>
@@ -1986,9 +1522,9 @@
   <!-- Pricing -->
   <section class="pricing" id="pricing">
     <div class="container">
-      <span class="section-label reveal">Transparent pricing</span>
+      <span class="section-label reveal">Pricing</span>
       <h2 class="section-title reveal">Choose the level of support you need</h2>
-      <p class="section-sub reveal">One payment per case. Start with the short form first, then choose the package that matches the number of accounts and the complexity involved.</p>
+      <p class="section-sub reveal">The price covers the whole case, however long the platforms take.</p>
       <div class="pricing-grid">
         <div class="price-card reveal">
           <div class="price-tier">Essential</div>
@@ -2033,47 +1569,29 @@
           <a href="/start?package=estate" class="btn-outline-gold" data-track="pricing_cta" data-track-label="Homepage pricing estate">Start Estate</a>
         </div>
       </div>
-      <p class="section-sub reveal" style="margin-top: 28px; margin-bottom: 0;">If a case looks more or less complex than expected, we will tell you before payment is requested.</p>
+      <p class="section-sub reveal" style="margin-top: 28px; margin-bottom: 0;">Not sure which one fits? Start the form and we will suggest the right package before you pay anything.</p>
     </div>
   </section>
 
-  <!-- Trust -->
-  <section class="testimonials" id="testimonials">
-    <div class="container">
-      <span class="section-label reveal">Trust signals</span>
-      <h2 class="section-title reveal">Designed to feel respectful, clear, and manageable</h2>
-      <div class="testimonials-grid">
-        <div class="testimonial-card reveal reveal-delay-1">
-          <div class="stars">UK-based support</div>
-          <p class="testimonial-text">Departed Digital is built for bereaved families in the UK, with a short first step and no request for passwords or direct account access.</p>
-        </div>
-        <div class="testimonial-card reveal reveal-delay-2">
-          <div class="stars">Documents later</div>
-          <p class="testimonial-text">Sensitive documents are requested after payment, not in the first enquiry, so the process feels lighter when families are already carrying enough.</p>
-        </div>
-        <div class="testimonial-card reveal reveal-delay-3">
-          <div class="stars">Clear written record</div>
-          <p class="testimonial-text">Every case ends with a written outcome record, and the service is designed for families as well as funeral director partners who want a reliable handoff.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="founder-note">
-    <div class="container founder-grid">
+  <!-- Trust & contact -->
+  <section class="trust" id="contact">
+    <div class="container trust-grid">
       <div>
-        <span class="section-label reveal">Founder note</span>
-        <h2 class="section-title reveal">This service is meant to feel more like support than software.</h2>
-        <p class="section-sub reveal">Families do not need another queue, another long form, or another demand for account access. The service is designed to feel handled: short first step, clear package choice, documents later, and a written record at the end.</p>
-      </div>
-      <div class="founder-card reveal reveal-delay-1">
-        <p>Departed Digital is built around one idea: the digital admin after a death should feel quietly handled, not dumped back onto the family. Every stage is there to lower friction, reduce uncertainty, and keep the case moving with dignity.</p>
-        <div class="founder-signoff">Departed Digital · London, UK</div>
-        <ul class="founder-points" style="margin-top: 22px;">
-          <li><strong>Compassion first</strong> Families can begin without having every detail to hand.</li>
-          <li><strong>Professionally managed</strong> The case is tracked, documented, and handled with a written outcome record.</li>
-          <li><strong>Built for handoff</strong> Families, funeral directors, and future case managers can all work from the same clean process.</li>
+        <span class="section-label reveal">Why families trust us</span>
+        <h2 class="section-title reveal">A careful service, run from the UK</h2>
+        <p class="section-sub reveal">Departed Digital was built around one idea: the online admin after a death should be quietly taken care of, not left to the family. That is the whole service.</p>
+        <ul class="trust-points">
+          <li class="reveal"><strong>Based in the UK</strong> We work from London with families across the country.</li>
+          <li class="reveal reveal-delay-1"><strong>Official routes only</strong> We use each platform's own process for bereaved families — never your loved one's account itself.</li>
+          <li class="reveal reveal-delay-2"><strong>Your information stays private</strong> Everything you share is protected under UK data protection law (GDPR) and used only for your case.</li>
         </ul>
+      </div>
+      <div class="trust-card trust-contact reveal reveal-delay-1">
+        <p>Losing someone leaves enough to deal with. Our job is to take this one part off your list, treat it with dignity, and keep it moving so you do not have to think about it.</p>
+        <div class="trust-signoff">Departed Digital · London, UK</div>
+        <p><strong>Questions? Email us — a real person replies.</strong></p>
+        <a href="mailto:hello@departed.digital" class="trust-email" data-track="contact_email" data-track-label="Homepage trust email">hello@departed.digital</a>
+        <p class="trust-guides">Guides for families: <a href="/blog">read our free guides on closing accounts after a death →</a></p>
       </div>
     </div>
   </section>
@@ -2117,7 +1635,7 @@
             Is my information kept confidential?
             <span class="faq-icon">+</span>
           </button>
-          <div class="faq-a"><p>Absolutely. We take data protection seriously and comply fully with UK GDPR. All information you share is used solely for the purpose of managing your case and is never shared with third parties.</p></div>
+          <div class="faq-a"><p>Yes. Everything you share stays between you and us, and is only ever used to carry out your case. It is never passed to anyone else.</p></div>
         </div>
         <div class="faq-item reveal">
           <button class="faq-q">
@@ -2127,138 +1645,16 @@
           <div class="faq-a"><p>Yes. We work with independent funeral directors across the UK who want to offer families a clear digital aftercare option. If you're interested in partnering, please visit our partner page or get in touch.</p></div>
         </div>
       </div>
-    </div>
-  </section>
-
-  <!-- FD Partner -->
-  <section class="fd-partner" id="partners">
-    <div class="container">
-      <div class="fd-inner">
-        <div>
-          <span class="section-label reveal">Funeral directors</span>
-          <h2 class="section-title reveal">A better digital aftercare handoff for bereaved families</h2>
-          <p class="section-sub reveal">Partner with Departed Digital and give families a practical next step for social media and digital accounts, without adding more operational work to your team.</p>
-          <div class="fd-benefit reveal">
-            <div class="fd-benefit-icon">🕊️</div>
-            <div class="fd-benefit-text">
-              <strong>Family-first handoff</strong>
-              <span>Give families a practical next step for social media and digital accounts without adding another difficult task to their list.</span>
-            </div>
-          </div>
-          <div class="fd-benefit reveal">
-            <div class="fd-benefit-icon">🤝</div>
-            <div class="fd-benefit-text">
-              <strong>Enhance your aftercare offering</strong>
-              <span>Differentiate your service by providing a genuinely useful resource at a moment when families need it most.</span>
-            </div>
-          </div>
-          <div class="fd-benefit reveal">
-            <div class="fd-benefit-icon">📄</div>
-            <div class="fd-benefit-text">
-              <strong>Simple referral cards provided</strong>
-              <span>We supply branded literature for your condolence packs — zero admin or effort on your part.</span>
-            </div>
-          </div>
-          <a href="/partners" class="btn-primary reveal" style="display:inline-block; margin-top:16px;">View partnership details →</a>
-        </div>
-        <div class="fd-card reveal reveal-delay-2">
-          <div class="big-number" style="font-size: clamp(2rem, 5vw, 3.6rem);">Calm</div>
-          <div class="big-label">A referral experience that reflects well on your care</div>
-          <p>We make the handoff simple with clear materials, a short intake step for families, and a service that feels measured, respectful, and professionally run.</p>
-          <a href="/partners" class="btn-outline-gold">See how partnerships work →</a>
-        </div>
+      <div class="faq-cta reveal">
+        <a href="/start" class="btn-primary" data-track="faq_cta" data-track-label="Homepage FAQ start case">Start a case</a>
       </div>
     </div>
   </section>
 
-  <!-- Blog -->
-  <section class="resources-section">
-    <div class="container">
-      <span class="section-label reveal">Resources</span>
-      <h2 class="section-title reveal">Helpful guides for bereaved families</h2>
-      <p class="section-sub reveal" style="margin-bottom: 48px;">Free, practical guides to help you navigate digital accounts after losing a loved one.</p>
-      <p class="reveal" style="margin-bottom: 32px;">
-        <a href="/blog" class="resources-link" data-track="resources_cta" data-track-label="Homepage browse all guides">Browse all guides →</a>
-      </p>
-      <div class="resource-grid">
-        <a href="/blog/delete-deceased-facebook-account-uk" style="text-decoration: none;" class="reveal">
-          <div class="resource-card">
-            <div class="resource-card-top">
-              <span class="resource-card-icon">📘</span>
-            </div>
-            <div class="resource-card-body">
-              <span class="resource-card-label">Practical Guide</span>
-              <h3 class="resource-card-title">How to Delete a Deceased Person's Facebook Account (UK)</h3>
-              <p class="resource-card-copy">A practical guide to removing or memorialising a loved one's Facebook profile, including what documents you need.</p>
-              <span class="resource-card-link">Read guide →</span>
-            </div>
-          </div>
-        </a>
-        <a href="/blog/delete-deceased-instagram-account-uk" style="text-decoration: none;" class="reveal">
-          <div class="resource-card">
-            <div class="resource-card-top">
-              <span class="resource-card-icon">📷</span>
-            </div>
-            <div class="resource-card-body">
-              <span class="resource-card-label">Practical Guide</span>
-              <h3 class="resource-card-title">How to Remove a Deceased Person's Instagram Account (UK)</h3>
-              <p class="resource-card-copy">A practical route through Instagram removal, Meta documents, and when a short form plus package support may be easier.</p>
-              <span class="resource-card-link">Read guide →</span>
-            </div>
-          </div>
-        </a>
-        <a href="/blog/close-deceased-google-account-uk" style="text-decoration: none;" class="reveal">
-          <div class="resource-card">
-            <div class="resource-card-top">
-              <span class="resource-card-icon">✉️</span>
-            </div>
-            <div class="resource-card-body">
-              <span class="resource-card-label">Practical Guide</span>
-              <h3 class="resource-card-title">How to Close a Deceased Person's Google or Gmail Account (UK)</h3>
-              <p class="resource-card-copy">A practical guide for families dealing with Google, Gmail, and the wider digital estate questions that come with them.</p>
-              <span class="resource-card-link">Read guide →</span>
-            </div>
-          </div>
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <!-- Contact -->
-  <section class="contact" id="contact">
-    <div class="container">
-      <div class="contact-box reveal">
-        <span class="section-label">Start a case</span>
-        <h2 class="section-title">Start the case in under a minute.</h2>
-        <p class="section-sub">Begin with a short form. Choose the package on the next screen. Then move into payment and supporting documents only when you are ready.</p>
-
-        <div style="max-width: 720px; margin: 36px auto 0; display: grid; gap: 18px;">
-          <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; text-align:left;">
-            <div style="background: var(--white); border: 1px solid var(--border); border-radius: 16px; padding: 20px;">
-              <div style="font-size: 0.76rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); margin-bottom: 8px;">Step 1</div>
-              <strong style="display:block; color: var(--navy); margin-bottom: 8px;">Short intake</strong>
-              <p style="font-size: 0.92rem; color: var(--text-muted);">A very short first step so families can start without feeling overwhelmed.</p>
-            </div>
-            <div style="background: var(--white); border: 1px solid var(--border); border-radius: 16px; padding: 20px;">
-              <div style="font-size: 0.76rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); margin-bottom: 8px;">Step 2</div>
-              <strong style="display:block; color: var(--navy); margin-bottom: 8px;">Private case review</strong>
-              <p style="font-size: 0.92rem; color: var(--text-muted);">Choose Essential, Standard, or Estate and request the secure checkout handoff from the private case review step.</p>
-            </div>
-            <div style="background: var(--white); border: 1px solid var(--border); border-radius: 16px; padding: 20px;">
-              <div style="font-size: 0.76rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); margin-bottom: 8px;">Step 3</div>
-              <strong style="display:block; color: var(--navy); margin-bottom: 8px;">Documents after payment</strong>
-              <p style="font-size: 0.92rem; color: var(--text-muted);">Sensitive documents only come later, once the customer is committed and ready.</p>
-            </div>
-          </div>
-          <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:14px; margin-top: 8px;">
-            <a href="/start" class="btn-primary" style="display:inline-flex; align-items:center; justify-content:center; min-width:220px;" data-track="contact_cta" data-track-label="Homepage contact start form">Start the Short Form</a>
-            <a href="#pricing" class="btn-secondary" style="display:inline-flex; align-items:center; justify-content:center; min-width:220px;" data-track="contact_secondary" data-track-label="Homepage contact compare packages">Compare Packages First</a>
-          </div>
-          <p style="text-align:center; font-size:0.86rem; color:var(--text-muted);">The goal is reassurance and clarity first. The short form now creates a real case reference before payment, so the next steps stay joined up.</p>
-        </div>
-      </div>
-    </div>
-  </section>
+  <!-- Funeral director line -->
+  <div class="partner-line">
+    <p>Are you a funeral director? <a href="/partners" data-track="partner_line" data-track-label="Homepage partner line">See how partnership works →</a></p>
+  </div>
 
   <!-- Footer -->
   <footer>

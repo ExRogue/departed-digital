@@ -702,7 +702,7 @@
             <div class="hero-actions" style="margin-top:20px;">
               <button type="submit" class="btn-primary">Request partner pack</button>
             </div>
-            <p class="partner-helper" id="partner-form-helper">We store this as a partner prospect in the operations system so follow-up is not lost.</p>
+            <p class="partner-helper" id="partner-form-helper">Send the form and we will come back to you with the partner pack and referral materials, usually within one working day.</p>
           </form>
         </div>
       </div>
@@ -764,9 +764,9 @@
           }
 
           partnerForm.reset();
-          partnerFormHelper.textContent = 'Partner enquiry saved. We can now follow up with the pack and referral materials.';
+          partnerFormHelper.textContent = 'Thank you — your enquiry has been received. We will be in touch with the partner pack and referral materials shortly.';
         } catch (error) {
-          partnerFormHelper.textContent = (error && error.message) || 'Could not save the partner enquiry.';
+          partnerFormHelper.textContent = 'Sorry — we could not send your enquiry just now. Please try again or email partners@departed.digital.';
         }
       });
     }

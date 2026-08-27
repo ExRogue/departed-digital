@@ -1,4 +1,4 @@
-const { allowCors, methodNotAllowed, parseJsonBody, sendError, sendJson } = require('../_lib/http');
+const { allowCors, handleBadJson, methodNotAllowed, parseJsonBody, sendError, sendJson } = require('../_lib/http');
 const {
   buildLogoutCookie,
   buildSessionCookie,
@@ -94,6 +94,11 @@ module.exports = async function handler(req, res) {
 
     methodNotAllowed(res, ['GET', 'POST', 'DELETE', 'OPTIONS']);
   } catch (error) {
-    sendError(res, 500, error.message || 'We could not process the admin login.');
+    if (handleBadJson(res, error)) {
+      return;
+    }
+
+    console.error('admin session failed', error);
+    sendError(res, 500, 'We could not process the admin login.');
   }
 };
