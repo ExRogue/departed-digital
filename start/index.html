@@ -216,6 +216,11 @@
       padding: 28px;
       box-shadow: var(--shadow);
     }
+    .package-card { cursor: pointer; transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease; }
+    .package-card:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+    @media (max-width: 860px) {
+      .package-grid { grid-template-columns: 1fr; }
+    }
     .package-card.selected {
       border-color: var(--gold);
       box-shadow: 0 18px 56px rgba(26,39,68,0.16);
@@ -602,7 +607,7 @@
         <ul>
           <li>This first step should only take about a minute.</li>
           <li>You do not need passwords for the deceased's accounts.</li>
-          <li>On the next screen you choose a package and pay when you are ready.</li>
+          <li>You choose your package here and pay securely by card.</li>
           <li>Every case ends with a written outcome record.</li>
         </ul>
       </div>
@@ -670,11 +675,38 @@
                   </div>
                 </div>
               </details>
-              <div class="cta-row">
-                <button type="submit" class="cta-primary" data-track="start_submit" data-track-label="Start form continue">Continue to Package and Payment</button>
-                <a class="cta-secondary" href="/#pricing">Compare packages again</a>
+              <div style="margin-top: 26px;">
+                <label style="display:block; font-weight:600; color: var(--navy); margin-bottom: 12px;">Choose your package</label>
+                <div class="package-grid" id="package-picker">
+                  <div class="package-card" data-package="essential" role="button" tabindex="0">
+                    <div class="package-top">
+                      <div class="package-name">Essential</div>
+                      <div class="price"><small>£</small>149</div>
+                    </div>
+                    <p class="package-meta">Up to 2 accounts · 14 day target</p>
+                  </div>
+                  <div class="package-card" data-package="standard" role="button" tabindex="0">
+                    <div class="package-top">
+                      <div class="package-name">Standard</div>
+                      <div class="price"><small>£</small>249</div>
+                    </div>
+                    <p class="package-meta">Up to 5 accounts · 10 day target · Most popular</p>
+                  </div>
+                  <div class="package-card" data-package="estate" role="button" tabindex="0">
+                    <div class="package-top">
+                      <div class="package-name">Estate</div>
+                      <div class="price"><small>£</small>399</div>
+                    </div>
+                    <p class="package-meta">Unlimited accounts · 7 day target</p>
+                  </div>
+                </div>
+                <p class="helper" style="margin-top: 10px;">Not sure? Standard fits most families — and if a case turns out simpler or more complex, we will tell you before any work starts.</p>
               </div>
-              <p class="helper" id="intake-helper">Next step: package selection and payment. No sensitive documents yet.</p>
+              <div class="cta-row">
+                <button type="submit" class="cta-primary" data-track="start_submit" data-track-label="Start form continue">Continue to secure payment</button>
+                <a class="cta-secondary" href="/#pricing">Compare packages in detail</a>
+              </div>
+              <p class="helper" id="intake-helper">Payment is by secure card checkout. No sensitive documents yet — those come after payment, on your private case page.</p>
             </form>
           </div>
           <aside class="note-card">
@@ -711,7 +743,47 @@
     const intakeHelper = document.getElementById('intake-helper');
     const submitButton = intakeForm.querySelector('button[type="submit"]');
     const params = new URLSearchParams(window.location.search);
+    const VALID_PACKAGES = ['essential', 'standard', 'estate'];
+    let selectedPackage = VALID_PACKAGES.includes(params.get('package')) ? params.get('package') : 'standard';
     let hasTrackedStart = false;
+
+    const packageCards = document.querySelectorAll('#package-picker .package-card');
+
+    function renderPackageSelection() {
+      packageCards.forEach((card) => {
+        card.classList.toggle('selected', card.getAttribute('data-package') === selectedPackage);
+      });
+    }
+
+    packageCards.forEach((card) => {
+      const choose = () => {
+        selectedPackage = card.getAttribute('data-package');
+        renderPackageSelection();
+        trackIntakeEvent('package_selected', { label: 'Start page package', packageKey: selectedPackage });
+      };
+      card.addEventListener('click', choose);
+      card.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          choose();
+        }
+      });
+    });
+
+    renderPackageSelection();
+
+    async function getPaymentLink(packageKey) {
+      try {
+        const response = await fetch('/api/public-config');
+        const payload = await response.json();
+        if (response.ok && payload.ok && payload.config && payload.config.paymentLinks) {
+          return payload.config.paymentLinks[packageKey] || '';
+        }
+      } catch (error) {
+        // Fall through to the case page if config is unavailable.
+      }
+      return '';
+    }
 
     function trackIntakeEvent(eventType, metadata) {
       if (window.DepartedAnalytics && typeof window.DepartedAnalytics.track === 'function') {
@@ -742,7 +814,7 @@
         knownPlatforms: document.getElementById('known-platforms').value.trim(),
         profileUrls: document.getElementById('profile-urls').value.trim(),
         caseDetails: document.getElementById('case-details').value.trim(),
-        selectedPackage: params.get('package') || 'standard',
+        selectedPackage,
         referralSource: params.get('ref') || ''
       };
 
@@ -776,10 +848,24 @@
           packageKey: caseData.selectedPackage || intakeData.selectedPackage
         });
 
-        const nextUrl = new URL('/review', window.location.origin);
+        submitButton.textContent = 'Opening secure payment...';
+        intakeHelper.textContent = 'Your case is saved. Taking you to the secure card payment...';
+
+        const paymentLink = await getPaymentLink(caseData.selectedPackage || selectedPackage);
+
+        if (paymentLink) {
+          const paymentUrl = new URL(paymentLink);
+          paymentUrl.searchParams.set('client_reference_id', payload.case.id);
+          if (intakeData.clientEmail) {
+            paymentUrl.searchParams.set('prefilled_email', intakeData.clientEmail);
+          }
+          window.location.href = paymentUrl.toString();
+          return;
+        }
+
+        const nextUrl = new URL('/case', window.location.origin);
         nextUrl.searchParams.set('case', payload.case.id);
         nextUrl.searchParams.set('token', payload.publicToken);
-        nextUrl.searchParams.set('package', payload.case.selectedPackage || intakeData.selectedPackage);
         window.location.href = nextUrl.toString();
         return;
       } catch (error) {
@@ -790,7 +876,9 @@
         });
       } finally {
         submitButton.disabled = false;
-        submitButton.textContent = 'Continue to Package and Payment';
+        if (submitButton.textContent !== 'Opening secure payment...') {
+          submitButton.textContent = 'Continue to secure payment';
+        }
       }
     });
   </script>

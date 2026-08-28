@@ -74,6 +74,7 @@ module.exports = {
   InvalidJsonBodyError,
   methodNotAllowed,
   parseJsonBody,
+  readRawBody,
   sendError,
   sendJson
 };
