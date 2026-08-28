@@ -1087,8 +1087,8 @@ function buildAdminCase(caseRecord) {
     operational: buildOperationalKit(caseRecord),
     publicToken: caseRecord.publicToken,
     caseLinks: {
-      payment: `/review?case=${caseRecord.id}&token=${caseRecord.publicToken}&package=${caseRecord.selectedPackage}`,
-      documents: `/documents?case=${caseRecord.id}&token=${caseRecord.publicToken}`,
+      payment: `/case?case=${caseRecord.id}&token=${caseRecord.publicToken}`,
+      documents: `/case?case=${caseRecord.id}&token=${caseRecord.publicToken}#documents`,
       status: `/case?case=${caseRecord.id}&token=${caseRecord.publicToken}`
     },
     intakeSource: caseRecord.intakeSource,

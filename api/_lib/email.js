@@ -129,10 +129,12 @@ function buildShell(title, intro, bodyHtml, outro = '') {
 function caseUrls(caseRecord) {
   const settings = getEmailSettings();
 
+  const casePage = `${settings.baseUrl}/case?case=${encodeURIComponent(caseRecord.id)}&token=${encodeURIComponent(caseRecord.publicToken)}`;
+
   return {
-    payment: `${settings.baseUrl}/review?case=${encodeURIComponent(caseRecord.id)}&token=${encodeURIComponent(caseRecord.publicToken)}&package=${encodeURIComponent(caseRecord.selectedPackage)}`,
-    documents: `${settings.baseUrl}/documents?case=${encodeURIComponent(caseRecord.id)}&token=${encodeURIComponent(caseRecord.publicToken)}`,
-    status: `${settings.baseUrl}/case?case=${encodeURIComponent(caseRecord.id)}&token=${encodeURIComponent(caseRecord.publicToken)}`
+    payment: casePage,
+    documents: `${casePage}#documents`,
+    status: casePage
   };
 }
 
@@ -184,22 +186,21 @@ async function sendCaseCreatedEmails(caseRecord) {
       `Reference: ${caseRecord.reference}`,
       '',
       'You do not need to send passwords.',
-      'Supporting documents are only requested after the checkout handoff has been confirmed.',
+      'We only ask for supporting documents after payment is confirmed.',
       '',
-      `Your next step: ${urls.payment}`,
-      `Your status page: ${urls.status}`,
+      `Your private case page (save this link): ${urls.status}`,
       '',
       'Departed Digital'
     ].join('\n'),
     html: buildShell(
       'We’ve received your case.',
-      `Your reference is ${caseRecord.reference}. We’ve created the record and the next step is the private case review page.`,
+      `Your reference is ${caseRecord.reference}. Everything about your case lives on one private page — save the link below.`,
       [
         `<p>Hello ${escapeHtml(caseRecord.clientName)},</p>`,
         `<p>We’ve received your case for <strong>${escapeHtml(caseRecord.deceasedName)}</strong>.</p>`,
-        `<p>You do not need to send passwords. Supporting documents are only requested after the checkout handoff has been confirmed.</p>`,
-        `<p><a href="${escapeHtml(urls.payment)}" style="display:inline-block;background:#c9a84c;color:#111b35;text-decoration:none;padding:12px 18px;border-radius:999px;font-weight:700;">Open your private case review</a></p>`,
-        `<p><a href="${escapeHtml(urls.status)}">Open your case status page</a></p>`
+        `<p>You do not need to send passwords. We only ask for supporting documents after payment is confirmed.</p>`,
+        `<p><a href="${escapeHtml(urls.status)}" style="display:inline-block;background:#c9a84c;color:#111b35;text-decoration:none;padding:12px 18px;border-radius:999px;font-weight:700;">Open your private case page</a></p>`,
+        `<p style="color:#6b7a8d;font-size:14px;">Save this link — it works from any device.</p>`
       ].join(''),
       'If anything is unclear, just reply to this email and we’ll help.'
     )
@@ -262,6 +263,59 @@ async function sendDocumentsUploadedEmails(caseRecord, documentCount) {
   return deliveries;
 }
 
+async function sendPaymentConfirmedEmail(caseRecord) {
+  const settings = getEmailSettings();
+  const urls = caseUrls(caseRecord);
+  const deliveries = [];
+
+  if (settings.operationsAlertEmail) {
+    deliveries.push(await sendEmail({
+      to: settings.operationsAlertEmail,
+      subject: `Payment received for ${caseRecord.reference}`,
+      text: [
+        `Payment confirmed for ${caseRecord.reference} (${caseRecord.packageLabel}).`,
+        `Client: ${caseRecord.clientName} <${caseRecord.clientEmail}>`,
+        `Case page: ${urls.status}`
+      ].join('\n'),
+      html: buildShell(
+        'Payment received.',
+        `Stripe confirmed payment for ${caseRecord.reference} (${caseRecord.packageLabel}). Document upload is now open for the family.`,
+        [
+          `<p><strong>Client:</strong> ${escapeHtml(caseRecord.clientName)} (${escapeHtml(caseRecord.clientEmail)})</p>`,
+          `<p><a href="${escapeHtml(urls.status)}">${escapeHtml(urls.status)}</a></p>`
+        ].join('')
+      )
+    }));
+  }
+
+  deliveries.push(await sendEmail({
+    to: caseRecord.clientEmail,
+    subject: `Payment received — your next step for ${caseRecord.reference}`,
+    text: [
+      `Hello ${caseRecord.clientName},`,
+      '',
+      `Thank you — your payment for case ${caseRecord.reference} has been received.`,
+      'The next step is yours: upload the death certificate and proof of your authority on your private case page. We take it from there.',
+      '',
+      `Your private case page: ${urls.status}`,
+      '',
+      'Departed Digital'
+    ].join('\n'),
+    html: buildShell(
+      'Payment received — here’s your next step.',
+      `Thank you. Your payment for case ${caseRecord.reference} is confirmed, and the secure document upload is now open.`,
+      [
+        `<p>Hello ${escapeHtml(caseRecord.clientName)},</p>`,
+        `<p>The next step is yours: upload the death certificate and proof of your authority on your private case page. Photos taken on a phone are fine. After that, we handle everything.</p>`,
+        `<p><a href="${escapeHtml(urls.documents)}" style="display:inline-block;background:#c9a84c;color:#111b35;text-decoration:none;padding:12px 18px;border-radius:999px;font-weight:700;">Upload your documents</a></p>`
+      ].join(''),
+      'If anything is unclear, just reply to this email and we’ll help.'
+    )
+  }));
+
+  return deliveries;
+}
+
 async function sendManualCaseEmail(caseRecord, options) {
   const kind = String(options.kind || 'client_update');
   const subject = String(options.subject || '').trim().slice(0, 200);
@@ -293,5 +347,6 @@ module.exports = {
   getEmailSettings,
   sendCaseCreatedEmails,
   sendDocumentsUploadedEmails,
-  sendManualCaseEmail
+  sendManualCaseEmail,
+  sendPaymentConfirmedEmail
 };

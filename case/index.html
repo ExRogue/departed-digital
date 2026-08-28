@@ -234,6 +234,43 @@
     .button.secondary {
       background: rgba(255,255,255,0.72);
     }
+    .field-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+    .field { display: grid; gap: 8px; }
+    .field.full { grid-column: 1 / -1; }
+    .field label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--navy);
+    }
+    .field input,
+    .field select,
+    .field textarea {
+      width: 100%;
+      padding: 13px 15px;
+      border-radius: 12px;
+      border: 1.5px solid var(--border);
+      background: #fffdf8;
+      color: var(--text);
+      font: inherit;
+    }
+    .field textarea { min-height: 110px; resize: vertical; }
+    .upload-notice {
+      margin: 0 0 18px;
+      padding: 16px 18px;
+      border-radius: 16px;
+      background: #fff8e7;
+      border: 1px solid rgba(201,168,76,0.38);
+      color: #6a5520;
+    }
+    @media (max-width: 720px) {
+      .field-grid { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
@@ -241,8 +278,7 @@
     <div class="nav-inner">
       <a href="/" class="logo">Departed<span>.</span>Digital</a>
       <div class="nav-links">
-        <a href="/review" id="payment-nav-link">Review &amp; payment</a>
-        <a href="/documents" id="documents-nav-link">Documents</a>
+        <a href="#documents" id="documents-nav-link">Documents</a>
         <a href="/about">About</a>
         <a href="/blog">Resources</a>
       </div>
@@ -271,8 +307,7 @@
             <ul id="status-timeline" class="timeline"></ul>
 
             <div class="cta-row">
-              <a class="button secondary" id="payment-link" href="/review">Review &amp; payment</a>
-              <a class="button secondary" id="documents-link" href="/documents">Upload documents</a>
+              <a class="button secondary" id="documents-jump" href="#documents" style="display:none;">Upload documents</a>
               <button class="button secondary" id="copy-case-link" type="button">Copy private case link</button>
             </div>
             <p class="copy-note" id="copy-case-link-helper">Save or bookmark the private case link so you can return to this page later from the same email or browser.</p>
@@ -290,6 +325,46 @@
             </div>
           </aside>
         </div>
+
+        <section class="panel" id="documents" style="margin-top: 24px; display:none;">
+          <span class="eyebrow" style="margin-bottom: 8px;">Documents</span>
+          <h2 style="font-size:1.8rem; margin-bottom:10px;">Send your documents</h2>
+          <p class="helper" id="document-helper" style="margin-bottom: 18px;">Upload the death certificate and proof of your authority. Photos taken on a phone are fine — we resize large images automatically.</p>
+          <form id="document-form">
+            <div class="field-grid">
+              <div class="field full">
+                <label for="authority-basis">Your relationship or authority</label>
+                <select id="authority-basis" required>
+                  <option value="">Select one</option>
+                  <option value="executor">Executor or administrator</option>
+                  <option value="next_of_kin">Next of kin or close family member</option>
+                  <option value="solicitor">Solicitor or probate professional</option>
+                  <option value="funeral_director">Funeral director or staff member</option>
+                  <option value="other">Other authorised representative</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="death-certificate">Death certificate</label>
+                <input id="death-certificate" type="file" accept=".pdf,image/*" />
+              </div>
+              <div class="field">
+                <label for="authority-proof">Proof of relationship or authority</label>
+                <input id="authority-proof" type="file" accept=".pdf,image/*" />
+              </div>
+              <div class="field full">
+                <label for="supporting-files">Additional supporting files</label>
+                <input id="supporting-files" type="file" multiple accept=".pdf,image/*,.doc,.docx" />
+              </div>
+              <div class="field full">
+                <label for="document-notes">Notes about the documents</label>
+                <textarea id="document-notes" placeholder="Anything important about the documents, or anything we should know before we begin."></textarea>
+              </div>
+            </div>
+            <div class="cta-row" style="margin-top: 18px;">
+              <button class="button" id="upload-documents" type="submit" data-track="documents_upload" data-track-label="Case page upload documents" style="background: var(--gold); color: var(--navy-dark); border: none; font-weight: 700; cursor: pointer;">Upload documents securely</button>
+            </div>
+          </form>
+        </section>
       </div>
     </div>
   </main>
@@ -309,6 +384,7 @@
     const params = new URLSearchParams(window.location.search);
     const caseIdFromUrl = params.get('case') || '';
     const tokenFromUrl = params.get('token') || '';
+    const arrivedFromPayment = params.get('paid') === '1';
     const emptyState = document.getElementById('empty-state');
     const caseLayout = document.getElementById('case-layout');
     const statusStrip = document.getElementById('status-strip');
@@ -316,12 +392,20 @@
     const statusTimeline = document.getElementById('status-timeline');
     const summaryList = document.getElementById('summary-list');
     const platformList = document.getElementById('platform-list');
-    const paymentLink = document.getElementById('payment-link');
-    const documentsLink = document.getElementById('documents-link');
-    const paymentNavLink = document.getElementById('payment-nav-link');
-    const documentsNavLink = document.getElementById('documents-nav-link');
     const copyCaseLinkButton = document.getElementById('copy-case-link');
     const copyCaseLinkHelper = document.getElementById('copy-case-link-helper');
+    const documentsSection = document.getElementById('documents');
+    const documentsJump = document.getElementById('documents-jump');
+    const documentsNavLink = document.getElementById('documents-nav-link');
+    const documentForm = document.getElementById('document-form');
+    const documentHelper = document.getElementById('document-helper');
+
+    let caseData = null;
+    let caseToken = tokenFromUrl || '';
+    const uploadLimits = {
+      maxDocumentCount: 6,
+      maxDocumentSizeBytes: 3 * 1024 * 1024
+    };
 
     function escapeHtml(value) {
       return String(value || '')
@@ -360,7 +444,10 @@
       return ok;
     }
 
-    function renderCase(caseData) {
+    function renderCase(nextCase) {
+      caseData = nextCase;
+      caseToken = tokenFromUrl || caseData.publicToken || caseToken;
+
       statusStrip.innerHTML = [
         ['Reference', caseData.reference || 'Pending'],
         ['Status', titleize(caseData.status || 'pending')],
@@ -405,58 +492,290 @@
         )).join('')
         : '<li>We will list each account here as the case is set up.</li>';
 
-      const caseToken = tokenFromUrl || caseData.publicToken || '';
+      updateDocumentsSection();
+    }
 
-      if (caseData.id && caseToken) {
-        const paymentHref = '/review?case=' + encodeURIComponent(caseData.id) + '&token=' + encodeURIComponent(caseToken) + '&package=' + encodeURIComponent(caseData.selectedPackage || 'standard');
-        const documentsHref = '/documents?case=' + encodeURIComponent(caseData.id) + '&token=' + encodeURIComponent(caseToken);
-        paymentLink.href = paymentHref;
-        documentsLink.href = documentsHref;
-        paymentNavLink.href = paymentHref;
-        documentsNavLink.href = documentsHref;
+    function updateDocumentsSection() {
+      const unlocked = caseData && caseData.paymentStatus === 'paid';
+      documentsSection.style.display = unlocked ? '' : 'none';
+      documentsJump.style.display = unlocked ? '' : 'none';
+      documentsNavLink.style.display = unlocked ? '' : 'none';
+
+      if (unlocked) {
+        if (caseData.authorityBasis) {
+          document.getElementById('authority-basis').value = caseData.authorityBasis;
+        }
+        if (caseData.documentNotes && !document.getElementById('document-notes').value) {
+          document.getElementById('document-notes').value = caseData.documentNotes;
+        }
+      }
+    }
+
+    async function fetchCase() {
+      if (!caseIdFromUrl && !(caseData && caseData.id)) {
+        return null;
+      }
+
+      const id = caseIdFromUrl || caseData.id;
+      const token = caseToken;
+
+      if (!id || !token) {
+        return null;
+      }
+
+      try {
+        const response = await fetch('/api/cases?id=' + encodeURIComponent(id) + '&token=' + encodeURIComponent(token));
+        const payload = await response.json();
+        if (response.ok && payload.ok) {
+          localStorage.setItem('departedDigitalIntake', JSON.stringify({
+            ...payload.case,
+            publicToken: token
+          }));
+          return payload.case;
+        }
+      } catch (error) {
+        // Network hiccup - callers decide how to proceed.
+      }
+      return null;
+    }
+
+    async function loadConfig() {
+      try {
+        const response = await fetch('/api/public-config');
+        const payload = await response.json();
+        if (response.ok && payload.ok && payload.config && payload.config.limits) {
+          uploadLimits.maxDocumentCount = payload.config.limits.maxDocumentCount;
+          uploadLimits.maxDocumentSizeBytes = payload.config.limits.maxDocumentSizeBytes;
+        }
+      } catch (error) {
+        // Keep defaults.
+      }
+    }
+
+    // Phone photos of certificates are routinely larger than the upload
+    // limit; shrink oversized images client-side before encoding.
+    async function compressImageIfNeeded(file) {
+      if (!/^image\//.test(file.type) || file.type === 'image/gif' || file.size <= uploadLimits.maxDocumentSizeBytes) {
+        return file;
+      }
+
+      let bitmap = null;
+      try {
+        bitmap = await createImageBitmap(file);
+      } catch (error) {
+        return file;
+      }
+
+      const maxDimension = 2200;
+      const scale = Math.min(1, maxDimension / Math.max(bitmap.width, bitmap.height));
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.max(1, Math.round(bitmap.width * scale));
+      canvas.height = Math.max(1, Math.round(bitmap.height * scale));
+      canvas.getContext('2d').drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+
+      for (const quality of [0.85, 0.7, 0.55]) {
+        const blob = await new Promise((resolve) => canvas.toBlob(resolve, 'image/jpeg', quality));
+        if (blob && blob.size <= uploadLimits.maxDocumentSizeBytes) {
+          return new File([blob], file.name.replace(/\.[^.]+$/, '') + '.jpg', { type: 'image/jpeg' });
+        }
+      }
+
+      return file;
+    }
+
+    async function readFileAsData(file, documentType) {
+      const data = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = () => reject(new Error('Could not read file.'));
+        reader.readAsDataURL(file);
+      });
+
+      return {
+        name: file.name,
+        type: file.type || 'application/octet-stream',
+        size: file.size,
+        documentType,
+        data
+      };
+    }
+
+    documentForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      if (!caseData || !caseData.id || !caseToken) {
+        documentHelper.textContent = 'We could not find the case for this upload. Please reopen your private case link and try again.';
+        return;
+      }
+
+      const deathCertificate = document.getElementById('death-certificate').files[0];
+      const authorityProof = document.getElementById('authority-proof').files[0];
+      const additionalFiles = Array.from(document.getElementById('supporting-files').files);
+      const authorityBasis = document.getElementById('authority-basis').value;
+      const notes = document.getElementById('document-notes').value.trim();
+      const files = [];
+
+      if (!authorityBasis) {
+        documentHelper.textContent = 'Tell us your relationship or authority before uploading the documents.';
+        return;
+      }
+
+      documentHelper.textContent = 'Preparing your documents...';
+
+      if (deathCertificate) {
+        files.push(await readFileAsData(await compressImageIfNeeded(deathCertificate), 'death_certificate'));
+      }
+
+      if (authorityProof) {
+        files.push(await readFileAsData(await compressImageIfNeeded(authorityProof), 'authority_proof'));
+      }
+
+      for (const file of additionalFiles) {
+        files.push(await readFileAsData(await compressImageIfNeeded(file), 'supporting_document'));
+      }
+
+      if (!files.length) {
+        documentHelper.textContent = 'Select at least one document to upload.';
+        return;
+      }
+
+      if (files.length > uploadLimits.maxDocumentCount) {
+        documentHelper.textContent = 'Please upload no more than ' + uploadLimits.maxDocumentCount + ' files at a time.';
+        return;
+      }
+
+      const oversizedFile = files.find((file) => file.size > uploadLimits.maxDocumentSizeBytes);
+      if (oversizedFile) {
+        documentHelper.textContent = oversizedFile.name + ' is too large. Keep each file under ' + Math.round(uploadLimits.maxDocumentSizeBytes / (1024 * 1024)) + 'MB.';
+        return;
+      }
+
+      const submitButton = documentForm.querySelector('button[type="submit"]');
+      submitButton.disabled = true;
+      submitButton.textContent = 'Uploading securely...';
+
+      try {
+        // One file per request keeps each upload comfortably inside the
+        // platform's request size limit.
+        for (let index = 0; index < files.length; index += 1) {
+          documentHelper.textContent = 'Uploading document ' + (index + 1) + ' of ' + files.length + '...';
+
+          const response = await fetch('/api/documents', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              id: caseData.id,
+              publicToken: caseToken,
+              authorityBasis,
+              notes,
+              files: [files[index]],
+              notify: index === files.length - 1
+            })
+          });
+
+          const payload = await response.json().catch(() => ({}));
+
+          if (!response.ok || !payload.ok) {
+            const uploaded = index;
+            const baseMessage = payload.error || 'We could not upload ' + files[index].name + ' just now.';
+            throw new Error(uploaded > 0
+              ? baseMessage + ' The first ' + uploaded + ' document' + (uploaded === 1 ? '' : 's') + ' were saved - please try the remaining ones again.'
+              : baseMessage);
+          }
+
+          caseData = payload.case;
+        }
+
+        localStorage.setItem('departedDigitalIntake', JSON.stringify({
+          ...caseData,
+          publicToken: caseToken
+        }));
+
+        if (window.DepartedAnalytics && typeof window.DepartedAnalytics.track === 'function') {
+          window.DepartedAnalytics.track('documents_uploaded', {
+            label: 'Documents uploaded',
+            count: files.length
+          });
+        }
+
+        renderCase(caseData);
+        documentForm.reset();
+        documentHelper.textContent = 'Documents received - thank you. There is nothing else you need to do right now; we will take it from here and keep this page updated.';
+      } catch (error) {
+        documentHelper.textContent = error.message || 'We could not upload those documents just now.';
+      } finally {
+        submitButton.disabled = false;
+        submitButton.textContent = 'Upload documents securely';
+      }
+    });
+
+    // Right after Stripe redirects back, the webhook may still be in flight -
+    // poll briefly so the page unlocks itself without a manual refresh.
+    async function pollForPayment() {
+      for (let attempt = 0; attempt < 12; attempt += 1) {
+        if (caseData && caseData.paymentStatus === 'paid') {
+          return;
+        }
+
+        await new Promise((resolve) => setTimeout(resolve, 10000));
+        const fresh = await fetchCase();
+
+        if (fresh) {
+          renderCase(fresh);
+
+          if (fresh.paymentStatus === 'paid') {
+            documentHelper.textContent = 'Payment confirmed - thank you. Upload the death certificate and proof of your authority below when you are ready.';
+            return;
+          }
+        }
       }
     }
 
     (async () => {
-      let caseData = null;
+      await loadConfig();
+
+      let initialCase = null;
 
       if (caseIdFromUrl && tokenFromUrl) {
-        try {
-          const response = await fetch('/api/cases?id=' + encodeURIComponent(caseIdFromUrl) + '&token=' + encodeURIComponent(tokenFromUrl));
-          const payload = await response.json();
-          if (response.ok && payload.ok) {
-            caseData = payload.case;
-            localStorage.setItem('departedDigitalIntake', JSON.stringify({
-              ...payload.case,
-              publicToken: tokenFromUrl
-            }));
-          }
-        } catch (error) {
-          // Fall back to local storage.
-        }
+        initialCase = await fetchCase();
       }
 
-      if (!caseData) {
+      if (!initialCase) {
         const intakeRaw = localStorage.getItem('departedDigitalIntake');
         if (intakeRaw) {
-          const intake = JSON.parse(intakeRaw);
-          if (intake.id && (intake.publicToken || tokenFromUrl)) {
-            caseData = intake;
+          try {
+            const intake = JSON.parse(intakeRaw);
+            if (intake.id && (intake.publicToken || tokenFromUrl)) {
+              initialCase = intake;
+              caseToken = tokenFromUrl || intake.publicToken || '';
+            }
+          } catch (error) {
+            // Corrupt local state - fall through to the empty state.
           }
         }
       }
 
-      if (!caseData) {
+      if (!initialCase) {
         emptyState.style.display = 'block';
         caseLayout.style.display = 'none';
         return;
       }
 
-      renderCase(caseData);
+      renderCase(initialCase);
+
+      // Refresh from the server when we only had localStorage to go on.
+      if (!caseIdFromUrl && initialCase.id && caseToken) {
+        caseData = initialCase;
+        const fresh = await fetchCase();
+        if (fresh) {
+          renderCase(fresh);
+        }
+      }
 
       if (copyCaseLinkButton) {
         copyCaseLinkButton.addEventListener('click', async () => {
-          const caseToken = tokenFromUrl || caseData.publicToken || '';
           if (!caseData.id || !caseToken) {
             copyCaseLinkHelper.textContent = 'We could not build the private case link just now. Please bookmark this page instead.';
             return;
@@ -471,6 +790,11 @@
             copyCaseLinkHelper.textContent = 'We could not copy the private link automatically. Please bookmark this page instead.';
           }
         });
+      }
+
+      if (arrivedFromPayment && caseData.paymentStatus !== 'paid') {
+        nextAction.innerHTML = '<strong>Thank you - your payment is being confirmed.</strong> This usually takes a few seconds. This page will update by itself.';
+        pollForPayment();
       }
     })();
   </script>
