@@ -487,8 +487,14 @@
     /* ── SERVICES GRID ── */
     .services-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 28px;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 20px;
+    }
+    @media (max-width: 1024px) {
+      .services-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 620px) {
+      .services-grid { grid-template-columns: 1fr; }
     }
     .service-card {
       background: var(--cream);
@@ -804,7 +810,7 @@
     .faq { background: var(--white); }
     .faq-list {
       margin-top: 48px;
-      max-width: 740px;
+      max-width: 880px;
     }
     .faq-item {
       border-bottom: 1px solid var(--border);
@@ -1681,7 +1687,6 @@
           </div>
           <div class="footer-col">
             <h4>Contact</h4>
-            <a href="mailto:hello@departed.digital">hello@departed.digital</a>
             <a href="mailto:hello@departed.digital">hello@departed.digital</a>
             <p>London, United Kingdom</p>
           </div>
