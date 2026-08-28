@@ -144,7 +144,8 @@ const ADMIN_ROLE_PERMISSIONS = {
 };
 
 const MAX_DOCUMENT_COUNT = 6;
-const MAX_DOCUMENT_SIZE_BYTES = 4 * 1024 * 1024;
+// 3MB decoded: one base64-encoded file per request must stay under Vercel's ~4.5MB body limit.
+const MAX_DOCUMENT_SIZE_BYTES = 3 * 1024 * 1024;
 const MAX_ANALYTICS_EVENTS = 5000;
 const ADMIN_ENTRY_PATH = '/studio';
 
@@ -163,9 +164,6 @@ function getPublicConfig() {
     },
     analytics: {
       endpoint: '/api/analytics'
-    },
-    management: {
-      hiddenEntryPath: ADMIN_ENTRY_PATH
     }
   };
 }

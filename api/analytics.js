@@ -1,8 +1,26 @@
-const { allowCors, methodNotAllowed, parseJsonBody, sendError, sendJson } = require('./_lib/http');
-const { recordAnalyticsEvent } = require('./_lib/store');
+const { allowCors, handleBadJson, methodNotAllowed, parseJsonBody, sendError, sendJson } = require('./_lib/http');
+const { isUuidLike, recordAnalyticsEvent } = require('./_lib/store');
 
 function normalizeString(value, maxLength = 240) {
   return String(value || '').trim().slice(0, maxLength);
+}
+
+function sanitizeMetadata(value) {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    return {};
+  }
+
+  try {
+    // Round-trip strips functions/undefined; an escaped NUL (backslash-u0000)
+    // in the serialized JSON is rejected by Postgres jsonb, so drop those.
+    const serialized = JSON.stringify(value);
+    if (serialized.length > 4000 || serialized.includes('\\u0000')) {
+      return {};
+    }
+    return JSON.parse(serialized);
+  } catch (error) {
+    return {};
+  }
 }
 
 module.exports = async function handler(req, res) {
@@ -29,6 +47,8 @@ module.exports = async function handler(req, res) {
       return;
     }
 
+    const caseId = normalizeString(body.caseId, 80);
+
     await recordAnalyticsEvent({
       eventType,
       sessionId,
@@ -36,12 +56,16 @@ module.exports = async function handler(req, res) {
       label: normalizeString(body.label, 180),
       pageTitle: normalizeString(body.pageTitle, 240),
       referrer: normalizeString(body.referrer, 500),
-      caseId: normalizeString(body.caseId, 80),
-      metadata: body.metadata && typeof body.metadata === 'object' ? body.metadata : {}
+      caseId: isUuidLike(caseId) ? caseId : '',
+      metadata: sanitizeMetadata(body.metadata)
     });
 
     sendJson(res, 200, { ok: true });
   } catch (error) {
+    if (handleBadJson(res, error)) {
+      return;
+    }
+    console.error('analytics event failed', error);
     sendError(res, 500, 'We could not save the analytics event.');
   }
 };

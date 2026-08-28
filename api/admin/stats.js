@@ -108,6 +108,7 @@ module.exports = async function handler(req, res) {
       roles: permissions.includes('users.manage') ? ADMIN_ROLES : []
     });
   } catch (error) {
+    console.error('admin stats failed', error);
     sendError(res, 500, 'We could not load dashboard stats.');
   }
 };

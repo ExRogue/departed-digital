@@ -83,6 +83,7 @@ module.exports = async function handler(req, res) {
       delivery
     });
   } catch (error) {
-    sendError(res, 500, error.message || 'We could not send the email.');
+    console.error('admin notification failed', error);
+    sendError(res, 500, 'We could not send the email.');
   }
 };

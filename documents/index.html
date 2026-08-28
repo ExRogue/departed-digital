@@ -247,9 +247,9 @@
     <div class="nav-inner">
       <a href="/" class="logo">Departed<span>.</span>Digital</a>
       <div style="display:flex; gap:18px; flex-wrap:wrap;">
-        <a class="nav-link" href="/review">Back to case review</a>
-        <a class="nav-link" id="status-nav-link" href="/case">Case status</a>
-        <a class="nav-link" href="/start">Start again</a>
+        <a class="nav-link" id="review-nav-link" href="/review">Review &amp; payment</a>
+        <a class="nav-link" id="status-nav-link" href="/case">Your case</a>
+        <a class="nav-link" href="/">Home</a>
       </div>
     </div>
   </nav>
@@ -258,7 +258,7 @@
     <div class="container">
       <span class="eyebrow">Step 3</span>
       <h1>Send the supporting documents for this case.</h1>
-      <p class="intro">This step comes after payment. Use it to send the death certificate, proof of authority, and any supporting files through the case record rather than loose email attachments.</p>
+      <p class="intro">This step comes after payment. Use it to send the death certificate, proof of your authority, and any other files — securely attached to your case rather than sent as loose email attachments.</p>
 
       <div class="prep-strip">
         <div class="prep-card">
@@ -273,6 +273,10 @@
           <strong>Accepted formats</strong>
           <span>PDF and common image formats, plus extra supporting files when needed.</span>
         </div>
+      </div>
+
+      <div class="notice" id="payment-gate-notice" style="display:none;">
+        Payment for this case has not been confirmed yet, so document upload is not open. There is nothing wrong — once payment is confirmed you can come back here and upload everything in one go. If you think this is a mistake, email hello@departed.digital.
       </div>
 
       <div class="notice" id="storage-notice" style="display:none;">
@@ -312,10 +316,10 @@
               <textarea id="document-notes" placeholder="Explain anything important about the documents supplied or anything we should know before platform submissions begin."></textarea>
             </div>
           </div>
-          <p class="disabled-note" id="document-helper">Upload the death certificate and proof of authority here once payment has been confirmed. We review the case file from this point onward.</p>
+          <p class="disabled-note" id="document-helper">Upload the death certificate and proof of authority here once payment has been confirmed. Photos taken on a phone are fine — we resize large images automatically.</p>
           <button class="button primary" id="upload-documents" type="submit" data-track="documents_upload" data-track-label="Documents upload supporting documents">Upload supporting documents</button>
-          <a class="button secondary" href="/review">Back to case review</a>
-          <a class="button secondary" id="status-link" href="/case">Case status</a>
+          <a class="button secondary" id="review-link" href="/review">Back to review &amp; payment</a>
+          <a class="button secondary" id="status-link" href="/case">View your case</a>
           </form>
         </section>
 
@@ -368,6 +372,12 @@
       maxDocumentSizeBytes: 4 * 1024 * 1024
     };
 
+    function titleize(value) {
+      return String(value || '')
+        .replace(/_/g, ' ')
+        .replace(/\b\w/g, (char) => char.toUpperCase());
+    }
+
     function escapeHtml(value) {
       return String(value || '')
         .replace(/&/g, '&amp;')
@@ -384,10 +394,9 @@
         ['Email', caseData.clientEmail || 'Not provided'],
         ['Deceased', caseData.deceasedName || 'Not provided'],
         ['Package', caseData.packageLabel || caseData.selectedPackage || 'Not provided'],
-        ['Outcome', caseData.preferredOutcome || 'Not provided'],
+        ['Outcome', titleize(caseData.preferredOutcome) || 'Not provided'],
         ['Relationship', caseData.relationshipToDeceased || 'Not provided'],
-        ['Known platforms', caseData.knownPlatforms || 'Not provided'],
-        ['Platform workflow', (caseData.platformTasks || []).length ? caseData.platformTasks.map((task) => task.name + ' (' + task.status.replace(/_/g, ' ') + ')').join(', ') : 'Not yet created']
+        ['Known platforms', caseData.knownPlatforms || 'Not provided']
       ];
 
       if (caseData.documents && caseData.documents.length) {
@@ -396,10 +405,43 @@
 
       summaryList.innerHTML = summary.map(([label, value]) => '<li><strong>' + escapeHtml(label) + ':</strong> ' + escapeHtml(value) + '</li>').join('');
       if (caseData.id && state.publicToken) {
-        const href = '/case?case=' + encodeURIComponent(caseData.id) + '&token=' + encodeURIComponent(state.publicToken);
-        statusLink.href = href;
-        statusNavLink.href = href;
+        const query = 'case=' + encodeURIComponent(caseData.id) + '&token=' + encodeURIComponent(state.publicToken);
+        statusLink.href = '/case?' + query;
+        statusNavLink.href = '/case?' + query;
+        document.getElementById('review-link').href = '/review?' + query;
+        document.getElementById('review-nav-link').href = '/review?' + query;
       }
+    }
+
+    // Phone photos of certificates are routinely larger than the upload
+    // limit; shrink oversized images client-side before encoding.
+    async function compressImageIfNeeded(file) {
+      if (!/^image\//.test(file.type) || file.type === 'image/gif' || file.size <= state.maxDocumentSizeBytes) {
+        return file;
+      }
+
+      let bitmap = null;
+      try {
+        bitmap = await createImageBitmap(file);
+      } catch (error) {
+        return file;
+      }
+
+      const maxDimension = 2200;
+      const scale = Math.min(1, maxDimension / Math.max(bitmap.width, bitmap.height));
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.max(1, Math.round(bitmap.width * scale));
+      canvas.height = Math.max(1, Math.round(bitmap.height * scale));
+      canvas.getContext('2d').drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+
+      for (const quality of [0.85, 0.7, 0.55]) {
+        const blob = await new Promise((resolve) => canvas.toBlob(resolve, 'image/jpeg', quality));
+        if (blob && blob.size <= state.maxDocumentSizeBytes) {
+          return new File([blob], file.name.replace(/\.[^.]+$/, '') + '.jpg', { type: 'image/jpeg' });
+        }
+      }
+
+      return file;
     }
 
     async function readFileAsData(file, documentType) {
@@ -486,16 +528,18 @@
         return;
       }
 
+      helper.textContent = 'Preparing your documents...';
+
       if (deathCertificate) {
-        files.push(await readFileAsData(deathCertificate, 'death_certificate'));
+        files.push(await readFileAsData(await compressImageIfNeeded(deathCertificate), 'death_certificate'));
       }
 
       if (authorityProof) {
-        files.push(await readFileAsData(authorityProof, 'authority_proof'));
+        files.push(await readFileAsData(await compressImageIfNeeded(authorityProof), 'authority_proof'));
       }
 
       for (const file of additionalFiles) {
-        files.push(await readFileAsData(file, 'supporting_document'));
+        files.push(await readFileAsData(await compressImageIfNeeded(file), 'supporting_document'));
       }
 
       if (!files.length) {
@@ -517,32 +561,43 @@
       const submitButton = form.querySelector('button[type="submit"]');
       submitButton.disabled = true;
       submitButton.textContent = 'Uploading securely...';
-      helper.textContent = 'Uploading your documents to the case record...';
 
       try {
-        const response = await fetch('/api/documents', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            id: state.caseData.id,
-            publicToken: state.publicToken,
-            authorityBasis,
-            notes,
-            files
-          })
-        });
+        // One file per request keeps each upload comfortably inside the
+        // platform's request size limit.
+        for (let index = 0; index < files.length; index += 1) {
+          helper.textContent = 'Uploading document ' + (index + 1) + ' of ' + files.length + '...';
 
-        const payload = await response.json();
+          const response = await fetch('/api/documents', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              id: state.caseData.id,
+              publicToken: state.publicToken,
+              authorityBasis,
+              notes,
+              files: [files[index]],
+              notify: index === files.length - 1
+            })
+          });
 
-        if (!response.ok || !payload.ok) {
-          throw new Error(payload.error || 'Upload failed.');
+          const payload = await response.json().catch(() => ({}));
+
+          if (!response.ok || !payload.ok) {
+            const uploaded = index;
+            const baseMessage = payload.error || 'We could not upload ' + files[index].name + ' just now.';
+            throw new Error(uploaded > 0
+              ? baseMessage + ' The first ' + uploaded + ' document' + (uploaded === 1 ? '' : 's') + ' were saved — please try the remaining ones again.'
+              : baseMessage);
+          }
+
+          state.caseData = payload.case;
         }
 
-        state.caseData = payload.case;
         localStorage.setItem('departedDigitalIntake', JSON.stringify({
-          ...payload.case,
+          ...state.caseData,
           publicToken: state.publicToken
         }));
         if (window.DepartedAnalytics && typeof window.DepartedAnalytics.track === 'function') {
@@ -552,7 +607,7 @@
           });
         }
         renderSummary(state.caseData);
-        helper.textContent = 'Documents received. We can now review the case reference ' + (state.caseData.reference || '') + ' and confirm the next submission steps.';
+        helper.textContent = 'Documents received — thank you. There is nothing else you need to do right now; we will take it from here and keep your case page updated.';
         form.reset();
       } catch (error) {
         helper.textContent = error.message || 'We could not upload those documents just now.';
@@ -572,6 +627,15 @@
       }
 
       renderSummary(state.caseData);
+
+      if (state.caseData.paymentStatus && state.caseData.paymentStatus !== 'paid') {
+        document.getElementById('payment-gate-notice').style.display = 'block';
+        const submitButton = form.querySelector('button[type="submit"]');
+        submitButton.disabled = true;
+        helper.textContent = 'Document upload opens once payment is confirmed. You do not need to do anything else right now.';
+        return;
+      }
+
       if (state.caseData.authorityBasis) {
         document.getElementById('authority-basis').value = state.caseData.authorityBasis;
       }

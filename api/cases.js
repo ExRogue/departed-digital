@@ -1,11 +1,12 @@
 const { PACKAGE_CONFIG } = require('./_lib/config');
 const { sendCaseCreatedEmails } = require('./_lib/email');
-const { allowCors, methodNotAllowed, parseJsonBody, sendError, sendJson } = require('./_lib/http');
+const { allowCors, handleBadJson, methodNotAllowed, parseJsonBody, sendError, sendJson } = require('./_lib/http');
 const {
   StoreConfigurationError,
   buildPublicCase,
   createCase,
   getCaseForPublic,
+  isUuidLike,
   updatePublicCase
 } = require('./_lib/store');
 
@@ -63,6 +64,11 @@ module.exports = async function handler(req, res) {
         return;
       }
 
+      if (!isUuidLike(caseId)) {
+        sendError(res, 404, 'Case not found.');
+        return;
+      }
+
       const caseRecord = await getCaseForPublic(caseId, publicToken);
 
       if (!caseRecord) {
@@ -110,6 +116,11 @@ module.exports = async function handler(req, res) {
         return;
       }
 
+      if (!isUuidLike(caseId)) {
+        sendError(res, 404, 'Case not found.');
+        return;
+      }
+
       const caseRecord = await getCaseForPublic(caseId, publicToken);
 
       if (!caseRecord) {
@@ -140,6 +151,11 @@ module.exports = async function handler(req, res) {
       return;
     }
 
+    if (handleBadJson(res, error)) {
+      return;
+    }
+
+    console.error('case request failed', error);
     sendError(res, 500, 'We could not process the case request just now.');
   }
 };

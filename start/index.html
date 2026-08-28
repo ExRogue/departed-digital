@@ -589,7 +589,7 @@
     <div class="nav-inner hero-inner">
       <div>
         <span class="eyebrow">Start a case</span>
-        <h1>Begin the case without a long form or another burden.</h1>
+        <h1>Start your case in about a minute.</h1>
         <p>Start with the essentials only. Then choose the package and move into payment when you are ready. Supporting documents come later, once the case is open.</p>
         <div class="hero-chips">
           <div class="hero-chip">Usually about a minute</div>
@@ -602,7 +602,7 @@
         <ul>
           <li>This first step should only take about a minute.</li>
           <li>You do not need passwords for the deceased's accounts.</li>
-          <li>The next screen is where the package and secure checkout handoff decision happens.</li>
+          <li>On the next screen you choose a package and pay when you are ready.</li>
           <li>Every case ends with a written outcome record.</li>
         </ul>
       </div>
@@ -783,13 +783,11 @@
         window.location.href = nextUrl.toString();
         return;
       } catch (error) {
-        localStorage.setItem('departedDigitalIntake', JSON.stringify(intakeData));
-        intakeHelper.textContent = 'We could not reach the live case system just now, so we saved your details in this browser and moved you to the next step.';
-        trackIntakeEvent('intake_submitted', {
-          label: 'Start form submitted with fallback',
+        intakeHelper.textContent = 'Sorry — we could not save your details just now. Please try again in a moment, or email us at hello@departed.digital and we will set the case up for you.';
+        trackIntakeEvent('intake_submit_failed', {
+          label: 'Start form submit failed',
           packageKey: intakeData.selectedPackage || 'standard'
         });
-        window.location.href = '/review?package=' + encodeURIComponent(intakeData.selectedPackage || 'standard');
       } finally {
         submitButton.disabled = false;
         submitButton.textContent = 'Continue to Package and Payment';

@@ -1,5 +1,5 @@
-const { allowCors, methodNotAllowed, parseJsonBody, sendError, sendJson } = require('./_lib/http');
-const { recordAnalyticsEvent, recordEvent } = require('./_lib/store');
+const { allowCors, handleBadJson, methodNotAllowed, parseJsonBody, sendError, sendJson } = require('./_lib/http');
+const { isUuidLike, recordAnalyticsEvent, recordEvent } = require('./_lib/store');
 
 function normalizeString(value, maxLength = 120) {
   return String(value || '').trim().slice(0, maxLength);
@@ -30,6 +30,11 @@ module.exports = async function handler(req, res) {
       return;
     }
 
+    if (!isUuidLike(caseId)) {
+      sendError(res, 404, 'Case not found.');
+      return;
+    }
+
     const updated = await recordEvent(caseId, publicToken, eventType, body.metadata && typeof body.metadata === 'object' ? body.metadata : {});
 
     if (!updated) {
@@ -52,6 +57,10 @@ module.exports = async function handler(req, res) {
 
     sendJson(res, 200, { ok: true });
   } catch (error) {
+    if (handleBadJson(res, error)) {
+      return;
+    }
+    console.error('event record failed', error);
     sendError(res, 500, 'We could not save that event.');
   }
 };

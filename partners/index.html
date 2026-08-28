@@ -520,7 +520,7 @@
         <li><a href="/about">About</a></li>
         <li><a href="/blog">Resources</a></li>
         <li><a href="/start">Start a Case</a></li>
-        <li><a href="mailto:partners@departed.digital" class="nav-cta">Request partner pack</a></li>
+        <li><a href="mailto:hello@departed.digital" class="nav-cta">Request partner pack</a></li>
       </ul>
     </div>
   </nav>
@@ -532,7 +532,7 @@
         <h1>A calm digital aftercare option for the families you support.</h1>
         <p>Departed Digital helps bereaved families close or memorialise social media and digital accounts without another confusing process. Funeral directors can offer it as a trusted aftercare resource, with a simple handoff and no operational burden on their team.</p>
         <div class="hero-actions">
-          <a href="mailto:partners@departed.digital?subject=Departed%20Digital%20partner%20pack" class="btn-primary">Request partner pack</a>
+          <a href="mailto:hello@departed.digital?subject=Departed%20Digital%20partner%20pack" class="btn-primary">Request partner pack</a>
           <a href="/start" class="btn-secondary">See the family journey</a>
         </div>
       </div>
@@ -666,7 +666,7 @@
               <li>Suggested handoff wording for families</li>
             </ul>
             <div class="hero-actions">
-              <a href="mailto:partners@departed.digital?subject=Departed%20Digital%20partner%20pack" class="btn-secondary">Prefer email instead</a>
+              <a href="mailto:hello@departed.digital?subject=Departed%20Digital%20partner%20pack" class="btn-secondary">Prefer email instead</a>
               <a href="/" class="btn-secondary">Back to homepage</a>
             </div>
           </div>
@@ -702,7 +702,7 @@
             <div class="hero-actions" style="margin-top:20px;">
               <button type="submit" class="btn-primary">Request partner pack</button>
             </div>
-            <p class="partner-helper" id="partner-form-helper">We store this as a partner prospect in the operations system so follow-up is not lost.</p>
+            <p class="partner-helper" id="partner-form-helper">Send the form and we will come back to you with the partner pack and referral materials, usually within one working day.</p>
           </form>
         </div>
       </div>
@@ -722,7 +722,7 @@
         <a href="/blog">Resources</a>
         <a href="/privacy">Privacy</a>
         <a href="/terms">Terms</a>
-        <a href="mailto:partners@departed.digital">partners@departed.digital</a>
+        <a href="mailto:hello@departed.digital">hello@departed.digital</a>
       </div>
     </div>
   </footer>
@@ -764,9 +764,9 @@
           }
 
           partnerForm.reset();
-          partnerFormHelper.textContent = 'Partner enquiry saved. We can now follow up with the pack and referral materials.';
+          partnerFormHelper.textContent = 'Thank you — your enquiry has been received. We will be in touch with the partner pack and referral materials shortly.';
         } catch (error) {
-          partnerFormHelper.textContent = (error && error.message) || 'Could not save the partner enquiry.';
+          partnerFormHelper.textContent = 'Sorry — we could not send your enquiry just now. Please try again or email hello@departed.digital.';
         }
       });
     }

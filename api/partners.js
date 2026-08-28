@@ -1,4 +1,4 @@
-const { allowCors, methodNotAllowed, parseJsonBody, sendError, sendJson } = require('./_lib/http');
+const { allowCors, handleBadJson, methodNotAllowed, parseJsonBody, sendError, sendJson } = require('./_lib/http');
 const { hasDatabaseConnection, query } = require('./_lib/db');
 const { requireAdminAccess } = require('./_lib/security');
 const { listPartnerAccounts } = require('./_lib/store');
@@ -33,32 +33,29 @@ async function savePartnerLead(body) {
     limit 1
   `, [businessName, email]);
 
-  const mergedNotes = [area ? `Area: ${area}` : '', notes].filter(Boolean).join('\n');
+  const enquiryNote = [
+    `Enquiry received ${new Date().toISOString().slice(0, 10)}`,
+    `Contact: ${primaryContactName} <${email}>${phone ? ` · ${phone}` : ''}`,
+    area ? `Area: ${area}` : '',
+    notes
+  ].filter(Boolean).join('\n');
   let partnerId = '';
 
   if (existing.rows[0] && existing.rows[0].id) {
+    // A record for this business already exists. Never let an unauthenticated
+    // enquiry overwrite its contact details or reset its status - append the
+    // new enquiry to the notes instead.
     partnerId = existing.rows[0].id;
 
     await query(`
       update partner_accounts
       set
-        partner_type = $2,
-        business_name = $3,
-        primary_contact_name = $4,
-        email = $5,
-        phone = $6,
-        status = 'prospect',
-        notes = $7,
+        notes = trim(both from notes || E'\n\n' || $2),
         updated_at = now()
       where id = $1::uuid
     `, [
       partnerId,
-      partnerType,
-      businessName,
-      primaryContactName,
-      email,
-      phone,
-      mergedNotes
+      enquiryNote
     ]);
   } else {
     const inserted = await query(`
@@ -78,7 +75,7 @@ async function savePartnerLead(body) {
       primaryContactName,
       email,
       phone,
-      mergedNotes
+      enquiryNote
     ]);
 
     partnerId = inserted.rows[0] && inserted.rows[0].id;
@@ -145,6 +142,11 @@ module.exports = async function handler(req, res) {
 
     methodNotAllowed(res, ['GET', 'POST', 'OPTIONS']);
   } catch (error) {
-    sendError(res, 500, error.message || 'We could not process the partner request.');
+    if (handleBadJson(res, error)) {
+      return;
+    }
+
+    console.error('partner request failed', error);
+    sendError(res, 500, 'We could not process the partner request.');
   }
 };

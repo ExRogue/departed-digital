@@ -241,7 +241,7 @@
     <div class="nav-inner">
       <a href="/" class="logo">Departed<span>.</span>Digital</a>
       <div class="nav-links">
-        <a href="/review" id="payment-nav-link">Case review</a>
+        <a href="/review" id="payment-nav-link">Review &amp; payment</a>
         <a href="/documents" id="documents-nav-link">Documents</a>
         <a href="/about">About</a>
         <a href="/blog">Resources</a>
@@ -257,7 +257,7 @@
       <div class="support-note">This page is designed to reduce chasing and uncertainty. Use it to see the current stage, the next action, and whether anything else is needed from you.</div>
 
       <div id="empty-state" class="empty-state">
-        We could not find this case in the current browser session. Use the private link from your Departed Digital email or return to the payment or documents step from the same device.
+        We could not find this case in this browser. If you saved your private case link, open it again — or email hello@departed.digital with your name and we will send you a fresh link.
       </div>
 
       <div id="case-layout">
@@ -271,8 +271,8 @@
             <ul id="status-timeline" class="timeline"></ul>
 
             <div class="cta-row">
-              <a class="button secondary" id="payment-link" href="/review">Open case review</a>
-              <a class="button secondary" id="documents-link" href="/documents">Open documents step</a>
+              <a class="button secondary" id="payment-link" href="/review">Review &amp; payment</a>
+              <a class="button secondary" id="documents-link" href="/documents">Upload documents</a>
               <button class="button secondary" id="copy-case-link" type="button">Copy private case link</button>
             </div>
             <p class="copy-note" id="copy-case-link-helper">Save or bookmark the private case link so you can return to this page later from the same email or browser.</p>
@@ -285,7 +285,7 @@
 
             <div style="margin-top: 28px;">
               <span class="eyebrow" style="margin-bottom: 8px;">Platforms</span>
-              <h3 style="font-size:1.35rem; margin-bottom:12px;">Current platform workflow</h3>
+              <h3 style="font-size:1.35rem; margin-bottom:12px;">Accounts in this case</h3>
               <ul id="platform-list" class="platform-list"></ul>
             </div>
           </aside>
@@ -304,6 +304,7 @@
     </div>
   </footer>
 
+  <script src="/scripts/site-analytics.js"></script>
   <script>
     const params = new URLSearchParams(window.location.search);
     const caseIdFromUrl = params.get('case') || '';
@@ -369,8 +370,11 @@
         '<div class="status-card"><strong>' + escapeHtml(label) + '</strong><span>' + escapeHtml(value) + '</span></div>'
       )).join('');
 
-      nextAction.textContent = (caseData.operational && caseData.operational.nextBestAction)
-        || 'We are reviewing the case and will confirm the next step shortly.';
+      if (caseData.guidance && caseData.guidance.headline) {
+        nextAction.innerHTML = '<strong>' + escapeHtml(caseData.guidance.headline) + '.</strong> ' + escapeHtml(caseData.guidance.detail || '');
+      } else {
+        nextAction.textContent = 'We are reviewing the case and will confirm the next step shortly.';
+      }
 
       summaryList.innerHTML = [
         ['Client', caseData.clientName || 'Not provided'],
@@ -399,11 +403,13 @@
             (task.evidenceNeeded ? '<div class="helper" style="margin-top:6px;">Evidence needed: ' + escapeHtml(task.evidenceNeeded) + '</div>' : '') +
           '</li>'
         )).join('')
-        : '<li>No platform-specific workflow has been created yet.</li>';
+        : '<li>We will list each account here as the case is set up.</li>';
 
-      if (caseData.id && tokenFromUrl) {
-        const paymentHref = '/review?case=' + encodeURIComponent(caseData.id) + '&token=' + encodeURIComponent(tokenFromUrl) + '&package=' + encodeURIComponent(caseData.selectedPackage || 'standard');
-        const documentsHref = '/documents?case=' + encodeURIComponent(caseData.id) + '&token=' + encodeURIComponent(tokenFromUrl);
+      const caseToken = tokenFromUrl || caseData.publicToken || '';
+
+      if (caseData.id && caseToken) {
+        const paymentHref = '/review?case=' + encodeURIComponent(caseData.id) + '&token=' + encodeURIComponent(caseToken) + '&package=' + encodeURIComponent(caseData.selectedPackage || 'standard');
+        const documentsHref = '/documents?case=' + encodeURIComponent(caseData.id) + '&token=' + encodeURIComponent(caseToken);
         paymentLink.href = paymentHref;
         documentsLink.href = documentsHref;
         paymentNavLink.href = paymentHref;

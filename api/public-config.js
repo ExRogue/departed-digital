@@ -1,7 +1,6 @@
 const { getPublicConfig } = require('./_lib/config');
-const { getEmailHealth } = require('./_lib/email');
-const { allowCors, methodNotAllowed, sendJson } = require('./_lib/http');
-const { createOperationsRepository } = require('./_lib/operations-repository');
+const { allowCors, methodNotAllowed, sendError, sendJson } = require('./_lib/http');
+const { getStorageHealth } = require('./_lib/store');
 
 module.exports = async function handler(req, res) {
   allowCors(res, req);
@@ -17,31 +16,18 @@ module.exports = async function handler(req, res) {
     return;
   }
 
-  const repository = createOperationsRepository();
-  const storage = repository.getStorageHealth();
-  const architecture = repository.getArchitectureProfile();
-  const jobs = await repository.getOpsJobSummary();
-  const analytics = await repository.getAnalyticsSummary();
-  const email = getEmailHealth();
+  try {
+    const storage = getStorageHealth();
 
-  sendJson(res, 200, {
-    ok: true,
-    config: getPublicConfig(),
-    storage,
-    health: {
-      checkedAt: new Date().toISOString(),
-      productionGrade: Boolean(architecture.readiness && architecture.readiness.productionGrade),
-      caseStore: architecture.current.caseStore,
-      analyticsStore: architecture.current.analyticsStore,
-      documentStore: architecture.current.documentStore,
-      auth: architecture.current.auth,
-      workflowEngine: architecture.current.workflowEngine,
-      queuedJobs: jobs.queued,
-      dueJobs: jobs.dueNow,
-      failedJobs: jobs.failed,
-      emailProvider: email.provider,
-      emailEnabled: email.enabled,
-      analyticsEvents: analytics.totalEvents
-    }
-  });
+    sendJson(res, 200, {
+      ok: true,
+      config: getPublicConfig(),
+      storage: {
+        requiresConfiguration: Boolean(storage && storage.requiresConfiguration)
+      }
+    });
+  } catch (error) {
+    console.error('public config failed', error);
+    sendError(res, 500, 'We could not load the site configuration.');
+  }
 };

@@ -1,5 +1,5 @@
 const { ADMIN_ROLES } = require('../_lib/config');
-const { allowCors, methodNotAllowed, parseJsonBody, sendError, sendJson } = require('../_lib/http');
+const { allowCors, handleBadJson, methodNotAllowed, parseJsonBody, sendError, sendJson } = require('../_lib/http');
 const {
   createAdminUser,
   listAdminUsers,
@@ -84,6 +84,11 @@ module.exports = async function handler(req, res) {
 
     methodNotAllowed(res, ['GET', 'POST', 'PATCH', 'OPTIONS']);
   } catch (error) {
-    sendError(res, 500, error.message || 'We could not update the admin users.');
+    if (handleBadJson(res, error)) {
+      return;
+    }
+
+    console.error('admin users failed', error);
+    sendError(res, 500, 'We could not update the admin users.');
   }
 };
