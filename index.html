@@ -545,6 +545,52 @@
     }
 
     /* ── HOW IT WORKS ── */
+    .scale-band {
+      background: linear-gradient(160deg, var(--navy-dark) 0%, var(--navy) 100%);
+      padding: 60px 24px;
+    }
+    .scale-band-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+    }
+    .scale-band-lede {
+      text-align: center;
+      color: rgba(255,255,255,0.62);
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      margin-bottom: 36px;
+    }
+    .scale-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 40px;
+      text-align: center;
+    }
+    .scale-number {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.2rem, 4.5vw, 3.2rem);
+      color: var(--gold-light);
+      line-height: 1.1;
+      margin-bottom: 10px;
+      font-variant-numeric: tabular-nums;
+    }
+    .scale-label {
+      color: rgba(255,255,255,0.86);
+      font-size: 0.98rem;
+      line-height: 1.55;
+      max-width: 300px;
+      margin: 0 auto 8px;
+    }
+    .scale-source {
+      color: rgba(255,255,255,0.44);
+      font-size: 0.78rem;
+      font-style: italic;
+    }
+    @media (max-width: 860px) {
+      .scale-grid { grid-template-columns: 1fr; gap: 32px; }
+    }
     .how-it-works { background: var(--cream); }
     .steps {
       display: grid;
@@ -1472,6 +1518,30 @@
     </div>
   </section>
 
+  <!-- The scale of the problem -->
+  <section class="scale-band" aria-label="The scale of the problem">
+    <div class="scale-band-inner">
+      <p class="scale-band-lede">The problem is bigger than most families realise</p>
+      <div class="scale-grid">
+        <div class="scale-stat reveal">
+          <div class="scale-number" data-count-to="4.9" data-decimals="1" data-suffix=" billion">4.9 billion</div>
+          <p class="scale-label">profiles of people who have died could be on Facebook by 2100</p>
+          <p class="scale-source">Oxford Internet Institute</p>
+        </div>
+        <div class="scale-stat reveal reveal-delay-1">
+          <div class="scale-number" data-count-to="650000" data-suffix="+">650,000+</div>
+          <p class="scale-label">people die in the UK each year — most leave online accounts active</p>
+          <p class="scale-source">Office for National Statistics</p>
+        </div>
+        <div class="scale-stat reveal reveal-delay-2">
+          <div class="scale-number" data-count-to="100" data-prefix="~">~100</div>
+          <p class="scale-label">online accounts the average person leaves behind</p>
+          <p class="scale-source">NordPass password research</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- How it works -->
   <section class="how-it-works" id="how">
     <div class="container">
@@ -1740,6 +1810,40 @@
       });
     }, { threshold: 0.12 });
     reveals.forEach(el => observer.observe(el));
+
+    // ── Stat count-up (gentle, once, honours reduced motion)
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const formatStat = (el, value) => {
+      const decimals = Number(el.dataset.decimals || 0);
+      const prefix = el.dataset.prefix || '';
+      const suffix = el.dataset.suffix || '';
+      const formatted = decimals
+        ? value.toFixed(decimals)
+        : Math.round(value).toLocaleString('en-GB');
+      el.textContent = prefix + formatted + suffix;
+    };
+    const statObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        statObserver.unobserve(entry.target);
+        const el = entry.target;
+        const target = Number(el.dataset.countTo || 0);
+        if (prefersReducedMotion || !target) {
+          formatStat(el, target);
+          return;
+        }
+        const duration = 1600;
+        const start = performance.now();
+        const tick = (now) => {
+          const progress = Math.min((now - start) / duration, 1);
+          const eased = 1 - Math.pow(1 - progress, 3);
+          formatStat(el, target * eased);
+          if (progress < 1) requestAnimationFrame(tick);
+        };
+        requestAnimationFrame(tick);
+      });
+    }, { threshold: 0.4 });
+    document.querySelectorAll('.scale-number').forEach((el) => statObserver.observe(el));
 
     // ── FAQ accordion
     document.querySelectorAll('.faq-q').forEach(btn => {
