@@ -194,13 +194,13 @@ async function sendCaseCreatedEmails(caseRecord) {
     ].join('\n'),
     html: buildShell(
       'We’ve received your case.',
-      `Your reference is ${caseRecord.reference}. Everything about your case lives on one private page — save the link below.`,
+      `Your reference is ${caseRecord.reference}. Everything about your case lives on one private page. Save the link below.`,
       [
         `<p>Hello ${escapeHtml(caseRecord.clientName)},</p>`,
         `<p>We’ve received your case for <strong>${escapeHtml(caseRecord.deceasedName)}</strong>.</p>`,
         `<p>You do not need to send passwords. We only ask for supporting documents after payment is confirmed.</p>`,
         `<p><a href="${escapeHtml(urls.status)}" style="display:inline-block;background:#c9a84c;color:#111b35;text-decoration:none;padding:12px 18px;border-radius:999px;font-weight:700;">Open your private case page</a></p>`,
-        `<p style="color:#6b7a8d;font-size:14px;">Save this link — it works from any device.</p>`
+        `<p style="color:#6b7a8d;font-size:14px;">Save this link. It works from any device.</p>`
       ].join(''),
       'If anything is unclear, just reply to this email and we’ll help.'
     )
@@ -290,11 +290,11 @@ async function sendPaymentConfirmedEmail(caseRecord) {
 
   deliveries.push(await sendEmail({
     to: caseRecord.clientEmail,
-    subject: `Payment received — your next step for ${caseRecord.reference}`,
+    subject: `Payment received: your next step for ${caseRecord.reference}`,
     text: [
       `Hello ${caseRecord.clientName},`,
       '',
-      `Thank you — your payment for case ${caseRecord.reference} has been received.`,
+      `Thank you. Your payment for case ${caseRecord.reference} has been received.`,
       'The next step is yours: upload the death certificate and proof of your authority on your private case page. We take it from there.',
       '',
       `Your private case page: ${urls.status}`,
@@ -302,7 +302,7 @@ async function sendPaymentConfirmedEmail(caseRecord) {
       'Departed Digital'
     ].join('\n'),
     html: buildShell(
-      'Payment received — here’s your next step.',
+      'Payment received. Here is your next step.',
       `Thank you. Your payment for case ${caseRecord.reference} is confirmed, and the secure document upload is now open.`,
       [
         `<p>Hello ${escapeHtml(caseRecord.clientName)},</p>`,

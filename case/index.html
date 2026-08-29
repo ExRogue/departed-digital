@@ -297,7 +297,7 @@
       <div class="support-note">This page is designed to reduce chasing and uncertainty. Use it to see the current stage, the next action, and whether anything else is needed from you.</div>
 
       <div id="empty-state" class="empty-state">
-        We could not find this case in this browser. If you saved your private case link, open it again — or email hello@departed.digital with your name and we will send you a fresh link.
+        We could not find this case in this browser. If you saved your private case link, open it again, or email hello@departed.digital with your name and we will send you a fresh link.
       </div>
 
       <div id="case-layout">
@@ -333,7 +333,7 @@
         <section class="panel" id="documents" style="margin-top: 24px; display:none;">
           <span class="eyebrow" style="margin-bottom: 8px;">Documents</span>
           <h2 style="font-size:1.8rem; margin-bottom:10px;">Send your documents</h2>
-          <p class="helper" id="document-helper" style="margin-bottom: 18px;">Upload the death certificate and proof of your authority. Photos taken on a phone are fine — we resize large images automatically.</p>
+          <p class="helper" id="document-helper" style="margin-bottom: 18px;">Upload the death certificate and proof of your authority. Photos taken on a phone are fine, and we resize large images automatically.</p>
           <form id="document-form">
             <div class="field-grid">
               <div class="field full">
@@ -685,7 +685,7 @@
             const uploaded = index;
             const baseMessage = payload.error || 'We could not upload ' + files[index].name + ' just now.';
             throw new Error(uploaded > 0
-              ? baseMessage + ' The first ' + uploaded + ' document' + (uploaded === 1 ? '' : 's') + ' were saved - please try the remaining ones again.'
+              ? baseMessage + ' The first ' + uploaded + ' document' + (uploaded === 1 ? '' : 's') + ' were saved. Please try the remaining ones again.'
               : baseMessage);
           }
 
@@ -706,7 +706,7 @@
 
         renderCase(caseData);
         documentForm.reset();
-        documentHelper.textContent = 'Documents received - thank you. There is nothing else you need to do right now; we will take it from here and keep this page updated.';
+        documentHelper.textContent = 'Documents received, thank you. There is nothing else you need to do right now; we will take it from here and keep this page updated.';
       } catch (error) {
         documentHelper.textContent = error.message || 'We could not upload those documents just now.';
       } finally {
@@ -730,7 +730,7 @@
           renderCase(fresh);
 
           if (fresh.paymentStatus === 'paid') {
-            documentHelper.textContent = 'Payment confirmed - thank you. Upload the death certificate and proof of your authority below when you are ready.';
+            documentHelper.textContent = 'Payment confirmed, thank you. Upload the death certificate and proof of your authority below when you are ready.';
             return;
           }
         }
@@ -797,7 +797,7 @@
       }
 
       if (arrivedFromPayment && caseData.paymentStatus !== 'paid') {
-        nextAction.innerHTML = '<strong>Thank you - your payment is being confirmed.</strong> This usually takes a few seconds. This page will update by itself.';
+        nextAction.innerHTML = '<strong>Thank you, your payment is being confirmed.</strong> This usually takes a few seconds. This page will update by itself.';
         pollForPayment();
       }
     })();
