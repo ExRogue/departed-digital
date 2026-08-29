@@ -117,7 +117,7 @@ module.exports = async function handler(req, res) {
     });
 
     if (updated) {
-      sendPaymentConfirmedEmail(updated).catch((error) => {
+      await sendPaymentConfirmedEmail(updated).catch((error) => {
         console.error('payment_confirmed_email_failed', error);
       });
     }

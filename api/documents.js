@@ -89,7 +89,7 @@ module.exports = async function handler(req, res) {
 
     if (notify) {
       const totalDocuments = Array.isArray(updated.documents) ? updated.documents.length : files.length;
-      sendDocumentsUploadedEmails(updated, totalDocuments).catch((error) => {
+      await sendDocumentsUploadedEmails(updated, totalDocuments).catch((error) => {
         console.error('documents_uploaded_email_failed', error);
       });
     }
