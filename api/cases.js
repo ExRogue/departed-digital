@@ -94,7 +94,7 @@ module.exports = async function handler(req, res) {
 
       const caseRecord = await createCase(validation.value);
 
-      sendCaseCreatedEmails(caseRecord).catch((error) => {
+      await sendCaseCreatedEmails(caseRecord).catch((error) => {
         console.error('case_created_email_failed', error);
       });
 
