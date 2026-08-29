@@ -782,6 +782,22 @@
     const submitButton = intakeForm.querySelector('button[type="submit"]');
     const params = new URLSearchParams(window.location.search);
     const VALID_PACKAGES = ['essential', 'standard', 'estate'];
+
+    // A partner code from a printed card or shared link is remembered by
+    // scripts/site-analytics.js when the family first lands anywhere on the
+    // site. Codes older than 90 days are ignored.
+    function readStoredReferralCode() {
+      try {
+        const raw = localStorage.getItem('departedDigitalReferralCode');
+        if (!raw) return '';
+        const saved = JSON.parse(raw);
+        if (!saved || !saved.code) return '';
+        if (Date.now() - (saved.storedAt || 0) > 90 * 24 * 60 * 60 * 1000) return '';
+        return String(saved.code);
+      } catch (error) {
+        return '';
+      }
+    }
     let selectedPackage = VALID_PACKAGES.includes(params.get('package')) ? params.get('package') : 'standard';
     let hasTrackedStart = false;
 
@@ -853,7 +869,7 @@
         profileUrls: document.getElementById('profile-urls').value.trim(),
         caseDetails: document.getElementById('case-details').value.trim(),
         selectedPackage,
-        referralSource: params.get('ref') || ''
+        referralSource: params.get('ref') || readStoredReferralCode()
       };
 
       submitButton.disabled = true;

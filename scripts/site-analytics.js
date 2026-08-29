@@ -6,6 +6,8 @@
   const endpoint = '/api/analytics';
   const dataAttribute = 'track';
   const labelAttribute = 'trackLabel';
+  const REFERRAL_STORAGE_KEY = 'departedDigitalReferralCode';
+  const REFERRAL_TTL_MS = 90 * 24 * 60 * 60 * 1000;
 
   function makeId(prefix) {
     return prefix + '-' + Math.random().toString(36).slice(2) + Date.now().toString(36);
@@ -24,6 +26,24 @@
       storage.setItem(key, value);
     } catch (error) {
       // Ignore storage errors.
+    }
+  }
+
+  // Partners hand families printed cards with links like departed.digital/?ref=exithere.
+  // The code is remembered here so it still reaches the case record even when the
+  // family browses the site first and only starts a case days later.
+  function rememberReferralCode() {
+    let code = '';
+    try {
+      code = new URLSearchParams(window.location.search).get('ref') || '';
+    } catch (error) {
+      return;
+    }
+
+    code = code.trim().toLowerCase().replace(/[^a-z0-9_-]/g, '').slice(0, 60);
+
+    if (code) {
+      safeWrite(localStorage, REFERRAL_STORAGE_KEY, JSON.stringify({ code, storedAt: Date.now() }));
     }
   }
 
@@ -217,6 +237,8 @@
     },
     buildContext: buildContext
   };
+
+  rememberReferralCode();
 
   const isArticle = window.location.pathname.indexOf('/blog/') === 0 && window.location.pathname !== '/blog';
   track(isArticle ? 'article_view' : 'page_view');
