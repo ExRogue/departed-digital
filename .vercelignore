@@ -4,5 +4,6 @@ db
 supabase
 scripts/*
 !scripts/site-analytics.js
+!scripts/localise.js
 node_modules
 .claude
