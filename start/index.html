@@ -281,12 +281,12 @@
     }
     .cta-secondary {
       background: transparent;
-      color: var(--white);
-      border: 1px solid rgba(255,255,255,0.22);
+      color: var(--navy);
+      border: 1px solid var(--border);
     }
     .cta-secondary:hover {
-      border-color: rgba(255,255,255,0.42);
-      background: rgba(255,255,255,0.06);
+      border-color: var(--gold);
+      background: rgba(201,168,76,0.08);
     }
     .cta-row {
       display: flex;
@@ -502,7 +502,7 @@
     }
     footer a:hover { color: var(--gold); }
     @media (max-width: 960px) {
-      .hero-inner, .cta-panel, .package-grid, .detail-grid, .steps {
+      .hero-inner, .cta-panel, .package-grid, .detail-grid, .steps, .intake-layout {
         grid-template-columns: 1fr;
       }
     }
@@ -510,6 +510,12 @@
       .nav-inner {
         flex-direction: column;
         align-items: flex-start;
+      }
+      .field-grid {
+        grid-template-columns: 1fr;
+      }
+      .form-panel {
+        padding: 24px 20px;
       }
     }
 
