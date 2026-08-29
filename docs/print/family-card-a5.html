@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Departed Digital — A5 family card (print)</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Inter:wght@400;500;600&display=swap">
+<style>
+  /* Print at A5, actual size, background graphics ON. */
+  @page { size: A5 portrait; margin: 0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: #f0eee8; }
+  body { font-family: 'Inter', -apple-system, sans-serif; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+  .card {
+    width: 148mm; height: 210mm;
+    margin: 10mm auto;
+    background: #fdfcf9;
+    color: #1a2744;
+    display: flex; flex-direction: column;
+    padding: 16mm 14mm 12mm;
+    position: relative;
+    box-shadow: 0 2px 14px rgba(26,39,68,0.12);
+  }
+  @media print {
+    html, body { background: #fdfcf9; }
+    .card { margin: 0; box-shadow: none; }
+  }
+
+  .rule { height: 2px; width: 22mm; background: #d8b96a; margin: 6mm 0 7mm; }
+
+  .brand {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 13pt; font-weight: 600; letter-spacing: 0.02em;
+  }
+  .brand span { color: #b8933e; }
+
+  h1 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-weight: 600; font-size: 24pt; line-height: 1.18;
+    margin-top: 10mm;
+  }
+
+  .sub { font-size: 11.5pt; line-height: 1.55; color: #3d465c; margin-top: 5mm; max-width: 108mm; }
+
+  ul { list-style: none; margin-top: 8mm; display: flex; flex-direction: column; gap: 4.2mm; }
+  li { font-size: 10.5pt; line-height: 1.45; padding-left: 7mm; position: relative; color: #1a2744; }
+  li::before {
+    content: ""; position: absolute; left: 0; top: 2.2mm;
+    width: 3.2mm; height: 3.2mm; border-radius: 50%;
+    background: #d8b96a;
+  }
+  li strong { font-weight: 600; }
+
+  .price-line {
+    margin-top: 9mm; font-size: 11pt; color: #3d465c;
+  }
+  .price-line strong { font-family: 'Playfair Display', Georgia, serif; font-size: 15pt; color: #1a2744; }
+
+  .footer {
+    margin-top: auto;
+    background: #1a2744; color: #f5f1e6;
+    margin-left: -14mm; margin-right: -14mm; margin-bottom: -12mm;
+    padding: 8mm 14mm 9mm;
+  }
+  .footer .url {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 16pt; font-weight: 600; color: #ffffff; letter-spacing: 0.01em;
+  }
+  .footer .url span { color: #d8b96a; }
+  .footer .contact { font-size: 9.5pt; margin-top: 2.5mm; color: #c9cedb; }
+  .footer .given { font-size: 8.5pt; margin-top: 4mm; color: #9aa2b5; }
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="brand">Departed <span>Digital</span></div>
+    <div class="rule"></div>
+
+    <h1>Closing a loved one's online accounts, handled for you.</h1>
+
+    <p class="sub">Facebook, Instagram, email, and other online accounts stay active after someone dies. Closing them means forms, documents, and long waits with each platform. We take all of that off your hands.</p>
+
+    <ul>
+      <li><strong>No passwords needed.</strong> We work with each platform's official process, using the documents you already have.</li>
+      <li><strong>One point of contact.</strong> You send us the paperwork once. We handle every platform and follow up until it is done.</li>
+      <li><strong>A written record.</strong> You receive a complete summary of every account closed or memorialised, for the family and the estate.</li>
+    </ul>
+
+    <p class="price-line">From <strong>£149</strong> &nbsp;·&nbsp; start whenever you are ready, online in about a minute</p>
+
+    <div class="footer">
+      <div class="url">www.departed.<span>digital</span></div>
+      <div class="contact">hello@departed.digital · Based in Maida Vale, London</div>
+      <div class="given">Please mention who gave you this card, so we can thank them.</div>
+    </div>
+  </div>
+</body>
+</html>
