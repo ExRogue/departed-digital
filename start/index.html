@@ -624,7 +624,7 @@
       <div>
         <span class="eyebrow">Start a case</span>
         <h1>Start your case in about a minute.</h1>
-        <p>Tell us the essentials, choose a package, and pay securely — all on this one page. Supporting documents come later, on your private case page.</p>
+        <p>Tell us the essentials, choose a package, and pay securely, all on this one page. Supporting documents come later, on your private case page.</p>
         <div class="hero-chips">
           <div class="hero-chip">Usually about a minute</div>
           <div class="hero-chip">No passwords required</div>
@@ -729,13 +729,13 @@
                     <p class="package-meta">Unlimited accounts · 7 day target</p>
                   </div>
                 </div>
-                <p class="helper" style="margin-top: 10px;">Not sure? Standard fits most families — and if a case turns out simpler or more complex, we will tell you before any work starts.</p>
+                <p class="helper" style="margin-top: 10px;">Not sure? Standard fits most families. If a case turns out simpler or more complex, we will tell you before any work starts.</p>
               </div>
               <div class="cta-row">
                 <button type="submit" class="cta-primary" data-track="start_submit" data-track-label="Start form continue">Continue to secure payment</button>
                 <a class="cta-secondary" href="/#pricing">Compare packages in detail</a>
               </div>
-              <p class="helper" id="intake-helper">Payment is by secure card checkout. No sensitive documents yet — those come after payment, on your private case page.</p>
+              <p class="helper" id="intake-helper">Payment is by secure card checkout. No sensitive documents yet. Those come after payment, on your private case page.</p>
             </form>
           </div>
           <aside class="note-card">
@@ -898,7 +898,7 @@
         window.location.href = nextUrl.toString();
         return;
       } catch (error) {
-        intakeHelper.textContent = 'Sorry — we could not save your details just now. Please try again in a moment, or email us at hello@departed.digital and we will set the case up for you.';
+        intakeHelper.textContent = 'Sorry, we could not save your details just now. Please try again in a moment, or email us at hello@departed.digital and we will set the case up for you.';
         trackIntakeEvent('intake_submit_failed', {
           label: 'Start form submit failed',
           packageKey: intakeData.selectedPackage || 'standard'
