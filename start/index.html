@@ -181,11 +181,12 @@
       margin-right: 8px;
     }
     main {
-      padding: 72px 24px 96px;
+      padding: 72px 24px 56px;
     }
     .section {
       margin-bottom: 72px;
     }
+    .section:last-child { margin-bottom: 0; }
     .section-label {
       display: inline-block;
       color: var(--gold);
@@ -220,6 +221,28 @@
     .package-card:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
     @media (max-width: 860px) {
       .package-grid { grid-template-columns: 1fr; }
+    }
+    .package-grid { align-items: stretch; }
+    #package-picker .package-card {
+      padding: 18px 20px;
+      box-shadow: none;
+      border-width: 1.5px;
+    }
+    #package-picker .package-top {
+      display: block;
+      margin-bottom: 8px;
+    }
+    #package-picker .package-name {
+      font-size: 1.2rem;
+      margin-bottom: 2px;
+    }
+    #package-picker .price {
+      font-size: 1.5rem;
+    }
+    #package-picker .package-meta {
+      font-size: 0.85rem;
+      line-height: 1.5;
+      margin-bottom: 0;
     }
     .package-card.selected {
       border-color: var(--gold);
@@ -601,7 +624,7 @@
       <div>
         <span class="eyebrow">Start a case</span>
         <h1>Start your case in about a minute.</h1>
-        <p>Start with the essentials only. Then choose the package and move into payment when you are ready. Supporting documents come later, once the case is open.</p>
+        <p>Tell us the essentials, choose a package, and pay securely — all on this one page. Supporting documents come later, on your private case page.</p>
         <div class="hero-chips">
           <div class="hero-chip">Usually about a minute</div>
           <div class="hero-chip">No passwords required</div>
