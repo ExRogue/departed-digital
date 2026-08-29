@@ -1486,7 +1486,7 @@
         <div class="hero-copy">
           <div class="hero-badge">For UK families after a loss</div>
           <h1>We close or memorialise a loved one's online accounts, <em>so you don't have to</em>.</h1>
-          <p>When someone dies, their Facebook, Instagram, email and other accounts stay open. Tell us about your loved one and we handle it all for you, from £149.</p>
+          <p>When someone dies, their Facebook, Instagram, email and other accounts stay open. Tell us about your loved one and we handle it all for you, from <span data-local-from>£149</span>.</p>
           <div class="hero-btns">
             <a href="/start" class="btn-primary" data-track="hero_cta" data-track-label="Homepage hero start">Start a case</a>
             <a href="#pricing" class="btn-secondary" data-track="hero_secondary" data-track-label="Homepage see packages">See pricing</a>
@@ -1828,7 +1828,10 @@
         statObserver.unobserve(entry.target);
         const el = entry.target;
         const target = Number(el.dataset.countTo || 0);
-        if (prefersReducedMotion || !target) {
+        if (!target) {
+          return;
+        }
+        if (prefersReducedMotion) {
           formatStat(el, target);
           return;
         }
@@ -1865,6 +1868,7 @@
       link.addEventListener('click', () => mobileMenu.classList.remove('open'));
     });
   </script>
+  <script src="/scripts/localise.js"></script>
   <script src="/scripts/site-analytics.js"></script>
 </body>
 </html>
