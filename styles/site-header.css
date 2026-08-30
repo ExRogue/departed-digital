@@ -1,0 +1,74 @@
+/* Shared site header. Used on every page except the homepage, whose fixed
+   hero nav mirrors these colours and breakpoints. Class names are namespaced
+   so they never collide with per-page styles. */
+.site-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 16px 32px;
+  background: rgba(17, 27, 53, 0.97);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+.site-nav-logo {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.18rem;
+  color: #ffffff;
+  text-decoration: none;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+.site-nav-logo span {
+  color: #c9a84c;
+}
+.site-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 26px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.site-nav-links a {
+  font-family: 'Inter', -apple-system, sans-serif;
+  color: rgba(255, 255, 255, 0.85);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  transition: color 0.2s ease;
+}
+.site-nav-links a:hover {
+  color: #e0c06a;
+}
+.site-nav-links a.site-nav-cta {
+  background: #c9a84c;
+  color: #111b35;
+  padding: 9px 22px;
+  border-radius: 50px;
+  font-weight: 600;
+  transition: background 0.2s ease;
+}
+.site-nav-links a.site-nav-cta:hover {
+  background: #e0c06a;
+  color: #111b35;
+}
+@media (max-width: 760px) {
+  .site-nav {
+    padding: 14px 20px;
+  }
+  .site-nav-links {
+    gap: 16px;
+  }
+  .site-nav-links li {
+    display: none;
+  }
+  .site-nav-links li:last-child {
+    display: block;
+  }
+}
