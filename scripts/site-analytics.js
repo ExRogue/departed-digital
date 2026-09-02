@@ -47,7 +47,22 @@
     }
   }
 
+  // Analytics identifiers are only persisted on the device once the visitor
+  // accepts the analytics cookie choice. Without consent the site still counts
+  // page views, but with throwaway ids that vanish when the page closes.
+  function analyticsConsentGranted() {
+    try {
+      return localStorage.getItem('ddConsent') === 'granted';
+    } catch (error) {
+      return false;
+    }
+  }
+
   function ensureVisitorId() {
+    if (!analyticsConsentGranted()) {
+      return makeId('ddv-anon');
+    }
+
     let value = safeRead(localStorage, VISITOR_STORAGE_KEY);
 
     if (!value) {
@@ -134,6 +149,18 @@
   function ensureSession() {
     const now = Date.now();
     const visitorId = ensureVisitorId();
+
+    if (!analyticsConsentGranted()) {
+      return {
+        id: makeId('dds-anon'),
+        visitorId: visitorId,
+        startedAt: now,
+        lastSeenAt: now,
+        landingPath: window.location.pathname,
+        attribution: getAttributionSnapshot()
+      };
+    }
+
     const existingRaw = safeRead(sessionStorage, SESSION_STORAGE_KEY);
     let existing = null;
 

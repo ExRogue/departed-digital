@@ -107,21 +107,7 @@
     }
     footer a:hover { color: var(--gold); }
   </style>
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBKFG16BZY"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    // Test browsers, local previews, and non-production hosts are tagged as
-    // internal so GA4's internal-traffic filter can exclude them.
-    try {
-      var ddInternal = (location.hostname !== 'www.departed.digital' && location.hostname !== 'departed.digital')
-        || localStorage.getItem('departedDigitalOperatorBrowser') === 'true';
-      if (ddInternal) { gtag('set', { 'traffic_type': 'internal' }); }
-    } catch (e) { /* private mode */ }
-    gtag('config', 'G-VBKFG16BZY');
-  </script>
+  <script src="/scripts/consent.js" defer></script>
   <link rel="stylesheet" href="/styles/site-header.css" />
 </head>
 <body>
@@ -139,7 +125,7 @@
     <div class="container">
       <div class="panel">
         <h1>Privacy Policy</h1>
-        <p class="intro">Last updated: March 12, 2026</p>
+        <p class="intro">Last updated: September 2, 2026</p>
         <p>Departed Digital provides digital aftercare services for bereaved families in the United Kingdom. This policy explains what information we collect, why we collect it, and how we handle it.</p>
 
         <h2>Information we collect</h2>
@@ -163,6 +149,16 @@
 
         <h2>Sharing information</h2>
         <p>We only share information where it is needed to run our business or complete your case. This may include website hosting providers, email providers, payment providers, and the social media or technology platforms relevant to your request.</p>
+
+        <h2>Service providers we use</h2>
+        <p>We keep the list of companies that process personal information on our behalf short and deliberate:</p>
+        <ul>
+          <li><strong>Stripe</strong> processes payments. Your card details go to Stripe directly and never touch our systems.</li>
+          <li><strong>Vercel</strong> hosts the website and stores uploaded documents in private storage. Some processing happens on servers in the United States under Vercel's data processing agreement, which includes the safeguards required for international transfers under UK GDPR.</li>
+          <li><strong>Neon</strong> hosts our case database in London, United Kingdom.</li>
+          <li><strong>Resend</strong> sends our emails from servers in the European Union.</li>
+          <li><strong>Google Analytics</strong> measures website visits, and only runs if you accept analytics cookies on our banner. Private case tokens are redacted before anything reaches Google.</li>
+        </ul>
 
         <h2>Data retention</h2>
         <p>We keep personal information only for as long as reasonably necessary for the purposes set out above, including for record-keeping, legal, tax, or dispute-resolution requirements. Our operational aim is to review uploaded supporting documents after case completion and remove them when they are no longer required for service delivery or compliance, while retaining a minimal case record for accounting, dispute, or audit purposes where necessary.</p>

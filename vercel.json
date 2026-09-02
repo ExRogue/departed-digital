@@ -2,7 +2,7 @@
   "functions": {
     "api/**/*.js": {
       "regions": [
-        "iad1"
+        "lhr1"
       ]
     }
   },
