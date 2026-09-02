@@ -342,11 +342,153 @@ async function sendManualCaseEmail(caseRecord, options) {
   });
 }
 
+// Builds the Stripe payment URL for a case, matching what /start sends the
+// browser to: the package's payment link plus the case reference and email.
+function buildPaymentUrl(caseRecord) {
+  const links = {
+    essential: process.env.STRIPE_PAYMENT_LINK_ESSENTIAL || '',
+    standard: process.env.STRIPE_PAYMENT_LINK_STANDARD || '',
+    estate: process.env.STRIPE_PAYMENT_LINK_ESTATE || ''
+  };
+  const link = links[caseRecord.selectedPackage] || links.standard;
+
+  if (!link) {
+    return '';
+  }
+
+  try {
+    const url = new URL(link);
+    url.searchParams.set('client_reference_id', caseRecord.id);
+    if (caseRecord.clientEmail) {
+      url.searchParams.set('prefilled_email', caseRecord.clientEmail);
+    }
+    return url.toString();
+  } catch (error) {
+    return '';
+  }
+}
+
+function buttonHtml(href, label) {
+  return `<p style="margin:22px 0;"><a href="${escapeHtml(href)}" style="background:#c9a84c;color:#111b35;text-decoration:none;padding:13px 26px;border-radius:999px;font-weight:600;display:inline-block;">${escapeHtml(label)}</a></p>`;
+}
+
+// Gentle reminder for a saved case that has not been paid for. Deliberately a
+// pure service message: no urgency, no discounts, and stage 2 is the last one.
+async function sendPaymentNudgeEmail(caseRecord, stage) {
+  const urls = caseUrls(caseRecord);
+  const paymentUrl = buildPaymentUrl(caseRecord) || urls.payment;
+  const firstName = String(caseRecord.clientName || '').trim().split(/\s+/)[0] || 'there';
+
+  if (stage === 1) {
+    const bodyHtml = [
+      `<p>Your case for ${escapeHtml(caseRecord.deceasedName || 'your loved one')} is saved, and nothing has been paid or lost. Whenever you are ready, you can pick up exactly where you left off.</p>`,
+      buttonHtml(paymentUrl, 'Continue your case'),
+      `<p>If it is easier later, the same link works from any device at any time. And if now is not the right moment, this email needs nothing from you.</p>`,
+      `<p style="color:#6b7a8d;font-size:14px;">Your private case page: <a href="${escapeHtml(urls.status)}" style="color:#1a2744;">view your case</a></p>`
+    ].join('');
+
+    return sendEmail({
+      to: caseRecord.clientEmail,
+      subject: `Your case for ${caseRecord.deceasedName || 'your loved one'} is saved`,
+      html: buildShell(`Hello ${firstName}`, `You started a case with Departed Digital, reference ${caseRecord.reference}.`, bodyHtml),
+      text: `Your case ${caseRecord.reference} is saved. Continue whenever you are ready: ${paymentUrl}`
+    });
+  }
+
+  const bodyHtml = [
+    `<p>A few days ago you started a case for ${escapeHtml(caseRecord.deceasedName || 'your loved one')}. It is still saved, and there is no time limit on it.</p>`,
+    `<p>If you have questions before going ahead, reply to this email and a real person will answer. Some families just want to check what documents they will need, or whether we can handle a particular platform.</p>`,
+    buttonHtml(paymentUrl, 'Continue your case'),
+    `<p style="color:#6b7a8d;font-size:14px;">This is the last reminder we will send about this case. If you would rather not go ahead, you can simply ignore it.</p>`
+  ].join('');
+
+  return sendEmail({
+    to: caseRecord.clientEmail,
+    subject: 'Whenever you are ready',
+    html: buildShell(`Hello ${firstName}`, `Your Departed Digital case ${caseRecord.reference} is still saved.`, bodyHtml),
+    text: `Your case ${caseRecord.reference} is still saved. Continue whenever you are ready: ${paymentUrl}. This is the last reminder we will send.`
+  });
+}
+
+// Reminders to send documents after payment. Three stages, then we stop.
+async function sendDocumentReminderEmail(caseRecord, stage) {
+  const urls = caseUrls(caseRecord);
+  const firstName = String(caseRecord.clientName || '').trim().split(/\s+/)[0] || 'there';
+
+  let subject;
+  let bodyHtml;
+
+  if (stage === 1) {
+    subject = `Your next step for ${caseRecord.reference}`;
+    bodyHtml = [
+      `<p>Your case is paid and ready. The one thing we need before we can start contacting platforms is your documents, and most families have them to hand already:</p>`,
+      '<ul style="margin:0 0 18px 20px;padding:0;">',
+      '<li style="margin-bottom:8px;">The death certificate</li>',
+      '<li style="margin-bottom:8px;">Proof of your authority, such as probate, letters of administration, or a document showing your relationship</li>',
+      '<li style="margin-bottom:8px;">A photo of your own ID</li>',
+      '</ul>',
+      `<p>Clear photos taken on your phone are fine. Uploading takes about two minutes.</p>`,
+      buttonHtml(urls.documents, 'Send your documents')
+    ].join('');
+  } else if (stage === 2) {
+    subject = 'When you have ten quiet minutes';
+    bodyHtml = [
+      `<p>Just a gentle note that your case for ${escapeHtml(caseRecord.deceasedName || 'your loved one')} is waiting on documents before we can begin.</p>`,
+      `<p>If anything on the list is proving hard to find, reply to this email and tell us what you have. There is often another document that platforms will accept, and we would rather help than have you stuck.</p>`,
+      buttonHtml(urls.documents, 'Send your documents')
+    ].join('');
+  } else {
+    subject = 'Your case is safe with us, whenever you are ready';
+    bodyHtml = [
+      `<p>We know the weeks after a loss rarely go to plan, so this is just reassurance: your case is open, paid, and waiting, and it stays that way until you are ready. There is no deadline on our side.</p>`,
+      `<p>When you would like a hand, reply to this email or send the documents through your case page, and we will take it from there.</p>`,
+      buttonHtml(urls.documents, 'Open your case page'),
+      `<p style="color:#6b7a8d;font-size:14px;">We will not send any more reminders about this. Your case link always works.</p>`
+    ].join('');
+  }
+
+  return sendEmail({
+    to: caseRecord.clientEmail,
+    subject,
+    html: buildShell(`Hello ${firstName}`, `About your Departed Digital case ${caseRecord.reference}.`, bodyHtml),
+    text: `About case ${caseRecord.reference}: we are waiting on your documents before we can begin. Send them here: ${urls.documents}`
+  });
+}
+
+// Sent a couple of days after completion. Only fires when REVIEW_URL is set,
+// and it is the one email in the flow that is marketing-adjacent, so it stays
+// single-send and easy to ignore.
+async function sendCompletionFollowUpEmail(caseRecord) {
+  const reviewUrl = String(process.env.REVIEW_URL || '').trim();
+
+  if (!reviewUrl) {
+    return { ok: false, skipped: true, reason: 'review_url_not_configured' };
+  }
+
+  const firstName = String(caseRecord.clientName || '').trim().split(/\s+/)[0] || 'there';
+  const bodyHtml = [
+    `<p>We hope the written summary for ${escapeHtml(caseRecord.deceasedName || 'your loved one')} gave you one less thing to carry.</p>`,
+    `<p>If you have a spare minute, a short review makes an enormous difference to a small service like ours. It is usually how other families in the same situation find help.</p>`,
+    buttonHtml(reviewUrl, 'Leave a short review'),
+    `<p style="color:#6b7a8d;font-size:14px;">This is the only follow-up we will send. Thank you for trusting us with something that mattered.</p>`
+  ].join('');
+
+  return sendEmail({
+    to: caseRecord.clientEmail,
+    subject: 'Thank you for trusting us',
+    html: buildShell(`Hello ${firstName}`, `Your Departed Digital case ${caseRecord.reference} is complete.`, bodyHtml),
+    text: `Your case ${caseRecord.reference} is complete. If you have a minute, a short review helps other families find us: ${reviewUrl}`
+  });
+}
+
 module.exports = {
   getEmailHealth,
   getEmailSettings,
   sendCaseCreatedEmails,
+  sendCompletionFollowUpEmail,
+  sendDocumentReminderEmail,
   sendDocumentsUploadedEmails,
   sendManualCaseEmail,
-  sendPaymentConfirmedEmail
+  sendPaymentConfirmedEmail,
+  sendPaymentNudgeEmail
 };
