@@ -106,21 +106,7 @@
     }
     footer a:hover { color: var(--gold); }
   </style>
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBKFG16BZY"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    // Test browsers, local previews, and non-production hosts are tagged as
-    // internal so GA4's internal-traffic filter can exclude them.
-    try {
-      var ddInternal = (location.hostname !== 'www.departed.digital' && location.hostname !== 'departed.digital')
-        || localStorage.getItem('departedDigitalOperatorBrowser') === 'true';
-      if (ddInternal) { gtag('set', { 'traffic_type': 'internal' }); }
-    } catch (e) { /* private mode */ }
-    gtag('config', 'G-VBKFG16BZY');
-  </script>
+  <script src="/scripts/consent.js" defer></script>
   <link rel="stylesheet" href="/styles/site-header.css" />
 </head>
 <body>
@@ -138,24 +124,26 @@
     <div class="container">
       <div class="panel">
         <h1>Cookie Policy</h1>
-        <p class="intro">Last updated: March 12, 2026</p>
+        <p class="intro">Last updated: September 2, 2026</p>
         <p>This page explains how cookies and similar technologies may be used on the Departed Digital website.</p>
 
         <h2>What cookies are</h2>
         <p>Cookies are small text files stored on your device when you visit a website. They can help a website remember preferences, improve performance, or measure how the website is used.</p>
 
-        <h2>How this site may use cookies</h2>
+        <h2>How this site uses cookies and similar storage</h2>
         <ul>
-          <li>Essential cookies that support core website functionality.</li>
-          <li>Analytics cookies, if enabled, to understand how visitors use the site and which pages are most helpful.</li>
-          <li>Third-party cookies from embedded tools or hosted services, where applicable.</li>
+          <li><strong>Essential storage.</strong> Used only to make the service work: your private case link so you can return to your case, your cookie choice itself, and, if you arrived through a partner, a note of who referred you. These are never used to track you and do not need consent.</li>
+          <li><strong>Analytics, only if you agree.</strong> When you choose "That's fine" on our cookie banner, we load Google Analytics, which sets cookies so we can see which pages help families most. Until you agree, Google Analytics is not loaded at all and no analytics cookies are set. We also keep our own simple page view counts; without your consent these use throwaway identifiers that disappear when you close the page.</li>
         </ul>
 
+        <h2>Your choice</h2>
+        <div id="dd-consent-choice"></div>
+
         <h2>Managing cookies</h2>
-        <p>You can usually manage or delete cookies through your browser settings. Blocking some cookies may affect how parts of the website behave.</p>
+        <p>You can change your choice above at any time, and you can also manage or delete cookies through your browser settings. Blocking essential storage may stop your private case link working on this device.</p>
 
         <h2>Third-party services</h2>
-        <p>If the website uses third-party services such as analytics, fonts, or hosting providers, those services may set their own cookies subject to their own privacy notices.</p>
+        <p>Our website is hosted by Vercel and loads fonts from Google Fonts. Payments happen on Stripe's checkout pages, which apply Stripe's own cookie notice. Google Analytics, described above, only runs with your consent.</p>
 
         <h2>Contact</h2>
         <p>If you have questions about cookies on this website, contact <a href="mailto:hello@departed.digital">hello@departed.digital</a>.</p>

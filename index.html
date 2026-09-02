@@ -1467,21 +1467,7 @@
       }
     }
   </style>
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBKFG16BZY"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    // Test browsers, local previews, and non-production hosts are tagged as
-    // internal so GA4's internal-traffic filter can exclude them.
-    try {
-      var ddInternal = (location.hostname !== 'www.departed.digital' && location.hostname !== 'departed.digital')
-        || localStorage.getItem('departedDigitalOperatorBrowser') === 'true';
-      if (ddInternal) { gtag('set', { 'traffic_type': 'internal' }); }
-    } catch (e) { /* private mode */ }
-    gtag('config', 'G-VBKFG16BZY');
-  </script>
+  <script src="/scripts/consent.js" defer></script>
 </head>
 <body>
 
