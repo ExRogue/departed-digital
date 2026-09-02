@@ -288,6 +288,13 @@
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
+    // Test browsers, local previews, and non-production hosts are tagged as
+    // internal so GA4's internal-traffic filter can exclude them.
+    try {
+      var ddInternal = (location.hostname !== 'www.departed.digital' && location.hostname !== 'departed.digital')
+        || localStorage.getItem('departedDigitalOperatorBrowser') === 'true';
+      if (ddInternal) { gtag('set', { 'traffic_type': 'internal' }); }
+    } catch (e) { /* private mode */ }
     gtag('config', 'G-VBKFG16BZY');
   </script>
   <link rel="stylesheet" href="/styles/site-header.css" />
