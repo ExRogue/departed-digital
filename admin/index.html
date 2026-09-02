@@ -782,6 +782,10 @@
     button.textContent = 'Saving…';
     try {
       var payload = Object.assign({ action: 'update', id: caseId }, updates);
+      if (updates.status) {
+        payload.activityEvent = 'status_' + updates.status;
+        payload.activityMetadata = { source: 'case_desk' };
+      }
       var data = await api('/api/admin/cases', { method: 'PATCH', body: JSON.stringify(payload) });
       var note = el(noteId);
       if (note) {
