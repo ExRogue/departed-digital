@@ -662,18 +662,9 @@
                   <label for="client-email">Email Address</label>
                   <input id="client-email" name="client_email" type="email" placeholder="you@example.com" required />
                 </div>
-                <div class="field">
+                <div class="field full">
                   <label for="deceased-name">Deceased's Name</label>
                   <input id="deceased-name" name="deceased_name" type="text" placeholder="Full name" required />
-                </div>
-                <div class="field">
-                  <label for="preferred-outcome">Preferred Outcome</label>
-                  <select id="preferred-outcome" name="preferred_outcome">
-                    <option value="not_sure">Not sure yet</option>
-                    <option value="delete">Delete accounts</option>
-                    <option value="memorialise">Memorialise where possible</option>
-                    <option value="mixed">A mix depending on the platform</option>
-                  </select>
                 </div>
               </div>
               <style>
@@ -738,7 +729,7 @@
               </style>
               <div class="platform-section">
                 <label>Which accounts should we take care of? <span style="font-weight:400; color: var(--text-muted);">(optional)</span></label>
-                <p class="helper" style="margin: 0;">Tap the ones you know about. You can also skip this and choose them after payment, from your case page — either works.</p>
+                <p class="helper" style="margin: 0;">Tap the ones you know about — or skip this and choose them after payment.</p>
                 <div class="platform-picker" id="platform-picker" role="group" aria-label="Accounts to take care of"></div>
                 <div class="platform-custom">
                   <input id="platform-custom-input" type="text" maxlength="60" placeholder="Somewhere else? Type it here" aria-label="Add another platform" />
@@ -1019,6 +1010,19 @@
       });
     }
 
+    // The case-level outcome is derived from the per-platform choices, so
+    // families are never asked the same question twice on this form.
+    function derivePreferredOutcome() {
+      const decided = new Set([...chosenPlatforms.values()].filter((value) => value && value !== 'not_sure'));
+      if (!decided.size) {
+        return 'not_sure';
+      }
+      if (decided.size > 1) {
+        return 'mixed';
+      }
+      return decided.has('delete') ? 'delete' : 'memorialise';
+    }
+
     // A package that does not cover the chosen accounts cannot be checked
     // out: that mismatch would be resolved by email with a grieving family
     // later, which is worse than one tap now. Skipping the picker entirely
@@ -1085,7 +1089,7 @@
         clientName: document.getElementById('client-name').value.trim(),
         clientEmail: document.getElementById('client-email').value.trim(),
         deceasedName: document.getElementById('deceased-name').value.trim(),
-        preferredOutcome: document.getElementById('preferred-outcome').value,
+        preferredOutcome: derivePreferredOutcome(),
         relationshipToDeceased: document.getElementById('relationship-to-deceased').value.trim(),
         knownPlatforms: [...chosenPlatforms.keys()].join(', '),
         platformSelections: collectPlatformSelections(),
