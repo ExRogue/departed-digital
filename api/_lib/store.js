@@ -271,6 +271,56 @@ function syncPlatformTasks(existingTasks, knownPlatformsValue, profileUrlsValue,
   return [...tasks, ...preservedManualTasks];
 }
 
+const FAMILY_PLATFORM_OUTCOMES = ['delete', 'memorialise', 'not_sure'];
+
+function applyFamilyPlatformSelections(caseRecord, selectionsInput, timestamp) {
+  const stamp = timestamp || new Date().toISOString();
+  const selections = ensureArray(selectionsInput)
+    .map((entry) => ({
+      name: trimTo(entry && entry.name, 120),
+      outcomeRequested: FAMILY_PLATFORM_OUTCOMES.includes(entry && entry.outcomeRequested) ? entry.outcomeRequested : ''
+    }))
+    .filter((entry) => entry.name)
+    .slice(0, 40);
+
+  const selectedNames = selections.map((entry) => entry.name.toLowerCase());
+
+  // Families may remove platforms we have not started; anything already
+  // submitted or in flight stays on the case.
+  const kept = ensureArray(caseRecord.platformTasks).filter((task) => {
+    const key = String((task && task.name) || '').toLowerCase();
+    const untouched = task && (task.status === 'not_started' || task.status === 'queued');
+    return selectedNames.includes(key) || !untouched;
+  });
+
+  const mergedNames = [];
+  for (const name of [...selections.map((entry) => entry.name), ...kept.map((task) => task.name)]) {
+    if (name && !mergedNames.some((existing) => existing.toLowerCase() === name.toLowerCase())) {
+      mergedNames.push(name);
+    }
+  }
+
+  caseRecord.knownPlatforms = trimTo(mergedNames.join(', '), 1200);
+  caseRecord.platformTasks = syncPlatformTasks(
+    kept,
+    caseRecord.knownPlatforms,
+    caseRecord.profileUrls,
+    caseRecord.preferredOutcome,
+    stamp
+  );
+
+  for (const selection of selections) {
+    if (!selection.outcomeRequested) {
+      continue;
+    }
+    const task = caseRecord.platformTasks.find((entry) => entry.name.toLowerCase() === selection.name.toLowerCase());
+    if (task && task.outcomeRequested !== selection.outcomeRequested) {
+      task.outcomeRequested = selection.outcomeRequested;
+      task.lastUpdatedAt = stamp;
+    }
+  }
+}
+
 function buildStatusTimeline(caseRecord) {
   const timeline = [
     {
@@ -2605,6 +2655,10 @@ async function createCase(input) {
     updatedAt: createdAt
   };
 
+  if (Array.isArray(input.platformSelections) && input.platformSelections.length) {
+    applyFamilyPlatformSelections(caseRecord, input.platformSelections, createdAt);
+  }
+
   await writeCase(caseRecord);
   return caseRecord;
 }
@@ -3126,6 +3180,10 @@ async function updatePublicCase(id, publicToken, updates) {
         caseRecord.preferredOutcome,
         new Date().toISOString()
       );
+    }
+
+    if (Array.isArray(updates.platformSelections)) {
+      applyFamilyPlatformSelections(caseRecord, updates.platformSelections, updateStamp);
     }
 
     if (updates.activityEvent) {

@@ -656,6 +656,18 @@
       '<dt>Started</dt><dd>' + escapeHtml(formatDate(record.createdAt)) + '</dd>' +
     '</dl></div>';
 
+    // Accounts: one row per platform, status editable, so progress per
+    // account is tracked and the family sees it on their case page.
+    html += '<div class="card"><h3>Accounts (' + (record.platformTasks || []).length + ')</h3>' +
+      '<div id="pt-rows"></div>' +
+      '<div style="display:flex; gap:8px; margin-top:10px;">' +
+        '<input id="pt-add-name" type="text" maxlength="60" placeholder="Add an account" style="flex:1; max-width:220px;" />' +
+        '<button type="button" class="btn btn-sm" id="pt-add">Add</button>' +
+      '</div>' +
+      '<button type="button" class="btn btn-sm" id="pt-save" style="margin-top:12px;">Save accounts</button>' +
+      '<div class="notice notice-success" id="pt-note" hidden></div>' +
+    '</div>';
+
     // Documents
     html += '<div class="card"><h3>Documents (' + docs.length + ')</h3>';
     if (!docs.length) {
@@ -734,6 +746,85 @@
     if (statusSave) {
       statusSave.addEventListener('click', function () {
         saveCase(record.id, { status: el('status-select').value }, statusSave, 'action-note', 'Status updated');
+      });
+    }
+
+    var ptRows = el('pt-rows');
+    if (ptRows) {
+      var PT_STATUSES = [
+        ['not_started', 'Not started'],
+        ['queued', 'Queued'],
+        ['submitted', 'Submitted'],
+        ['waiting', 'Waiting on platform'],
+        ['resolved', 'Resolved'],
+        ['blocked', 'Blocked']
+      ];
+      var ptTasks = (record.platformTasks || []).map(function (task) {
+        return Object.assign({}, task);
+      });
+
+      var renderPtRows = function () {
+        ptRows.innerHTML = '';
+        if (!ptTasks.length) {
+          ptRows.innerHTML = '<p style="color: var(--muted); font-size: 0.92rem;">No accounts on this case yet.</p>';
+          return;
+        }
+        ptTasks.forEach(function (task, index) {
+          var row = document.createElement('div');
+          row.style.cssText = 'display:flex; align-items:center; gap:10px; padding:7px 0; border-bottom:1px solid var(--line, #eee); flex-wrap:wrap;';
+          var label = document.createElement('div');
+          label.style.cssText = 'flex:1; min-width:130px; font-size:0.92rem;';
+          label.innerHTML = '<strong>' + escapeHtml(task.name) + '</strong>' +
+            (task.outcomeRequested && task.outcomeRequested !== 'not_sure'
+              ? ' <span style="color: var(--muted); font-size:0.82rem;">wants: ' + escapeHtml(task.outcomeRequested) + '</span>'
+              : '');
+          var select = document.createElement('select');
+          select.style.cssText = 'font-size:0.85rem; padding:4px 8px;';
+          PT_STATUSES.forEach(function (pair) {
+            var option = document.createElement('option');
+            option.value = pair[0];
+            option.textContent = pair[1];
+            if (task.status === pair[0]) {
+              option.selected = true;
+            }
+            select.appendChild(option);
+          });
+          select.addEventListener('change', function () {
+            task.status = select.value;
+            var now = new Date().toISOString();
+            if (select.value === 'submitted' && !task.submittedAt) {
+              task.submittedAt = now;
+            }
+            if (select.value === 'resolved' && !task.resolvedAt) {
+              task.resolvedAt = now;
+            }
+            task.lastUpdatedAt = now;
+          });
+          row.appendChild(label);
+          row.appendChild(select);
+          ptRows.appendChild(row);
+        });
+      };
+
+      renderPtRows();
+
+      el('pt-add').addEventListener('click', function () {
+        var name = el('pt-add-name').value.trim().slice(0, 60);
+        if (!name) {
+          return;
+        }
+        var exists = ptTasks.some(function (task) {
+          return task.name.toLowerCase() === name.toLowerCase();
+        });
+        if (!exists) {
+          ptTasks.push({ name: name, status: 'not_started', outcomeRequested: '', profileOrHandle: '', evidenceNeeded: '', submissionReference: '', notes: '' });
+        }
+        el('pt-add-name').value = '';
+        renderPtRows();
+      });
+
+      el('pt-save').addEventListener('click', function () {
+        saveCase(record.id, { platformTasks: ptTasks }, el('pt-save'), 'pt-note', 'Accounts saved', true);
       });
     }
 

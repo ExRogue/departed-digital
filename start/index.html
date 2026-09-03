@@ -676,6 +676,77 @@
                   </select>
                 </div>
               </div>
+              <style>
+                .platform-section { margin-top: 26px; }
+                .platform-section > label {
+                  display: block; font-weight: 600; color: var(--navy); margin-bottom: 6px;
+                }
+                .platform-picker {
+                  display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px;
+                }
+                .platform-chip {
+                  border: 1px solid var(--border);
+                  background: var(--white);
+                  color: var(--text);
+                  border-radius: 999px;
+                  padding: 9px 16px;
+                  font-size: 0.9rem;
+                  font-family: inherit;
+                  cursor: pointer;
+                  transition: all 0.18s ease;
+                }
+                .platform-chip:hover { border-color: var(--gold); }
+                .platform-chip.selected {
+                  background: var(--navy);
+                  border-color: var(--gold);
+                  color: var(--white);
+                }
+                .platform-chip.selected::before { content: '✓ '; color: var(--gold); }
+                .platform-custom { display: flex; gap: 10px; margin-top: 12px; max-width: 420px; }
+                .platform-custom input {
+                  flex: 1; border: 1px solid var(--border); border-radius: 10px;
+                  padding: 10px 14px; font-family: inherit; font-size: 0.9rem;
+                }
+                .platform-custom button {
+                  border: 1px solid var(--border); background: var(--white); color: var(--navy);
+                  border-radius: 10px; padding: 10px 18px; font-weight: 600; cursor: pointer; font-family: inherit;
+                }
+                .platform-custom button:hover { border-color: var(--gold); }
+                .outcome-rows { margin-top: 14px; display: grid; gap: 10px; }
+                .outcome-row {
+                  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+                  background: var(--cream); border: 1px solid var(--border);
+                  border-radius: 12px; padding: 10px 14px; font-size: 0.88rem;
+                }
+                .outcome-row strong { color: var(--navy); min-width: 90px; }
+                .outcome-choice { display: flex; gap: 6px; }
+                .outcome-choice button {
+                  border: 1px solid var(--border); background: var(--white); color: var(--text-muted);
+                  border-radius: 999px; padding: 6px 13px; font-size: 0.82rem; cursor: pointer; font-family: inherit;
+                }
+                .outcome-choice button.active {
+                  background: var(--navy); color: var(--white); border-color: var(--gold);
+                }
+                #package-fit-hint {
+                  margin-top: 12px; padding: 10px 14px; border-radius: 10px;
+                  background: rgba(201,168,76,0.1); border: 1px solid rgba(201,168,76,0.4); color: var(--text);
+                }
+                #package-fit-hint button {
+                  background: none; border: none; color: var(--navy); font-weight: 700;
+                  text-decoration: underline; cursor: pointer; font-family: inherit; font-size: inherit; padding: 0;
+                }
+              </style>
+              <div class="platform-section">
+                <label>Which accounts should we take care of? <span style="font-weight:400; color: var(--text-muted);">(optional)</span></label>
+                <p class="helper" style="margin: 0;">Tap the ones you know about. You can also skip this and choose them after payment, from your case page — either works.</p>
+                <div class="platform-picker" id="platform-picker" role="group" aria-label="Accounts to take care of"></div>
+                <div class="platform-custom">
+                  <input id="platform-custom-input" type="text" maxlength="60" placeholder="Somewhere else? Type it here" aria-label="Add another platform" />
+                  <button type="button" id="platform-custom-add">Add</button>
+                </div>
+                <div class="outcome-rows" id="outcome-rows"></div>
+                <p class="helper" id="package-fit-hint" hidden></p>
+              </div>
               <details class="optional-panel">
                 <summary>
                   <div class="optional-summary-copy">
@@ -689,10 +760,6 @@
                     <div class="field full">
                       <label for="relationship-to-deceased">Your Relationship to the Deceased <span style="font-weight:400; text-transform:none; letter-spacing:0; color: var(--text-muted);">(optional)</span></label>
                       <input id="relationship-to-deceased" name="relationship_to_deceased" type="text" placeholder="Executor, daughter, son, spouse, solicitor..." />
-                    </div>
-                    <div class="field full">
-                      <label for="known-platforms">Known Platforms <span style="font-weight:400; text-transform:none; letter-spacing:0; color: var(--text-muted);">(optional)</span></label>
-                      <textarea id="known-platforms" name="known_platforms" placeholder="Facebook, Instagram, TikTok, Apple, Gmail, LinkedIn..."></textarea>
                     </div>
                     <div class="field full">
                       <label for="profile-urls">Profile URLs or Usernames <span style="font-weight:400; text-transform:none; letter-spacing:0; color: var(--text-muted);">(optional)</span></label>
@@ -820,6 +887,136 @@
 
     renderPackageSelection();
 
+    // --- Account picker ---
+    const PLATFORM_OPTIONS = ['Facebook', 'Instagram', 'WhatsApp', 'Google / Gmail', 'Apple / iCloud', 'TikTok', 'LinkedIn', 'X (Twitter)', 'Snapchat', 'Pinterest', 'YouTube', 'Amazon', 'PayPal', 'Spotify', 'Netflix', 'Email (other)'];
+    const MEMORIALISABLE = ['Facebook', 'Instagram'];
+    const PACKAGE_LIMITS = { essential: 2, standard: 5, estate: Infinity };
+    const PACKAGE_LABELS = { essential: 'Essential', standard: 'Standard', estate: 'Estate' };
+    const pickerEl = document.getElementById('platform-picker');
+    const outcomeRowsEl = document.getElementById('outcome-rows');
+    const fitHintEl = document.getElementById('package-fit-hint');
+    const customInput = document.getElementById('platform-custom-input');
+    const chosenPlatforms = new Map(); // name -> outcome ('' | delete | memorialise | not_sure)
+    let customPlatforms = [];
+
+    function togglePlatform(name) {
+      if (chosenPlatforms.has(name)) {
+        chosenPlatforms.delete(name);
+      } else {
+        chosenPlatforms.set(name, MEMORIALISABLE.includes(name) ? 'not_sure' : '');
+      }
+      renderPicker();
+    }
+
+    function renderPicker() {
+      const allOptions = [...PLATFORM_OPTIONS, ...customPlatforms];
+      pickerEl.innerHTML = '';
+      allOptions.forEach((name) => {
+        const chip = document.createElement('button');
+        chip.type = 'button';
+        chip.className = 'platform-chip' + (chosenPlatforms.has(name) ? ' selected' : '');
+        chip.textContent = name;
+        chip.setAttribute('aria-pressed', chosenPlatforms.has(name) ? 'true' : 'false');
+        chip.addEventListener('click', () => togglePlatform(name));
+        pickerEl.appendChild(chip);
+      });
+
+      outcomeRowsEl.innerHTML = '';
+      MEMORIALISABLE.filter((name) => chosenPlatforms.has(name)).forEach((name) => {
+        const row = document.createElement('div');
+        row.className = 'outcome-row';
+        const label = document.createElement('strong');
+        label.textContent = name;
+        const choice = document.createElement('div');
+        choice.className = 'outcome-choice';
+        [['delete', 'Close it'], ['memorialise', 'Memorialise'], ['not_sure', 'Not sure yet']].forEach(([value, text]) => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.textContent = text;
+          btn.className = chosenPlatforms.get(name) === value ? 'active' : '';
+          btn.addEventListener('click', () => {
+            chosenPlatforms.set(name, value);
+            renderPicker();
+          });
+          choice.appendChild(btn);
+        });
+        row.appendChild(label);
+        row.appendChild(choice);
+        outcomeRowsEl.appendChild(row);
+      });
+
+      renderFitHint();
+    }
+
+    function renderFitHint() {
+      const count = chosenPlatforms.size;
+      if (!count) {
+        fitHintEl.hidden = true;
+        return;
+      }
+
+      const limit = PACKAGE_LIMITS[selectedPackage];
+      fitHintEl.hidden = false;
+
+      if (count > limit) {
+        const suggested = count <= PACKAGE_LIMITS.standard ? 'standard' : 'estate';
+        fitHintEl.innerHTML = 'You have picked ' + count + ' accounts — ' + PACKAGE_LABELS[selectedPackage] +
+          ' covers up to ' + limit + '. ';
+        const switchBtn = document.createElement('button');
+        switchBtn.type = 'button';
+        switchBtn.textContent = 'Switch to ' + PACKAGE_LABELS[suggested];
+        switchBtn.addEventListener('click', () => {
+          selectedPackage = suggested;
+          renderPackageSelection();
+          renderFitHint();
+          trackIntakeEvent('package_selected', { label: 'Fit hint switch', packageKey: suggested });
+        });
+        fitHintEl.appendChild(switchBtn);
+      } else {
+        fitHintEl.textContent = count + (count === 1 ? ' account' : ' accounts') + ' selected — your ' +
+          PACKAGE_LABELS[selectedPackage] + ' package covers this.';
+      }
+    }
+
+    function addCustomPlatform() {
+      const name = customInput.value.trim().slice(0, 60);
+      if (!name) {
+        return;
+      }
+      const exists = [...PLATFORM_OPTIONS, ...customPlatforms].find((entry) => entry.toLowerCase() === name.toLowerCase());
+      const finalName = exists || name;
+      if (!exists) {
+        customPlatforms.push(finalName);
+      }
+      chosenPlatforms.set(finalName, MEMORIALISABLE.includes(finalName) ? 'not_sure' : '');
+      customInput.value = '';
+      renderPicker();
+    }
+
+    document.getElementById('platform-custom-add').addEventListener('click', addCustomPlatform);
+    customInput.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        addCustomPlatform();
+      }
+    });
+
+    packageCards.forEach((card) => {
+      card.addEventListener('click', renderFitHint);
+    });
+
+    renderPicker();
+
+    function collectPlatformSelections() {
+      return [...chosenPlatforms.entries()].map(([name, outcome]) => {
+        const selection = { name };
+        if (outcome) {
+          selection.outcomeRequested = outcome;
+        }
+        return selection;
+      });
+    }
+
     async function getPaymentLink(packageKey) {
       try {
         const response = await fetch('/api/public-config');
@@ -859,7 +1056,8 @@
         deceasedName: document.getElementById('deceased-name').value.trim(),
         preferredOutcome: document.getElementById('preferred-outcome').value,
         relationshipToDeceased: document.getElementById('relationship-to-deceased').value.trim(),
-        knownPlatforms: document.getElementById('known-platforms').value.trim(),
+        knownPlatforms: [...chosenPlatforms.keys()].join(', '),
+        platformSelections: collectPlatformSelections(),
         profileUrls: document.getElementById('profile-urls').value.trim(),
         caseDetails: document.getElementById('case-details').value.trim(),
         selectedPackage,

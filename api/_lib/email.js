@@ -138,6 +138,18 @@ function caseUrls(caseRecord) {
   };
 }
 
+function describeAccountList(caseRecord) {
+  const outcomeWords = { delete: 'close', memorialise: 'memorialise', not_sure: 'undecided' };
+  const tasks = Array.isArray(caseRecord.platformTasks) ? caseRecord.platformTasks : [];
+
+  return tasks
+    .map((task) => {
+      const outcome = outcomeWords[task.outcomeRequested];
+      return outcome ? `${task.name} (${outcome})` : task.name;
+    })
+    .join(', ');
+}
+
 async function sendCaseCreatedEmails(caseRecord) {
   const urls = caseUrls(caseRecord);
   const deliveries = [];
@@ -172,6 +184,9 @@ async function sendCaseCreatedEmails(caseRecord) {
         `<p>Hello ${escapeHtml(caseRecord.clientName)},</p>`,
         `<p>Your case for <strong>${escapeHtml(caseRecord.deceasedName)}</strong> is saved. If you have already paid, you are all set and confirmation is on its way. If not, checkout takes about a minute:</p>`,
         `<p><a href="${escapeHtml(paymentUrl)}" style="display:inline-block;background:#c9a84c;color:#111b35;text-decoration:none;padding:13px 26px;border-radius:999px;font-weight:700;">Complete secure payment</a></p>`,
+        describeAccountList(caseRecord)
+          ? `<p><strong>What your case covers so far:</strong> ${escapeHtml(describeAccountList(caseRecord))}. You can add or change these on your case page at any time.</p>`
+          : `<p>You haven’t chosen specific accounts yet, and that’s fine — you can pick them on your case page whenever you’re ready, before or after payment.</p>`,
         `<p>You do not need to send passwords, and we only ask for supporting documents after payment.</p>`,
         `<p style="color:#6b7a8d;font-size:14px;">Everything about your case lives on one private page, from any device: <a href="${escapeHtml(urls.status)}" style="color:#1a2744;">open your case page</a>. Save that link.</p>`
       ].join(''),
@@ -280,7 +295,10 @@ async function sendPaymentConfirmedEmail(caseRecord) {
       [
         `<p>Hello ${escapeHtml(caseRecord.clientName)},</p>`,
         `<p>The next step is yours: upload the death certificate and proof of your authority on your private case page. Photos taken on a phone are fine. After that, we handle everything.</p>`,
-        `<p><a href="${escapeHtml(urls.documents)}" style="display:inline-block;background:#c9a84c;color:#111b35;text-decoration:none;padding:12px 18px;border-radius:999px;font-weight:700;">Upload your documents</a></p>`
+        `<p><a href="${escapeHtml(urls.documents)}" style="display:inline-block;background:#c9a84c;color:#111b35;text-decoration:none;padding:12px 18px;border-radius:999px;font-weight:700;">Upload your documents</a></p>`,
+        describeAccountList(caseRecord)
+          ? `<p style="color:#6b7a8d;font-size:14px;"><strong>Your case covers:</strong> ${escapeHtml(describeAccountList(caseRecord))}. You can add or change these on your case page.</p>`
+          : `<p style="color:#6b7a8d;font-size:14px;">One more small thing, whenever you’re ready: tell us which accounts to take care of. There’s a simple picker on your case page.</p>`
       ].join(''),
       'If anything is unclear, just reply to this email and we’ll help.'
     )

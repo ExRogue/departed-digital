@@ -325,9 +325,38 @@
             <ul id="summary-list" class="summary-list"></ul>
 
             <div style="margin-top: 28px;">
+              <style>
+                .pf-chip {
+                  border: 1px solid var(--border); background: var(--white); color: var(--text);
+                  border-radius: 999px; padding: 8px 14px; font-size: 0.86rem; cursor: pointer;
+                  font-family: inherit; transition: all 0.18s ease;
+                }
+                .pf-chip:hover { border-color: var(--gold); }
+                .pf-chip.selected { background: var(--navy); border-color: var(--gold); color: var(--white); }
+                .pf-chip.selected::before { content: '✓ '; color: var(--gold); }
+                .pf-chip.locked { opacity: 0.65; cursor: not-allowed; }
+                .pf-outcome-row {
+                  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+                  background: var(--cream); border: 1px solid var(--border);
+                  border-radius: 10px; padding: 8px 12px; font-size: 0.84rem; margin-top: 8px;
+                }
+                .pf-outcome-row strong { color: var(--navy); min-width: 80px; }
+                .pf-outcome-row button {
+                  border: 1px solid var(--border); background: var(--white); color: var(--text-muted);
+                  border-radius: 999px; padding: 5px 11px; font-size: 0.78rem; cursor: pointer; font-family: inherit;
+                }
+                .pf-outcome-row button.active { background: var(--navy); color: var(--white); border-color: var(--gold); }
+              </style>
               <span class="eyebrow" style="margin-bottom: 8px;">Platforms</span>
               <h3 style="font-size:1.35rem; margin-bottom:12px;">Accounts in this case</h3>
               <ul id="platform-list" class="platform-list"></ul>
+              <div id="platform-editor" style="display:none; margin-top: 14px;"></div>
+              <div style="margin-top: 14px; display:flex; gap:10px; flex-wrap:wrap;">
+                <button class="button secondary" id="platform-edit-toggle" type="button" data-track="case_platforms_edit" data-track-label="Case page edit accounts" style="display:none;">Add or change accounts</button>
+                <button class="button" id="platform-edit-save" type="button" style="display:none; background: var(--gold); color: var(--navy-dark); border: none; font-weight: 700; cursor: pointer;">Save accounts</button>
+                <button class="button secondary" id="platform-edit-cancel" type="button" style="display:none;">Cancel</button>
+              </div>
+              <p class="copy-note" id="platform-editor-helper" style="display:none;">Accounts we have already started work on stay on the case — email us if one of those needs to change.</p>
             </div>
           </aside>
         </div>
@@ -497,16 +526,7 @@
         '</li>'
       )).join('');
 
-      const platforms = caseData.platformTasks || [];
-      platformList.innerHTML = platforms.length
-        ? platforms.map((task) => (
-          '<li>' +
-            '<strong>' + escapeHtml(task.name) + ' · ' + escapeHtml(titleize(task.status)) + '</strong>' +
-            '<div class="helper">' + escapeHtml(task.profileOrHandle || 'No profile or handle captured yet.') + '</div>' +
-            (task.evidenceNeeded ? '<div class="helper" style="margin-top:6px;">Evidence needed: ' + escapeHtml(task.evidenceNeeded) + '</div>' : '') +
-          '</li>'
-        )).join('')
-        : '<li>We will list each account here as the case is set up.</li>';
+      renderPlatformSection();
 
       updateDocumentsSection();
     }
@@ -526,6 +546,218 @@
         }
       }
     }
+
+    // --- Accounts section: family-friendly progress list + self-serve editing ---
+    const PLATFORM_OPTIONS = ['Facebook', 'Instagram', 'WhatsApp', 'Google / Gmail', 'Apple / iCloud', 'TikTok', 'LinkedIn', 'X (Twitter)', 'Snapchat', 'Pinterest', 'YouTube', 'Amazon', 'PayPal', 'Spotify', 'Netflix', 'Email (other)'];
+    const MEMORIALISABLE = ['Facebook', 'Instagram'];
+    const FAMILY_STATUS_LABELS = {
+      not_started: 'Queued',
+      queued: 'Queued',
+      submitted: 'Submitted to the platform',
+      waiting: 'Awaiting the platform’s response',
+      resolved: 'Complete',
+      blocked: 'Needs your attention'
+    };
+    const OUTCOME_LABELS = { delete: 'Close', memorialise: 'Memorialise', not_sure: 'Undecided' };
+    const platformEditor = document.getElementById('platform-editor');
+    const platformEditToggle = document.getElementById('platform-edit-toggle');
+    const platformEditSave = document.getElementById('platform-edit-save');
+    const platformEditCancel = document.getElementById('platform-edit-cancel');
+    const platformEditorHelper = document.getElementById('platform-editor-helper');
+    let editingPlatforms = false;
+    let platformDraft = new Map();
+    let customPlatformOptions = [];
+
+    function taskLocked(task) {
+      return task.status !== 'not_started' && task.status !== 'queued';
+    }
+
+    function canEditPlatforms() {
+      return caseData && caseData.status !== 'completed';
+    }
+
+    function renderPlatformSection() {
+      const platforms = (caseData && caseData.platformTasks) || [];
+
+      if (!editingPlatforms) {
+        platformList.style.display = '';
+        platformEditor.style.display = 'none';
+        platformEditSave.style.display = 'none';
+        platformEditCancel.style.display = 'none';
+        platformEditorHelper.style.display = 'none';
+        platformEditToggle.style.display = canEditPlatforms() ? '' : 'none';
+        platformEditToggle.textContent = platforms.length ? 'Add or change accounts' : 'Choose accounts';
+
+        platformList.innerHTML = platforms.length
+          ? platforms.map((task) => (
+            '<li>' +
+              '<strong>' + escapeHtml(task.name) + ' · ' + escapeHtml(FAMILY_STATUS_LABELS[task.status] || titleize(task.status)) + '</strong>' +
+              '<div class="helper">' +
+                (OUTCOME_LABELS[task.outcomeRequested] ? 'Requested: ' + OUTCOME_LABELS[task.outcomeRequested] + '. ' : '') +
+                escapeHtml(task.profileOrHandle || '') +
+              '</div>' +
+              (task.evidenceNeeded ? '<div class="helper" style="margin-top:6px;">Evidence needed: ' + escapeHtml(task.evidenceNeeded) + '</div>' : '') +
+            '</li>'
+          )).join('')
+          : '<li>No accounts chosen yet — you can add them now or after payment, either works. We also spot anything obvious from the details you gave us.</li>';
+        return;
+      }
+
+      platformList.style.display = 'none';
+      platformEditor.style.display = '';
+      platformEditToggle.style.display = 'none';
+      platformEditSave.style.display = '';
+      platformEditCancel.style.display = '';
+      platformEditorHelper.style.display = '';
+
+      const names = [...new Set([...PLATFORM_OPTIONS, ...customPlatformOptions, ...platformDraft.keys()])];
+      platformEditor.innerHTML = '';
+
+      const grid = document.createElement('div');
+      grid.style.cssText = 'display:flex; flex-wrap:wrap; gap:8px;';
+      names.forEach((name) => {
+        const meta = platformDraft.get(name);
+        const chip = document.createElement('button');
+        chip.type = 'button';
+        chip.className = 'pf-chip' + (meta ? ' selected' : '') + (meta && meta.locked ? ' locked' : '');
+        chip.textContent = name;
+        chip.addEventListener('click', () => {
+          const current = platformDraft.get(name);
+          if (current && current.locked) {
+            return;
+          }
+          if (current) {
+            platformDraft.delete(name);
+          } else {
+            platformDraft.set(name, { outcome: MEMORIALISABLE.includes(name) ? 'not_sure' : '', locked: false });
+          }
+          renderPlatformSection();
+        });
+        grid.appendChild(chip);
+      });
+      platformEditor.appendChild(grid);
+
+      MEMORIALISABLE.filter((name) => platformDraft.has(name)).forEach((name) => {
+        const meta = platformDraft.get(name);
+        const row = document.createElement('div');
+        row.className = 'pf-outcome-row';
+        const label = document.createElement('strong');
+        label.textContent = name;
+        row.appendChild(label);
+        [['delete', 'Close it'], ['memorialise', 'Memorialise'], ['not_sure', 'Not sure yet']].forEach(([value, text]) => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.textContent = text;
+          btn.className = meta.outcome === value ? 'active' : '';
+          btn.addEventListener('click', () => {
+            meta.outcome = value;
+            renderPlatformSection();
+          });
+          row.appendChild(btn);
+        });
+        platformEditor.appendChild(row);
+      });
+
+      const customRow = document.createElement('div');
+      customRow.style.cssText = 'display:flex; gap:8px; margin-top:12px; max-width:360px;';
+      const customField = document.createElement('input');
+      customField.type = 'text';
+      customField.maxLength = 60;
+      customField.placeholder = 'Somewhere else? Type it here';
+      customField.style.cssText = 'flex:1; border:1px solid var(--border); border-radius:8px; padding:8px 12px; font-family:inherit; font-size:0.86rem;';
+      const customAdd = document.createElement('button');
+      customAdd.type = 'button';
+      customAdd.textContent = 'Add';
+      customAdd.className = 'pf-chip';
+      const addCustom = () => {
+        const value = customField.value.trim().slice(0, 60);
+        if (!value) {
+          return;
+        }
+        const existing = names.find((entry) => entry.toLowerCase() === value.toLowerCase());
+        const finalName = existing || value;
+        if (!existing) {
+          customPlatformOptions.push(finalName);
+        }
+        if (!platformDraft.has(finalName)) {
+          platformDraft.set(finalName, { outcome: MEMORIALISABLE.includes(finalName) ? 'not_sure' : '', locked: false });
+        }
+        customField.value = '';
+        renderPlatformSection();
+      };
+      customAdd.addEventListener('click', addCustom);
+      customField.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+          event.preventDefault();
+          addCustom();
+        }
+      });
+      customRow.appendChild(customField);
+      customRow.appendChild(customAdd);
+      platformEditor.appendChild(customRow);
+    }
+
+    platformEditToggle.addEventListener('click', () => {
+      platformDraft = new Map();
+      customPlatformOptions = [];
+      ((caseData && caseData.platformTasks) || []).forEach((task) => {
+        platformDraft.set(task.name, {
+          outcome: OUTCOME_LABELS[task.outcomeRequested] ? task.outcomeRequested : (MEMORIALISABLE.includes(task.name) ? 'not_sure' : ''),
+          locked: taskLocked(task)
+        });
+        if (!PLATFORM_OPTIONS.some((entry) => entry.toLowerCase() === task.name.toLowerCase())) {
+          customPlatformOptions.push(task.name);
+        }
+      });
+      editingPlatforms = true;
+      renderPlatformSection();
+    });
+
+    platformEditCancel.addEventListener('click', () => {
+      editingPlatforms = false;
+      renderPlatformSection();
+    });
+
+    platformEditSave.addEventListener('click', async () => {
+      platformEditSave.disabled = true;
+      platformEditSave.textContent = 'Saving...';
+
+      try {
+        const selections = [...platformDraft.entries()].map(([name, meta]) => {
+          const entry = { name };
+          if (meta.outcome) {
+            entry.outcomeRequested = meta.outcome;
+          }
+          return entry;
+        });
+
+        const response = await fetch('/api/cases', {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            id: caseData.id,
+            publicToken: caseToken,
+            platformSelections: selections,
+            activityEvent: 'platforms_updated',
+            activityMetadata: { count: selections.length, source: 'case_page' }
+          })
+        });
+        const payload = await response.json();
+
+        if (!response.ok || !payload.ok) {
+          throw new Error(payload.error || 'Could not save just now.');
+        }
+
+        editingPlatforms = false;
+        renderCase(payload.case);
+      } catch (error) {
+        platformEditorHelper.textContent = 'We could not save the accounts just now — please try again, or email hello@departed.digital.';
+        platformEditorHelper.style.display = '';
+      } finally {
+        platformEditSave.disabled = false;
+        platformEditSave.textContent = 'Save accounts';
+      }
+    });
 
     async function fetchCase() {
       if (!caseIdFromUrl && !(caseData && caseData.id)) {

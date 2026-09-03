@@ -123,13 +123,16 @@ function buildCaseExportPayload(caseRecord, req) {
       health: workflow.healthStatus || ''
     },
     platformTasks: platformTasks.map((task) => ({
+      id: task.id || '',
       name: task.name,
       status: task.status,
       outcomeRequested: task.outcomeRequested || '',
       profileOrHandle: task.profileOrHandle || '',
       evidenceNeeded: task.evidenceNeeded || '',
       submissionReference: task.submissionReference || '',
-      notes: task.notes || ''
+      notes: task.notes || '',
+      submittedAt: task.submittedAt || '',
+      resolvedAt: task.resolvedAt || ''
     })),
     documents: documents.map((document) => ({
       id: document.id,
