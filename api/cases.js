@@ -14,6 +14,20 @@ function normalizeString(value, maxLength = 1200) {
   return String(value || '').trim().slice(0, maxLength);
 }
 
+function normalizePlatformSelections(value) {
+  if (!Array.isArray(value)) {
+    return undefined;
+  }
+
+  return value
+    .slice(0, 40)
+    .map((entry) => ({
+      name: normalizeString(entry && entry.name, 120),
+      outcomeRequested: normalizeString(entry && entry.outcomeRequested, 40)
+    }))
+    .filter((entry) => entry.name);
+}
+
 function validateCreatePayload(payload) {
   const clientName = normalizeString(payload.clientName, 140);
   const clientEmail = normalizeString(payload.clientEmail, 180);
@@ -37,6 +51,7 @@ function validateCreatePayload(payload) {
       relationshipToDeceased: normalizeString(payload.relationshipToDeceased, 140),
       knownPlatforms: normalizeString(payload.knownPlatforms, 1200),
       profileUrls: normalizeString(payload.profileUrls, 2000),
+      platformSelections: normalizePlatformSelections(payload.platformSelections),
       urgency: normalizeString(payload.urgency, 40) || 'standard',
       selectedPackage: PACKAGE_CONFIG[payload.selectedPackage] ? payload.selectedPackage : 'standard',
       intakeSource: normalizeString(payload.intakeSource, 80) || 'website',
@@ -130,9 +145,10 @@ module.exports = async function handler(req, res) {
 
       const updated = await updatePublicCase(caseId, publicToken, {
         selectedPackage: normalizeString(body.selectedPackage, 40),
-        relationshipToDeceased: normalizeString(body.relationshipToDeceased, 140),
-        knownPlatforms: normalizeString(body.knownPlatforms, 1200),
-        profileUrls: normalizeString(body.profileUrls, 2000),
+        relationshipToDeceased: typeof body.relationshipToDeceased === 'string' ? normalizeString(body.relationshipToDeceased, 140) : undefined,
+        knownPlatforms: typeof body.knownPlatforms === 'string' ? normalizeString(body.knownPlatforms, 1200) : undefined,
+        profileUrls: typeof body.profileUrls === 'string' ? normalizeString(body.profileUrls, 2000) : undefined,
+        platformSelections: normalizePlatformSelections(body.platformSelections),
         activityEvent: normalizeString(body.activityEvent, 80),
         activityMetadata: body.activityMetadata && typeof body.activityMetadata === 'object' ? body.activityMetadata : {}
       });
