@@ -146,31 +146,34 @@ async function sendCaseCreatedEmails(caseRecord) {
   // unpaid cases live in the case desk's Unpaid lane instead of the inbox.
   // The operations email arrives with payment confirmation.
 
+  const paymentUrl = buildPaymentUrl(caseRecord) || urls.payment;
+
   deliveries.push(await sendEmail({
     to: caseRecord.clientEmail,
-    subject: `We’ve received your case ${caseRecord.reference}`,
+    subject: `Your case ${caseRecord.reference} is saved. One step left.`,
     text: [
       `Hello ${caseRecord.clientName},`,
       '',
-      `We’ve received your case for ${caseRecord.deceasedName}.`,
+      `Your case for ${caseRecord.deceasedName} is saved.`,
       `Reference: ${caseRecord.reference}`,
       '',
-      'You do not need to send passwords.',
-      'We only ask for supporting documents after payment is confirmed.',
+      `One step remains: secure payment. Complete it here: ${paymentUrl}`,
       '',
-      `Your private case page (save this link): ${urls.status}`,
+      'You do not need to send passwords.',
+      'We only ask for supporting documents after payment, on your private case page:',
+      urls.status,
       '',
       'Departed Digital'
     ].join('\n'),
     html: buildShell(
-      'We’ve received your case.',
-      `Your reference is ${caseRecord.reference}. Everything about your case lives on one private page. Save the link below.`,
+      'Your case is saved.',
+      `Your reference is ${caseRecord.reference}. One step remains before we can begin.`,
       [
         `<p>Hello ${escapeHtml(caseRecord.clientName)},</p>`,
-        `<p>We’ve received your case for <strong>${escapeHtml(caseRecord.deceasedName)}</strong>.</p>`,
-        `<p>You do not need to send passwords. We only ask for supporting documents after payment is confirmed.</p>`,
-        `<p><a href="${escapeHtml(urls.status)}" style="display:inline-block;background:#c9a84c;color:#111b35;text-decoration:none;padding:12px 18px;border-radius:999px;font-weight:700;">Open your private case page</a></p>`,
-        `<p style="color:#6b7a8d;font-size:14px;">Save this link. It works from any device.</p>`
+        `<p>Your case for <strong>${escapeHtml(caseRecord.deceasedName)}</strong> is saved. If you have already paid, you are all set and confirmation is on its way. If not, checkout takes about a minute:</p>`,
+        `<p><a href="${escapeHtml(paymentUrl)}" style="display:inline-block;background:#c9a84c;color:#111b35;text-decoration:none;padding:13px 26px;border-radius:999px;font-weight:700;">Complete secure payment</a></p>`,
+        `<p>You do not need to send passwords, and we only ask for supporting documents after payment.</p>`,
+        `<p style="color:#6b7a8d;font-size:14px;">Everything about your case lives on one private page, from any device: <a href="${escapeHtml(urls.status)}" style="color:#1a2744;">open your case page</a>. Save that link.</p>`
       ].join(''),
       'If anything is unclear, just reply to this email and we’ll help.'
     )
