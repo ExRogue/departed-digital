@@ -431,7 +431,6 @@
     const copyCaseLinkHelper = document.getElementById('copy-case-link-helper');
     const documentsSection = document.getElementById('documents');
     const documentsJump = document.getElementById('documents-jump');
-    const documentsNavLink = document.getElementById('documents-nav-link');
     const documentForm = document.getElementById('document-form');
     const documentHelper = document.getElementById('document-helper');
 
@@ -535,7 +534,6 @@
       const unlocked = caseData && caseData.paymentStatus === 'paid';
       documentsSection.style.display = unlocked ? '' : 'none';
       documentsJump.style.display = unlocked ? '' : 'none';
-      documentsNavLink.style.display = unlocked ? '' : 'none';
 
       if (unlocked) {
         if (caseData.authorityBasis) {
