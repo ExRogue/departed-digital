@@ -996,8 +996,8 @@ function buildFamilyGuidance(caseRecord) {
 
   if (!paid) {
     return {
-      headline: 'Waiting for payment to be confirmed',
-      detail: 'Once payment is confirmed, we will ask for the supporting documents and begin work. If you have already paid, confirmation can take a short while to reach us.',
+      headline: 'Your case is saved and ready to begin',
+      detail: 'One step remains: secure payment. Once that is done, this page unlocks the document upload and we begin work. If you have just paid, confirmation can take a short while to reach us.',
       actionRequired: true
     };
   }
@@ -1025,11 +1025,42 @@ function buildFamilyGuidance(caseRecord) {
   };
 }
 
+// The Stripe payment link for this case's package, carrying the case id so
+// the webhook can match the payment. Only offered while the case is unpaid.
+function buildCasePaymentUrl(caseRecord) {
+  if (caseRecord.paymentStatus === 'paid') {
+    return '';
+  }
+
+  const links = {
+    essential: process.env.STRIPE_PAYMENT_LINK_ESSENTIAL || '',
+    standard: process.env.STRIPE_PAYMENT_LINK_STANDARD || '',
+    estate: process.env.STRIPE_PAYMENT_LINK_ESTATE || ''
+  };
+  const link = links[caseRecord.selectedPackage] || links.standard;
+
+  if (!link) {
+    return '';
+  }
+
+  try {
+    const url = new URL(link);
+    url.searchParams.set('client_reference_id', caseRecord.id);
+    if (caseRecord.clientEmail) {
+      url.searchParams.set('prefilled_email', caseRecord.clientEmail);
+    }
+    return url.toString();
+  } catch (error) {
+    return '';
+  }
+}
+
 function buildPublicCase(caseRecord) {
   const workflow = buildWorkflowKit(caseRecord);
   const platformTasks = ensureArray(caseRecord.platformTasks);
 
   return {
+    paymentUrl: buildCasePaymentUrl(caseRecord),
     id: caseRecord.id,
     reference: caseRecord.reference,
     clientName: caseRecord.clientName,

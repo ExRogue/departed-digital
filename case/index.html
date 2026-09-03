@@ -469,6 +469,16 @@
         nextAction.textContent = 'We are reviewing the case and will confirm the next step shortly.';
       }
 
+      // An unpaid case gets a direct route back into checkout, so nobody is
+      // ever stuck on a page that says payment is next without a way to pay.
+      if (caseData.paymentUrl && caseData.paymentStatus !== 'paid') {
+        nextAction.innerHTML += '<div style="margin-top: 16px;">' +
+          '<a href="' + escapeHtml(caseData.paymentUrl) + '" data-track="case_pay_click" data-track-label="Case page payment button" ' +
+          'style="display:inline-block;background:var(--gold);color:var(--navy-dark);text-decoration:none;padding:13px 26px;border-radius:999px;font-weight:700;">Complete secure payment</a>' +
+          '<span style="display:block;margin-top:10px;font-size:0.85rem;color:var(--text-muted);">Checkout opens in Stripe and shows your local currency.</span>' +
+          '</div>';
+      }
+
       summaryList.innerHTML = [
         ['Client', caseData.clientName || 'Not provided'],
         ['Email', caseData.clientEmail || 'Not provided'],
