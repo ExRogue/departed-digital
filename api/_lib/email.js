@@ -139,42 +139,12 @@ function caseUrls(caseRecord) {
 }
 
 async function sendCaseCreatedEmails(caseRecord) {
-  const settings = getEmailSettings();
   const urls = caseUrls(caseRecord);
   const deliveries = [];
 
-  if (settings.operationsAlertEmail) {
-    deliveries.push(await sendEmail({
-      to: settings.operationsAlertEmail,
-      subject: `New Departed Digital case ${caseRecord.reference}`,
-      text: [
-        `New case received: ${caseRecord.reference}`,
-        `Client: ${caseRecord.clientName} <${caseRecord.clientEmail}>`,
-        `Deceased: ${caseRecord.deceasedName}`,
-        `Package: ${caseRecord.packageLabel}`,
-        `Relationship: ${caseRecord.relationshipToDeceased || 'Not supplied'}`,
-        `Known platforms: ${caseRecord.knownPlatforms || 'Not supplied'}`,
-        `Payment link: ${urls.payment}`,
-        `Documents link: ${urls.documents}`,
-        `Status page: ${urls.status}`
-      ].join('\n'),
-      html: buildShell(
-        'A new case has come in.',
-        'A family has started a case through Departed Digital.',
-        [
-          `<p><strong>Reference:</strong> ${escapeHtml(caseRecord.reference)}</p>`,
-          `<p><strong>Client:</strong> ${escapeHtml(caseRecord.clientName)} (${escapeHtml(caseRecord.clientEmail)})</p>`,
-          `<p><strong>Deceased:</strong> ${escapeHtml(caseRecord.deceasedName)}</p>`,
-          `<p><strong>Package:</strong> ${escapeHtml(caseRecord.packageLabel)}</p>`,
-          `<p><strong>Relationship:</strong> ${escapeHtml(caseRecord.relationshipToDeceased || 'Not supplied')}</p>`,
-          `<p><strong>Known platforms:</strong> ${escapeHtml(caseRecord.knownPlatforms || 'Not supplied')}</p>`,
-          `<p><strong>Case review step:</strong> <a href="${escapeHtml(urls.payment)}">${escapeHtml(urls.payment)}</a></p>`,
-          `<p><strong>Document step:</strong> <a href="${escapeHtml(urls.documents)}">${escapeHtml(urls.documents)}</a></p>`,
-          `<p><strong>Status page:</strong> <a href="${escapeHtml(urls.status)}">${escapeHtml(urls.status)}</a></p>`
-        ].join('')
-      )
-    }));
-  }
+  // No operations alert here on purpose: a created case has not paid yet, and
+  // unpaid cases live in the case desk's Unpaid lane instead of the inbox.
+  // The operations email arrives with payment confirmation.
 
   deliveries.push(await sendEmail({
     to: caseRecord.clientEmail,
