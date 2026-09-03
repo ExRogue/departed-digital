@@ -707,7 +707,15 @@
           return '<option value="' + s + '"' + (record.status === s ? ' selected' : '') + '>' + s.replace(/_/g, ' ') + '</option>';
         }).join('') +
       '</select></div>' +
-      '<button type="button" class="btn btn-sm" id="status-save">Save status</button>';
+      '<button type="button" class="btn btn-sm" id="status-save">Save status</button>' +
+      '<div style="margin-top:22px; padding-top:16px; border-top:1px solid var(--line, #eee);">' +
+        (record.archivedAt
+          ? '<p style="font-size:0.88rem; color: var(--muted); margin-bottom:10px;">Archived ' + escapeHtml(formatDateTime(record.archivedAt)) + '. It sends no reminder emails and sits in Done.</p>' +
+            '<button type="button" class="btn btn-sm" id="archive-toggle" data-mode="restore">Restore case</button>'
+          : '<p style="font-size:0.88rem; color: var(--muted); margin-bottom:10px;">Finished with this one, or it was a test? Archiving hides it from the working lanes and stops all automatic reminder emails. Nothing is deleted.</p>' +
+            '<button type="button" class="btn btn-sm" id="archive-toggle" data-mode="archive">Archive case</button>') +
+        '<div class="notice notice-success" id="archive-note" hidden></div>' +
+      '</div>';
     if (activity.length) {
       html += '<h3 style="margin-top:22px;">Recent activity</h3>' + activity.map(function (entry) {
         return '<div class="activity-item">' + escapeHtml(String(entry.event || '').replace(/_/g, ' ')) +
@@ -825,6 +833,29 @@
 
       el('pt-save').addEventListener('click', function () {
         saveCase(record.id, { platformTasks: ptTasks }, el('pt-save'), 'pt-note', 'Accounts saved', true);
+      });
+    }
+
+    var archiveToggle = el('archive-toggle');
+    if (archiveToggle) {
+      archiveToggle.addEventListener('click', async function () {
+        var mode = archiveToggle.dataset.mode;
+        archiveToggle.disabled = true;
+        archiveToggle.textContent = mode === 'archive' ? 'Archiving…' : 'Restoring…';
+        try {
+          await api('/api/admin/cases', { method: 'PATCH', body: JSON.stringify({ action: mode, id: record.id }) });
+          await loadCases();
+          openCase(record.id);
+        } catch (error) {
+          var archiveNote = el('archive-note');
+          if (archiveNote) {
+            archiveNote.textContent = error.message;
+            archiveNote.className = 'notice notice-error';
+            archiveNote.hidden = false;
+          }
+          archiveToggle.disabled = false;
+          archiveToggle.textContent = mode === 'archive' ? 'Archive case' : 'Restore case';
+        }
       });
     }
 
