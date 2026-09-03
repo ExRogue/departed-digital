@@ -716,7 +716,10 @@
       renderPlatformSection();
     });
 
-    platformEditSave.addEventListener('click', async () => {
+    const PACKAGE_LIMITS = { essential: 2, standard: 5, estate: Infinity };
+    const PACKAGE_LABELS = { essential: 'Essential', standard: 'Standard', estate: 'Estate' };
+
+    async function savePlatformDraft(upgradeTo) {
       platformEditSave.disabled = true;
       platformEditSave.textContent = 'Saving...';
 
@@ -729,16 +732,22 @@
           return entry;
         });
 
+        const body = {
+          id: caseData.id,
+          publicToken: caseToken,
+          platformSelections: selections,
+          activityEvent: 'platforms_updated',
+          activityMetadata: { count: selections.length, source: 'case_page' }
+        };
+        if (upgradeTo) {
+          body.selectedPackage = upgradeTo;
+          body.activityMetadata.packageChangedTo = upgradeTo;
+        }
+
         const response = await fetch('/api/cases', {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            id: caseData.id,
-            publicToken: caseToken,
-            platformSelections: selections,
-            activityEvent: 'platforms_updated',
-            activityMetadata: { count: selections.length, source: 'case_page' }
-          })
+          body: JSON.stringify(body)
         });
         const payload = await response.json();
 
@@ -748,6 +757,15 @@
 
         editingPlatforms = false;
         renderCase(payload.case);
+
+        // A paid case can list more accounts than the package covers; that
+        // becomes a conversation, not a wall.
+        const limit = PACKAGE_LIMITS[payload.case.selectedPackage] || Infinity;
+        if (payload.case.paymentStatus === 'paid' && selections.length > limit) {
+          platformEditorHelper.textContent = 'Saved. Your ' + (PACKAGE_LABELS[payload.case.selectedPackage] || 'chosen') +
+            ' package covers ' + limit + ' accounts — we will confirm any extras with you before work begins.';
+          platformEditorHelper.style.display = '';
+        }
       } catch (error) {
         platformEditorHelper.textContent = 'We could not save the accounts just now — please try again, or email hello@departed.digital.';
         platformEditorHelper.style.display = '';
@@ -755,6 +773,32 @@
         platformEditSave.disabled = false;
         platformEditSave.textContent = 'Save accounts';
       }
+    }
+
+    platformEditSave.addEventListener('click', () => {
+      const count = platformDraft.size;
+      const limit = PACKAGE_LIMITS[caseData.selectedPackage] || Infinity;
+
+      // Before payment, the package must cover the list — one tap fixes it.
+      if (caseData.paymentStatus !== 'paid' && count > limit) {
+        const suggested = count <= PACKAGE_LIMITS.standard ? 'standard' : 'estate';
+        platformEditorHelper.innerHTML = '';
+        platformEditorHelper.append(
+          'You have chosen ' + count + ' accounts — ' + (PACKAGE_LABELS[caseData.selectedPackage] || 'your') +
+          ' covers up to ' + limit + '. '
+        );
+        const upgradeBtn = document.createElement('button');
+        upgradeBtn.type = 'button';
+        upgradeBtn.className = 'pf-chip';
+        upgradeBtn.textContent = 'Switch to ' + PACKAGE_LABELS[suggested] + ' and save';
+        upgradeBtn.addEventListener('click', () => savePlatformDraft(suggested));
+        platformEditorHelper.appendChild(upgradeBtn);
+        platformEditorHelper.append(' or remove some accounts.');
+        platformEditorHelper.style.display = '';
+        return;
+      }
+
+      savePlatformDraft('');
     });
 
     async function fetchCase() {

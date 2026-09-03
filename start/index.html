@@ -949,6 +949,8 @@
     }
 
     function renderFitHint() {
+      fitHintEl.style.borderColor = '';
+      fitHintEl.style.background = '';
       const count = chosenPlatforms.size;
       if (!count) {
         fitHintEl.hidden = true;
@@ -1017,6 +1019,30 @@
       });
     }
 
+    // A package that does not cover the chosen accounts cannot be checked
+    // out: that mismatch would be resolved by email with a grieving family
+    // later, which is worse than one tap now. Skipping the picker entirely
+    // still flows straight through to payment.
+    function packageCoversSelection() {
+      return chosenPlatforms.size <= PACKAGE_LIMITS[selectedPackage];
+    }
+
+    function showFitBlock() {
+      renderFitHint();
+      fitHintEl.hidden = false;
+      fitHintEl.style.borderColor = '#b3261e';
+      fitHintEl.style.background = 'rgba(179,38,30,0.06)';
+      const note = document.createElement('span');
+      note.textContent = ' — or remove some accounts to continue with ' + PACKAGE_LABELS[selectedPackage] + '.';
+      fitHintEl.appendChild(note);
+      fitHintEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      trackIntakeEvent('package_fit_blocked', {
+        label: 'Start form package fit block',
+        packageKey: selectedPackage,
+        accountCount: chosenPlatforms.size
+      });
+    }
+
     async function getPaymentLink(packageKey) {
       try {
         const response = await fetch('/api/public-config');
@@ -1049,6 +1075,11 @@
 
     intakeForm.addEventListener('submit', async (event) => {
       event.preventDefault();
+
+      if (!packageCoversSelection()) {
+        showFitBlock();
+        return;
+      }
 
       const intakeData = {
         clientName: document.getElementById('client-name').value.trim(),
