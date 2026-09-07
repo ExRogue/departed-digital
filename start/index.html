@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Start a Case | Departed Digital</title>
-  <meta name="description" content="Start a Departed Digital case. Choose the right package, see what information to gather, and send a pre-filled case enquiry." />
+  <meta name="description" content="Start a Departed Digital case. Choose the right package, see what information to gather, and send a prefilled case enquiry." />
   <link rel="canonical" href="https://www.departed.digital/start" />
   <meta name="robots" content="index, follow" />
   <link rel="icon" type="image/x-icon" href="/favicon.ico" />
@@ -636,7 +636,7 @@
         <h2>What to expect</h2>
         <ul>
           <li>This first step should only take about a minute.</li>
-          <li>You do not need passwords for the deceased's accounts.</li>
+          <li>You do not need any passwords.</li>
           <li>You choose your package here and pay securely by card.</li>
           <li>Every case ends with a written outcome record.</li>
         </ul>
@@ -649,7 +649,7 @@
       <section class="section">
         <span class="section-label">Step 1</span>
         <h2 class="section-title">Tell us only the essentials first</h2>
-        <p class="section-sub">This should take about a minute. We keep the required part short, then let families add optional detail that makes the case easier to handle later and easier for platform teams to review.</p>
+        <p class="section-sub">This should take about a minute. We keep the required part short. You can add optional details that make the case easier for us and for the platforms.</p>
         <div class="intake-layout">
           <div class="form-panel">
             <form id="intake-form">
@@ -663,7 +663,7 @@
                   <input id="client-email" name="client_email" type="email" placeholder="you@example.com" required />
                 </div>
                 <div class="field full">
-                  <label for="deceased-name">Deceased's Name</label>
+                  <label for="deceased-name">Name of the person who died</label>
                   <input id="deceased-name" name="deceased_name" type="text" placeholder="Full name" required />
                 </div>
               </div>
@@ -693,6 +693,7 @@
                   color: var(--white);
                 }
                 .platform-chip.selected::before { content: '✓ '; color: var(--gold); }
+                .chip-logo { width: 14px; height: 14px; vertical-align: -2px; margin-right: 7px; }
                 .platform-custom { display: flex; gap: 10px; margin-top: 12px; max-width: 420px; }
                 .platform-custom input {
                   flex: 1; border: 1px solid var(--border); border-radius: 10px;
@@ -729,7 +730,7 @@
               </style>
               <div class="platform-section">
                 <label>Which accounts should we take care of? <span style="font-weight:400; color: var(--text-muted);">(optional)</span></label>
-                <p class="helper" style="margin: 0;">Tap the ones you know about — or skip this and choose them after payment.</p>
+                <p class="helper" style="margin: 0;">Tap the ones you know about, or skip this and choose them after payment.</p>
                 <div class="platform-picker" id="platform-picker" role="group" aria-label="Accounts to take care of"></div>
                 <div class="platform-custom">
                   <input id="platform-custom-input" type="text" maxlength="60" placeholder="Somewhere else? Type it here" aria-label="Add another platform" />
@@ -742,14 +743,14 @@
                 <summary>
                   <div class="optional-summary-copy">
                     <span>Add optional details if you already have them</span>
-                    <small>Helpful for Meta, Google, or other platform submissions later, but not required to begin.</small>
+                    <small>Helpful for the Meta or Google requests later, but not needed to begin.</small>
                   </div>
                   <span class="optional-summary-icon">+</span>
                 </summary>
                 <div class="optional-panel-body">
                   <div class="field-grid" style="padding-top: 18px;">
                     <div class="field full">
-                      <label for="relationship-to-deceased">Your Relationship to the Deceased <span style="font-weight:400; text-transform:none; letter-spacing:0; color: var(--text-muted);">(optional)</span></label>
+                      <label for="relationship-to-deceased">Your relationship to them <span style="font-weight:400; text-transform:none; letter-spacing:0; color: var(--text-muted);">(optional)</span></label>
                       <input id="relationship-to-deceased" name="relationship_to_deceased" type="text" placeholder="Executor, daughter, son, spouse, solicitor..." />
                     </div>
                     <div class="field full">
@@ -801,12 +802,12 @@
           <aside class="note-card">
             <div>
               <span class="section-label" style="margin-bottom: 10px;">Why this first step</span>
-              <h3>We only collect what is needed to scope the case.</h3>
+              <h3>We only ask for what we need to start the case.</h3>
             </div>
             <ul>
               <li>No death certificate upload in the first enquiry</li>
               <li>No need to share passwords or direct access</li>
-              <li>Optional platform details make later Meta or Google submissions easier</li>
+              <li>Optional account details make the Meta and Google requests easier later</li>
               <li>A real case reference is created before payment</li>
             </ul>
           </aside>
@@ -826,6 +827,7 @@
     </div>
   </footer>
 
+  <script src="/scripts/platform-icons.js"></script>
   <script src="/scripts/localise.js"></script>
   <script src="/scripts/site-analytics.js"></script>
   <script>
@@ -906,7 +908,8 @@
         const chip = document.createElement('button');
         chip.type = 'button';
         chip.className = 'platform-chip' + (chosenPlatforms.has(name) ? ' selected' : '');
-        chip.textContent = name;
+        chip.innerHTML = window.DepartedPlatformIcons ? window.DepartedPlatformIcons.svgFor(name, 'chip-logo') : '';
+        chip.appendChild(document.createTextNode(name));
         chip.setAttribute('aria-pressed', chosenPlatforms.has(name) ? 'true' : 'false');
         chip.addEventListener('click', () => togglePlatform(name));
         pickerEl.appendChild(chip);
@@ -953,7 +956,7 @@
 
       if (count > limit) {
         const suggested = count <= PACKAGE_LIMITS.standard ? 'standard' : 'estate';
-        fitHintEl.innerHTML = 'You have picked ' + count + ' accounts — ' + PACKAGE_LABELS[selectedPackage] +
+        fitHintEl.innerHTML = 'You have picked ' + count + ' accounts. ' + PACKAGE_LABELS[selectedPackage] +
           ' covers up to ' + limit + '. ';
         const switchBtn = document.createElement('button');
         switchBtn.type = 'button';
@@ -966,7 +969,7 @@
         });
         fitHintEl.appendChild(switchBtn);
       } else {
-        fitHintEl.textContent = count + (count === 1 ? ' account' : ' accounts') + ' selected — your ' +
+        fitHintEl.textContent = count + (count === 1 ? ' account' : ' accounts') + ' selected, your ' +
           PACKAGE_LABELS[selectedPackage] + ' package covers this.';
       }
     }
@@ -1037,7 +1040,7 @@
       fitHintEl.style.borderColor = '#b3261e';
       fitHintEl.style.background = 'rgba(179,38,30,0.06)';
       const note = document.createElement('span');
-      note.textContent = ' — or remove some accounts to continue with ' + PACKAGE_LABELS[selectedPackage] + '.';
+      note.textContent = ' Or remove some accounts to continue with ' + PACKAGE_LABELS[selectedPackage] + '.';
       fitHintEl.appendChild(note);
       fitHintEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
       trackIntakeEvent('package_fit_blocked', {

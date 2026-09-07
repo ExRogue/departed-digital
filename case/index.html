@@ -334,6 +334,7 @@
                 .pf-chip:hover { border-color: var(--gold); }
                 .pf-chip.selected { background: var(--navy); border-color: var(--gold); color: var(--white); }
                 .pf-chip.selected::before { content: '✓ '; color: var(--gold); }
+                .chip-logo { width: 13px; height: 13px; vertical-align: -2px; margin-right: 6px; }
                 .pf-chip.locked { opacity: 0.65; cursor: not-allowed; }
                 .pf-outcome-row {
                   display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
@@ -356,7 +357,7 @@
                 <button class="button" id="platform-edit-save" type="button" style="display:none; background: var(--gold); color: var(--navy-dark); border: none; font-weight: 700; cursor: pointer;">Save accounts</button>
                 <button class="button secondary" id="platform-edit-cancel" type="button" style="display:none;">Cancel</button>
               </div>
-              <p class="copy-note" id="platform-editor-helper" style="display:none;">Accounts we have already started work on stay on the case — email us if one of those needs to change.</p>
+              <p class="copy-note" id="platform-editor-helper" style="display:none;">Accounts we have already started work on stay on the case, email us if one of those needs to change.</p>
             </div>
           </aside>
         </div>
@@ -415,6 +416,7 @@
   </footer>
 
   <script src="/scripts/site-analytics.js"></script>
+  <script src="/scripts/platform-icons.js"></script>
   <script>
     const params = new URLSearchParams(window.location.search);
     const caseIdFromUrl = params.get('case') || '';
@@ -589,7 +591,7 @@
         platformList.innerHTML = platforms.length
           ? platforms.map((task) => (
             '<li>' +
-              '<strong>' + escapeHtml(task.name) + ' · ' + escapeHtml(FAMILY_STATUS_LABELS[task.status] || titleize(task.status)) + '</strong>' +
+              '<strong>' + (window.DepartedPlatformIcons ? window.DepartedPlatformIcons.svgFor(task.name, 'chip-logo') : '') + escapeHtml(task.name) + ' · ' + escapeHtml(FAMILY_STATUS_LABELS[task.status] || titleize(task.status)) + '</strong>' +
               '<div class="helper">' +
                 (OUTCOME_LABELS[task.outcomeRequested] ? 'Requested: ' + OUTCOME_LABELS[task.outcomeRequested] + '. ' : '') +
                 escapeHtml(task.profileOrHandle || '') +
@@ -597,7 +599,7 @@
               (task.evidenceNeeded ? '<div class="helper" style="margin-top:6px;">Evidence needed: ' + escapeHtml(task.evidenceNeeded) + '</div>' : '') +
             '</li>'
           )).join('')
-          : '<li>No accounts chosen yet — you can add them now or after payment, either works. We also spot anything obvious from the details you gave us.</li>';
+          : '<li>No accounts chosen yet, you can add them now or after payment, either works. We also spot anything obvious from the details you gave us.</li>';
         return;
       }
 
@@ -618,7 +620,8 @@
         const chip = document.createElement('button');
         chip.type = 'button';
         chip.className = 'pf-chip' + (meta ? ' selected' : '') + (meta && meta.locked ? ' locked' : '');
-        chip.textContent = name;
+        chip.innerHTML = window.DepartedPlatformIcons ? window.DepartedPlatformIcons.svgFor(name, 'chip-logo') : '';
+        chip.appendChild(document.createTextNode(name));
         chip.addEventListener('click', () => {
           const current = platformDraft.get(name);
           if (current && current.locked) {
@@ -763,11 +766,11 @@
         const limit = PACKAGE_LIMITS[payload.case.selectedPackage] || Infinity;
         if (payload.case.paymentStatus === 'paid' && selections.length > limit) {
           platformEditorHelper.textContent = 'Saved. Your ' + (PACKAGE_LABELS[payload.case.selectedPackage] || 'chosen') +
-            ' package covers ' + limit + ' accounts — we will confirm any extras with you before work begins.';
+            ' package covers ' + limit + ' accounts. We will confirm any extras with you before work begins.';
           platformEditorHelper.style.display = '';
         }
       } catch (error) {
-        platformEditorHelper.textContent = 'We could not save the accounts just now — please try again, or email hello@departed.digital.';
+        platformEditorHelper.textContent = 'We could not save the accounts just now, please try again, or email hello@departed.digital.';
         platformEditorHelper.style.display = '';
       } finally {
         platformEditSave.disabled = false;
@@ -779,7 +782,7 @@
       const count = platformDraft.size;
       const limit = PACKAGE_LIMITS[caseData.selectedPackage] || Infinity;
 
-      // Before payment, the package must cover the list — one tap fixes it.
+      // Before payment, the package must cover the list. One tap fixes it.
       if (caseData.paymentStatus !== 'paid' && count > limit) {
         const suggested = count <= PACKAGE_LIMITS.standard ? 'standard' : 'estate';
         platformEditorHelper.innerHTML = '';
