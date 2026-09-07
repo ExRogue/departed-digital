@@ -164,7 +164,6 @@
     ]
   }
   </script>
-  <link rel="preload" as="image" href="/images/hero-light.webp" imagesrcset="/images/hero-light-960.webp 960w, /images/hero-light.webp 1800w" imagesizes="100vw" fetchpriority="high" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
@@ -1583,21 +1582,38 @@
       .marquee-track { animation: none; flex-wrap: wrap; justify-content: center; width: auto; row-gap: 14px; }
       .marquee { -webkit-mask-image: none; mask-image: none; }
     }
-    .hero-photo {
-      position: absolute;
-      inset: 0;
+  
+    .photo-band {
+      background: var(--white);
+      padding: 96px 24px;
+      border-top: 1px solid var(--border);
+    }
+    .photo-band-grid {
+      display: grid;
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: 64px;
+      align-items: center;
+    }
+    .photo-band-figure {
+      margin: 0;
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 24px 64px rgba(26,39,68,0.16);
+      aspect-ratio: 4 / 5;
+      background: var(--cream);
+    }
+    .photo-band-figure img {
+      display: block;
       width: 100%;
       height: 100%;
       object-fit: cover;
-      object-position: center;
-      opacity: 0.28;
-      z-index: 0;
     }
-    .hero-photo-tint {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(160deg, rgba(17,27,53,0.92) 0%, rgba(26,39,68,0.78) 55%, rgba(44,62,110,0.72) 100%);
-      z-index: 0;
+    .photo-band-copy .section-sub { margin-bottom: 18px; }
+    .photo-band-copy .btn-primary { margin-top: 10px; }
+    @media (max-width: 860px) {
+      .photo-band { padding: 64px 20px; }
+      .photo-band-grid { grid-template-columns: 1fr; gap: 32px; }
+      .photo-band-figure { aspect-ratio: 16 / 11; }
     }
   </style>
   <script src="/scripts/consent.js" defer></script>
@@ -1640,8 +1656,6 @@
 
   <!-- Hero -->
   <section class="hero">
-    <img class="hero-photo" src="/images/hero-light.webp" srcset="/images/hero-light-960.webp 960w, /images/hero-light.webp 1800w" sizes="100vw" width="1800" height="1013" alt="" fetchpriority="high" decoding="async" />
-    <div class="hero-photo-tint"></div>
     <div class="hero-grid"></div>
     <div class="hero-glow"></div>
     <div class="hero-content">
@@ -1764,6 +1778,22 @@
           </div>
         </div>
               </div>
+    </div>
+  </section>
+
+  <!-- Photo band -->
+  <section class="photo-band" aria-labelledby="photo-band-title">
+    <div class="container photo-band-grid">
+      <figure class="photo-band-figure reveal">
+        <img src="/images/trust-window.webp" srcset="/images/trust-window-600.webp 600w, /images/trust-window.webp 1000w" sizes="(max-width: 860px) 100vw, 44vw" width="1000" height="1250" alt="Soft daylight through a curtained window in a quiet home" loading="lazy" decoding="async" />
+      </figure>
+      <div class="photo-band-copy">
+        <span class="section-label reveal">Why we do this</span>
+        <h2 class="section-title reveal" id="photo-band-title">One less thing to carry</h2>
+        <p class="section-sub reveal">When someone dies, the admin does not stop. Their accounts keep sending reminders, birthdays and old photos. We take that part off your hands, quietly and properly, so you can give your attention to the people around you.</p>
+        <p class="section-sub reveal reveal-delay-1">You tell us once. We do the forms, the chasing and the record at the end.</p>
+        <a href="/start" class="btn-primary reveal reveal-delay-2" data-track="photo_band_cta" data-track-label="Homepage photo band start">Start a case</a>
+      </div>
     </div>
   </section>
 
