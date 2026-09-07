@@ -8,3 +8,4 @@ scripts/*
 !scripts/consent.js
 node_modules
 .claude
+!scripts/platform-icons.js
