@@ -16,29 +16,42 @@ day. Log the date in the table. Follow up once after 10 days if silent.
 
 | # | Organisation | Their page | Email | Sent | Reply |
 | --- | --- | --- | --- | --- | --- |
-| 1 | Rowcroft Hospice (Devon) | How to plan your digital legacy + "Death in a digital age" leaflet | info@rowcrofthospice.org.uk | | |
-| 2 | Macmillan Cancer Support | Coping with bereavement: "Social media and memorialised accounts" section | informationproductionteam@macmillan.org.uk | | |
-| 3 | Scottish Partnership for Palliative Care | Good Life, Good Death, Good Grief: Digital legacy (links Digital Legacy Association, Funeral Guide) | office@palliativecarescotland.org.uk | | |
-| 4 | St Margaret's Hospice (Somerset) | Digital Legacy page and planner | info@st-margarets-hospice.org.uk | | |
-| 5 | St Luke's Hospice Plymouth | Hospice care in a digital world | info@stlukes-hospice.org.uk | | |
-| 6 | Princess Alice Hospice (Surrey) | Bereavement resources, includes "digital account management after death" | customerexperience@pah.org.uk | | |
-| 7 | St Christopher's Hospice (London) | Bereavement support hub, 30+ external organisations | info@stchristophers.org.uk | | |
-| 8 | Oakhaven Hospice (Hampshire) | Bereavement support directory | wellbeing@oakhavenhospice.co.uk | | |
-| 9 | National Bereavement Service | Bereavement helplines directory | info@thenbs.org | | |
-| 10 | Cancer Support UK | Bereavement support signposting | hello@cancersupportuk.org | | |
-| 11 | Living On Bereavement Service (Bromley) | Useful links | familysupport@livingon.org.uk | | |
-| 12 | Wiltshire Treehouse (children's grief charity) | Useful links | admin@wiltshiretreehouse.org.uk | | |
-| 13 | Untangle Grief (grief support app and guides) | Managing social media after a loss articles | team@untanglegrief.com | | |
-| 14 | Lancaster City Council | Bereavement advice and information | cemeteries@lancaster.gov.uk | | |
-| 15 | South West Middlesex Crematorium (Richmond, Hounslow) | Useful links | enquiries@swmcrematorium.gov.uk | | |
-| 16 | Lambeth Council | Bereavement support (after the funeral) | bereavementservices@lambeth.gov.uk | | |
-| 17 | Northumberland County Council | Bereavement guide (already lists Tell Us Once and Settld) | morpethregistrars@northumberland.gov.uk | | |
-| 18 | Stafford Borough Council | Bereavement services portal with support links | bereavementservices@staffordbc.gov.uk | | |
-| 19 | Fife Council | Bereavement services | bereavement.services@fife.gov.uk | | |
-| 20 | City of Edinburgh Council | Bereavement services | bereavement@edinburgh.gov.uk | | |
-| 21 | Tendring District Council (Weeley Crematorium) | Bereavement services | wcrem@tendringdc.gov.uk | | |
-| 22 | Ceredigion County Council | Cemeteries useful links | clic@ceredigion.gov.uk | | |
-| 23 | Manchester City Council (cemeteries) | Useful contacts for bereaved families | ops.cemeteries@manchester.gov.uk | | |
+| 1 | Rowcroft Hospice (Devon) | How to plan your digital legacy + "Death in a digital age" leaflet | info@rowcrofthospice.org.uk | 8 Sept 2026 | |
+| 2 | Macmillan Cancer Support | Coping with bereavement: "Social media and memorialised accounts" section | informationproductionteam@macmillan.org.uk | 8 Sept 2026 | |
+| 3 | Scottish Partnership for Palliative Care | Good Life, Good Death, Good Grief: Digital legacy (links Digital Legacy Association, Funeral Guide) | office@palliativecarescotland.org.uk | 8 Sept 2026 | |
+| 4 | St Margaret's Hospice (Somerset) | Digital Legacy page and planner | info@st-margarets-hospice.org.uk | 8 Sept 2026 | |
+| 5 | St Luke's Hospice Plymouth | Hospice care in a digital world | info@stlukes-hospice.org.uk | 8 Sept 2026 | |
+| 6 | Princess Alice Hospice (Surrey) | Bereavement resources, includes "digital account management after death" | customerexperience@pah.org.uk | 8 Sept 2026 | |
+| 7 | St Christopher's Hospice (London) | Bereavement support hub, 30+ external organisations | info@stchristophers.org.uk | 8 Sept 2026 | |
+| 8 | Oakhaven Hospice (Hampshire) | Bereavement support directory | wellbeing@oakhavenhospice.co.uk | 8 Sept 2026 | |
+| 9 | National Bereavement Service | Bereavement helplines directory | info@thenbs.org | 8 Sept 2026 | |
+| 10 | Cancer Support UK | Bereavement support signposting | hello@cancersupportuk.org | 8 Sept 2026 | |
+| 11 | Living On Bereavement Service (Bromley) | Useful links | familysupport@livingon.org.uk | 8 Sept 2026 | |
+| 12 | Wiltshire Treehouse (children's grief charity) | Useful links | admin@wiltshiretreehouse.org.uk | 8 Sept 2026 | |
+| 13 | Untangle Grief (grief support app and guides) | Managing social media after a loss articles | team@untanglegrief.com | 8 Sept 2026 | |
+| 14 | Lancaster City Council | Bereavement advice and information | cemeteries@lancaster.gov.uk | 8 Sept 2026 | |
+| 15 | South West Middlesex Crematorium (Richmond, Hounslow) | Useful links | enquiries@swmcrematorium.gov.uk | 8 Sept 2026 | |
+| 16 | Lambeth Council | Bereavement support (after the funeral) | bereavementservices@lambeth.gov.uk | 8 Sept 2026 | |
+| 17 | Northumberland County Council | Bereavement guide (already lists Tell Us Once and Settld) | morpethregistrars@northumberland.gov.uk | 8 Sept 2026 | |
+| 18 | Stafford Borough Council | Bereavement services portal with support links | bereavementservices@staffordbc.gov.uk | 8 Sept 2026 | |
+| 19 | Fife Council | Bereavement services | bereavement.services@fife.gov.uk | 8 Sept 2026 | |
+| 20 | City of Edinburgh Council | Bereavement services | bereavement@edinburgh.gov.uk | 8 Sept 2026 | |
+| 21 | Tendring District Council (Weeley Crematorium) | Bereavement services | wcrem@tendringdc.gov.uk | 8 Sept 2026 | |
+| 22 | Ceredigion County Council | Cemeteries useful links | clic@ceredigion.gov.uk | 8 Sept 2026 | |
+| 23 | Manchester City Council (cemeteries) | Useful contacts for bereaved families | ops.cemeteries@manchester.gov.uk | 8 Sept 2026 | |
+
+### Send log
+
+- 8 Sept 2026, 09:45 to 09:57 BST: all 23 emails sent from hello@departed.digital, each verified in the Sent folder.
+- Automatic acknowledgements arrived within minutes from Macmillan (Cancer Information Development team), St Margaret's (Marketing and Communications), Princess Alice (Customer Experience), St Christopher's, Untangle Grief (Emma and the team, weekday hours), South West Middlesex Crematorium (2 working days), Lancaster (2 working days), Lambeth (10 working days), Stafford (7 working days), Fife (14 days), Edinburgh (10 working days) and Manchester.
+- No bounces as of 10:00 on 8 Sept 2026.
+- Follow up once, on or after 18 Sept 2026, with anyone still silent.
+
+### Batch 1 replies (10 emails sent 6 Sept 2026)
+
+- The Compassionate Friends (Annabelle): free help only policy, so no listing for the service, but she told the support staff about us and sent the TCF digital legacy leaflet. Replied in thread 8 Sept 2026, 09:45. Their leaflet is now linked from the delete or memorialise guide.
+- Funeral Consumers Alliance (April St. Onge, Chief Administrative Officer): will share the guides with consumers according to need. Replied in thread 8 Sept 2026, 09:58, offering to answer platform questions for their team or consumers.
+
 
 ## The 19 reachable only by web form
 
