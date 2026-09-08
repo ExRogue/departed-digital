@@ -15,31 +15,36 @@ Three NHS addresses were decoded from the trust's own page code because the
 page hides them from scrapers. They are marked "check on the page first".
 Open the page in a browser and confirm the address before sending.
 
-Nothing in this batch has been sent yet.
+### Send log
+
+- 8 Sept 2026, 17:15 to 17:45 BST: 23 sent from hello@departed.digital (16 UK, 7 US), each checked on screen before sending and verified in the Sent folder. Automatic acknowledgements so far from Willowbrook, Dorothy House, Healthwatch Greenwich, Young Lives vs Cancer and OUR HOUSE.
+- Bounced: NHS Lancashire and South Cumbria ICB (lsc.icb@nhs.net, the address their own contact page shows, returned "address not found"). Needs another route.
+- Still to send, planned for the morning of 9 Sept 2026 UK time so that New Zealand and Canada receive them in working hours: 2, 3, 4 (Imperial: only imperial.postmortem.services@nhs.net is visible on the page; the web team address was not found in the browser, so check before sending), 20, 21, 22, 23, 24 and 32 to 40.
+- Follow up once, on or after 18 Sept 2026, with anyone still silent.
 
 ## UK: 24 with email addresses
 
 | # | Organisation | Their page | Email | Sent | Reply |
 | --- | --- | --- | --- | --- | --- |
-| 1 | NHS Lancashire and South Cumbria Integrated Care Board | Bereavement support (Cruse, Childhood Bereavement Network, Sands, local hospital teams) | lsc.icb@nhs.net | | |
+| 1 | NHS Lancashire and South Cumbria Integrated Care Board | Bereavement support (Cruse, Childhood Bereavement Network, Sands, local hospital teams) | lsc.icb@nhs.net | 8 Sept 2026, bounced: address not found | |
 | 2 | King's College Hospital NHS Foundation Trust | Bereavement support (Cruse, TCF, Winston's Wish, Good Grief Trust, Lambeth Register Office) | kch-tr.kchbereavementservices@nhs.net (check on the page first) | | |
 | 3 | Leeds Teaching Hospitals NHS Trust | Bereavement support (Bereavement Advice Centre, Sudden, Cruse, Carers Leeds, At a Loss) | leedsth-tr.bereavementnurse@nhs.net (check on the page first) | | |
 | 4 | Imperial College Healthcare NHS Trust | Support following a bereavement (Age UK, Bereavement Advice Centre, Cruse, NAFD, SAIF, GOV.UK) | imperial.web@nhs.net (web team; check on the page first) | | |
-| 5 | Healthwatch Greenwich | Someone I love has died, where can I find support? | info@healthwatchgreenwich.co.uk | | |
-| 6 | Healthwatch Sutton | Someone I love has died (republished May 2025, has a social media section) | info@healthwatchsutton.org.uk | | |
-| 7 | Healthwatch Medway | Someone I love has died (2021, has a social media section) | enquiries@healthwatchmedway.com | | |
-| 8 | Young Lives vs Cancer | Bereavement resources and organisations | GetSupport@younglivesvscancer.org.uk | | |
-| 9 | Sands | Useful links and organisations (has a practical support category) | communicationsgroup@sands.org.uk | | |
-| 10 | WAY Widowed and Young | Useful links and resources (member curated) | enquiries@widowedandyoung.org.uk | | |
-| 11 | Willowbrook Hospice (Merseyside) | Digital Legacy page with digital affairs checklist | general@willowbrookhospice.org.uk | | |
-| 12 | Dorothy House Hospice Care (Wiltshire) | Digital legacy (links Hospice UK, Digital Legacy Association, MyWishes) | info@dorothyhouse-hospice.org.uk | | |
-| 13 | Harlington Hospice (Hillingdon) | Digital Affairs Support | info@harlingtonhospice.org | | |
-| 14 | Cornwall Hospice Care | Bereavement and grief useful links (80+ organisations, lists Life Ledger) | communications@cornwallhospice.org | | |
-| 15 | St Helena Hospice (Colchester) | Bereavement support for adults | marketing@sthelena.org.uk | | |
-| 16 | St Wilfrid's Hospice (Chichester) | Bereavement support | general@stwh.co.uk | | |
-| 17 | Teesside Hospice | Bereavement support | marketing@teessidehospice.co.uk | | |
-| 18 | Southwark Council | Bereavement support service | bereavementservice@southwark.gov.uk | | |
-| 19 | Islington Council | Bereavement (long external list, includes Untangle and NAFD) | clientaffairs@islington.gov.uk (ask them to pass it on) | | |
+| 5 | Healthwatch Greenwich | Someone I love has died, where can I find support? | info@healthwatchgreenwich.co.uk | 8 Sept 2026 | |
+| 6 | Healthwatch Sutton | Someone I love has died (republished May 2025, has a social media section) | info@healthwatchsutton.org.uk | 8 Sept 2026 | |
+| 7 | Healthwatch Medway | Someone I love has died (2021, has a social media section) | enquiries@healthwatchmedway.com | 8 Sept 2026 | |
+| 8 | Young Lives vs Cancer | Bereavement resources and organisations | GetSupport@younglivesvscancer.org.uk | 8 Sept 2026 | |
+| 9 | Sands | Useful links and organisations (has a practical support category) | communicationsgroup@sands.org.uk | 8 Sept 2026 | |
+| 10 | WAY Widowed and Young | Useful links and resources (member curated) | enquiries@widowedandyoung.org.uk | 8 Sept 2026 | |
+| 11 | Willowbrook Hospice (Merseyside) | Digital Legacy page with digital affairs checklist | general@willowbrookhospice.org.uk | 8 Sept 2026 | |
+| 12 | Dorothy House Hospice Care (Wiltshire) | Digital legacy (links Hospice UK, Digital Legacy Association, MyWishes) | info@dorothyhouse-hospice.org.uk | 8 Sept 2026 | |
+| 13 | Harlington Hospice (Hillingdon) | Digital Affairs Support | info@harlingtonhospice.org | 8 Sept 2026 | |
+| 14 | Cornwall Hospice Care | Bereavement and grief useful links (80+ organisations, lists Life Ledger) | communications@cornwallhospice.org | 8 Sept 2026 | |
+| 15 | St Helena Hospice (Colchester) | Bereavement support for adults | marketing@sthelena.org.uk | 8 Sept 2026 | |
+| 16 | St Wilfrid's Hospice (Chichester) | Bereavement support | general@stwh.co.uk | 8 Sept 2026 | |
+| 17 | Teesside Hospice | Bereavement support | marketing@teessidehospice.co.uk | 8 Sept 2026 | |
+| 18 | Southwark Council | Bereavement support service | bereavementservice@southwark.gov.uk | 8 Sept 2026 | |
+| 19 | Islington Council | Bereavement (long external list, includes Untangle and NAFD) | clientaffairs@islington.gov.uk (ask them to pass it on) | 8 Sept 2026 | |
 | 20 | Cardiff Bereavement Services (Cardiff Council) | Support and advice | thornhillreception@cardiff.gov.uk | | |
 | 21 | Bexley Council | Bereavement (public health page) | Community.Safety@bexley.gov.uk | | |
 | 22 | Telford and Wrekin Council | Tell Us Once, deaths | register.office@telford.gov.uk | | |
@@ -50,13 +55,13 @@ Nothing in this batch has been sent yet.
 
 | # | Organisation | Country | Their page | Email | Sent | Reply |
 | --- | --- | --- | --- | --- | --- | --- |
-| 25 | Funeral Consumers Alliance of Los Angeles | US | Resources (planner already mentions closing social media) | support@fcalosangeles.org | | |
-| 26 | OUR HOUSE Grief Support Center | US | Community Resources | ourhouse@ourhouse-grief.org | | |
-| 27 | National Alliance for Children's Grief | US | Find Support directory and Resource Library | info@nacg.org | | |
-| 28 | CaringInfo (National Alliance for Care at Home) | US | Getting support for grief and loss | caringinfo@allianceforcareathome.org | | |
-| 29 | Funeral Consumers Alliance of Maryland and Environs | US | General Information Sources | info@mdfunerals.org | | |
-| 30 | The Memorial Society of Georgia | US | Resources | members@memorialsocietyofgeorgia.org | | |
-| 31 | Funeral Consumers Alliance of California | US | More Resources | fcacalif@gmail.com | | |
+| 25 | Funeral Consumers Alliance of Los Angeles | US | Resources (planner already mentions closing social media) | support@fcalosangeles.org | 8 Sept 2026 | |
+| 26 | OUR HOUSE Grief Support Center | US | Community Resources | ourhouse@ourhouse-grief.org | 8 Sept 2026 | |
+| 27 | National Alliance for Children's Grief | US | Find Support directory and Resource Library | info@nacg.org | 8 Sept 2026 | |
+| 28 | CaringInfo (National Alliance for Care at Home) | US | Getting support for grief and loss | caringinfo@allianceforcareathome.org | 8 Sept 2026 | |
+| 29 | Funeral Consumers Alliance of Maryland and Environs | US | General Information Sources | info@mdfunerals.org | 8 Sept 2026 | |
+| 30 | The Memorial Society of Georgia | US | Resources | members@memorialsocietyofgeorgia.org | 8 Sept 2026 | |
+| 31 | Funeral Consumers Alliance of California | US | More Resources | fcacalif@gmail.com | 8 Sept 2026 | |
 | 32 | Bereavement Authority of Ontario | Canada | Grief support information | Info@TheBAO.ca | | |
 | 33 | Funeral Advisory and Memorial Society of Saskatchewan | Canada | Resources | info@famss.ca | | |
 | 34 | Canadian Virtual Hospice | Canada | Programs and Services directory | info@virtualhospice.ca | | |
