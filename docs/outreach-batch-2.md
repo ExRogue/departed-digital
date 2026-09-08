@@ -142,6 +142,52 @@ Nine of the 19 turned out to publish an email address after all. Six were emaile
 | Walsall Council | Requires a MyAccount sign in. Not submitted. |
 | Newcastle City Council | No email, and the page only links to Information Now. Dropped. |
 
+### Three emails ready to send by hand (blocked by the auto mode classifier on 8 Sept 2026)
+
+**Bristol City Council, register.office@bristol.gov.uk**
+Subject: Suggestion for your bereavement support page
+
+Hello,
+
+I run Departed Digital, a small UK service that helps families close or memorialise a loved one's online accounts after a death. Bristol's bereavement support page gives families a short, clear list of organisations, including The Compassionate Friends, and I wanted to offer a free resource for a practical task it does not yet cover.
+
+When someone dies, their social media, email and online accounts stay open, and every platform asks for something different to close or memorialise them. We have written free, step by step guides on it, with no sign up and nothing to buy on the page:
+
+- How to close a loved one's online accounts when they die: https://www.departed.digital/blog/close-online-accounts-when-someone-dies
+- A checklist of digital accounts to close after a death: https://www.departed.digital/blog/digital-accounts-checklist-after-death-uk
+
+I am writing to the register office because it is the address shown on your contact page. If the page belongs to a web or communications colleague, I would be grateful if you could pass this on.
+
+**Marie Curie, supporter.relations@mariecurie.org.uk**
+Subject: Further reading for your article on digital belongings after we die
+
+Hello,
+
+I run Departed Digital, a small UK service that helps families close or memorialise a loved one's online accounts after a death. Marie Curie's article on what happens to our digital belongings after we die is one of the few charity pieces that treats the subject seriously.
+
+For the families who read it after a death, the next step is more mechanical: which form each platform needs, which documents are accepted, and what to do when a platform goes quiet. We have written free, step by step guides for exactly that, with no sign up and nothing to buy on the page:
+
+- How to close a loved one's online accounts when they die: https://www.departed.digital/blog/close-online-accounts-when-someone-dies
+- How to delete or memorialise a deceased person's Facebook account in the UK: https://www.departed.digital/blog/delete-deceased-facebook-account-uk
+
+If your content team ever reviews the article, I would be grateful if you considered them as further reading. I am writing to supporter relations because it is the address shown on your contact page. If this should go elsewhere, I would be grateful if you could pass it on.
+
+**Kent County Council, registeroffice@kent.gov.uk**
+Subject: Suggestion for your bereavement and grief support page
+
+Hello,
+
+I run Departed Digital, a small UK service that helps families close or memorialise a loved one's online accounts after a death. Kent's bereavement and grief support page gives families a clear list of organisations to turn to after registering a death, and I wanted to offer a free resource for a practical task it does not yet cover.
+
+When someone dies, their social media, email and online accounts stay open, and every platform asks for something different to close or memorialise them. We have written free, step by step guides on it, with no sign up and nothing to buy on the page:
+
+- How to close a loved one's online accounts when they die: https://www.departed.digital/blog/close-online-accounts-when-someone-dies
+- A checklist of digital accounts to close after a death: https://www.departed.digital/blog/digital-accounts-checklist-after-death-uk
+
+If the team that maintains the page thinks they would help the families who use it, you are very welcome to add them. If this should go to a web or communications colleague, I would be grateful if you could pass it on.
+
+All three end with the shared closing below.
+
 ## Emails (23), personalised
 
 Shared closing for all of them:
