@@ -53,6 +53,41 @@ day. Log the date in the table. Follow up once after 10 days if silent.
 - Funeral Consumers Alliance (April St. Onge, Chief Administrative Officer): will share the guides with consumers according to need. Replied in thread 8 Sept 2026, 09:58, offering to answer platform questions for their team or consumers.
 
 
+### Follow-up sweep (one chaser each, then stop)
+
+Batch one is due on or after 16 Sept 2026 and batch two on or after 18 Sept 2026. Before sending, search the hello@ inbox for the original subject line. Skip anyone who has replied as a person (an automatic acknowledgement does not count). Reply in the original thread so the first email sits underneath. Send from hello@departed.digital only, verify each one in Sent, then log the date here.
+
+Batch one still silent as of 8 Sept 2026: Hospice UK, AtaLoss, Ashgate Hospice, Charity for Civil Servants, North Devon Council, Birmingham City Council, NAFD Funeral Directory, and the funeral director partnership email. Replied: The Compassionate Friends, Funeral Consumers Alliance.
+
+Follow-up text for charities, hospices, councils and crematoria:
+
+> Hello,
+>
+> A short follow up to my note below, in case it arrived at a busy time. The two free guides are still there if they would help the families who use your page, and there is nothing to buy on them. If it is not the right fit, no reply is needed, and thank you for reading.
+>
+> With thanks for the work you do,
+>
+> Steven Kong
+> Founder, Departed Digital, London
+> hello@departed.digital | www.departed.digital
+
+Follow-up text for funeral directors and partners:
+
+> Hello,
+>
+> A short follow up to my note below. If digital accounts are a question your families raise after the funeral, I would be glad to send a one page summary of how we handle it, or to talk for ten minutes whenever suits. If not, no reply is needed, and thank you for reading.
+>
+> Kind regards,
+>
+> Steven Kong
+> Founder, Departed Digital, London
+> hello@departed.digital | www.departed.digital
+
+| Batch | Due | Sent | Notes |
+| --- | --- | --- | --- |
+| 1 (8 silent) | 16 Sept 2026 | | |
+| 2 (silent on the day) | 18 Sept 2026 | | |
+
 ## The 19 reachable only by web form
 
 Paste the short form text (at the end of this document) into their contact
@@ -79,6 +114,33 @@ form. Best fits first.
 | Havens Hospices (Essex) | Bereavement care and support | References external resources |
 | Bristol City Council | Bereavement support | Lists six organisations including The Compassionate Friends |
 | Newcastle City Council | Bereavement services | Links to Information Now for bereavement support |
+
+### Web form outcomes (8 Sept 2026)
+
+Nine of the 19 turned out to publish an email address after all. Six were emailed from hello@departed.digital (same free guides only ask, adapted to their page) and three sends were blocked by the auto mode classifier and are ready to send by hand. Two forms were submitted. Eight could not be done without information only Steven can give.
+
+| Organisation | Outcome |
+| --- | --- |
+| Healthwatch England | Emailed enquiries@healthwatch.co.uk. A first copy went out with an empty body at 14:58 (Gmail focus slip); a corrected copy with a one line apology followed at 15:05. Automatic acknowledgement received. |
+| Healthwatch Richmond | Emailed hello@healthwatchrichmond.co.uk |
+| Healthwatch Milton Keynes | Emailed info@healthwatchmiltonkeynes.co.uk. Automatic acknowledgement received. |
+| Surrey County Council | Emailed contact.centre@surreycc.gov.uk. Automatic acknowledgement, reference 3624764. |
+| Barry Town Council | Emailed info@barrytowncouncil.gov.uk |
+| St Nicholas Hospice Care | Emailed marketing@stnh.org.uk |
+| Sue Ryder | Emailed supportercare@sueryder.org, asking them to pass it to the content team |
+| Marie Curie | Email found (supporter.relations@mariecurie.org.uk) but the send was blocked by the Claude Code auto mode permission classifier. Draft is in the doc; ready to send by hand. |
+| Kent County Council | Email found (registeroffice@kent.gov.uk, the registrars own the bereavement support page) but the send was blocked by the Claude Code auto mode permission classifier. Ready to send by hand. |
+| Merton Council | Web team form submitted, reference AF574418887, confirmation email received |
+| NHS South West London ICB | General enquiries form submitted, success page shown |
+| Bristol City Council | Email found (register.office@bristol.gov.uk) but the send was blocked by the Claude Code auto mode permission classifier. Ready to send by hand. |
+| Hospice in the Weald | Form requires a phone number. Not submitted. |
+| Havens Hospices | Form requires a phone number and no public email. Not submitted. |
+| Alzheimer's Society | Form rejects the .digital email domain as invalid. Not submitted. |
+| Barnsley Council | Form requires a title (Mr, Ms, Mx and so on). Not submitted; Steven to choose. |
+| Leeds City Council | Only an anonymous 200 character website survey with no reply. Not suitable. |
+| Dudley Council | No email; only a cemeteries enquiry form. Not submitted. |
+| Walsall Council | Requires a MyAccount sign in. Not submitted. |
+| Newcastle City Council | No email, and the page only links to Information Now. Dropped. |
 
 ## Emails (23), personalised
 
