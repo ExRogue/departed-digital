@@ -23,3 +23,8 @@ each photo's Pexels page is `https://www.pexels.com/photo/<id>/`.
 | tiktok-account-after-death | 37538883 | Piano keys |
 | linkedin-account-after-death | 6632852 | Glasses beside a notebook |
 | delete-deceased-x-twitter-account | 5840692 | Grey feathers close-up |
+| cancel-subscriptions-after-death | 987586 | Hand with a remote in front of a television |
+| find-online-accounts-of-someone-who-has-died | 5370914 | Magnifying glass on a handwritten logbook |
+| paypal-account-after-death | 4452399 | Dark leather wallet on a wooden table |
+| amazon-account-after-death | 4464483 | Stack of cardboard parcels |
+| microsoft-outlook-account-after-death | 389818 | Laptop on a stand at a desk by a window |

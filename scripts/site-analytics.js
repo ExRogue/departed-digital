@@ -239,6 +239,25 @@
     });
   }
 
+  // Mirror each event into Google Analytics when the visitor has accepted the
+  // analytics cookie (consent.js only defines gtag after consent), so GA4 can
+  // treat intake_submitted and payment_confirmed as key events.
+  function forwardToGoogle(eventType, metadata) {
+    if (typeof window.gtag !== 'function') {
+      return;
+    }
+
+    try {
+      window.gtag('event', eventType, {
+        event_label: metadata.label || '',
+        click_type: metadata.clickType || '',
+        package_key: metadata.packageKey || ''
+      });
+    } catch (error) {
+      // Analytics should never block the user journey.
+    }
+  }
+
   function track(eventType, extra) {
     const metadata = buildContext(extra);
     send({
@@ -246,6 +265,7 @@
       label: metadata.label || '',
       metadata: metadata
     });
+    forwardToGoogle(eventType, metadata);
   }
 
   window.DepartedAnalytics = {

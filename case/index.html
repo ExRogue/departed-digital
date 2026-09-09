@@ -1004,6 +1004,27 @@
       }
     });
 
+    // Recorded once per case per browser session, so a refresh of the case
+    // page does not count as a second payment.
+    function trackPaymentConfirmed(record) {
+      try {
+        const key = 'ddPaymentTracked:' + ((record && record.id) || params.get('case') || '');
+        if (sessionStorage.getItem(key)) {
+          return;
+        }
+        sessionStorage.setItem(key, '1');
+      } catch (error) {
+        // Ignore storage errors.
+      }
+
+      if (window.DepartedAnalytics && typeof window.DepartedAnalytics.track === 'function') {
+        window.DepartedAnalytics.track('payment_confirmed', {
+          label: 'Payment confirmed',
+          packageKey: (record && record.selectedPackage) || ''
+        });
+      }
+    }
+
     // Right after Stripe redirects back, the webhook may still be in flight -
     // poll briefly so the page unlocks itself without a manual refresh.
     async function pollForPayment() {
@@ -1020,6 +1041,7 @@
 
           if (fresh.paymentStatus === 'paid') {
             documentHelper.textContent = 'Payment confirmed, thank you. Upload the death certificate and proof of your authority below when you are ready.';
+            trackPaymentConfirmed(fresh);
             return;
           }
         }
@@ -1083,6 +1105,10 @@
             copyCaseLinkHelper.textContent = 'We could not copy the private link automatically. Please bookmark this page instead.';
           }
         });
+      }
+
+      if (arrivedFromPayment && caseData.paymentStatus === 'paid') {
+        trackPaymentConfirmed(caseData);
       }
 
       if (arrivedFromPayment && caseData.paymentStatus !== 'paid') {
