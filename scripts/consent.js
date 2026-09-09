@@ -108,6 +108,15 @@
   }
 
   function boot() {
+    // The team marks its own browsers by opening any page with ?operator=1
+    // once (?operator=0 clears it), so GA4's internal traffic filter and the
+    // first party analytics can exclude them on every device, phones included.
+    try {
+      var operatorFlag = new URLSearchParams(location.search).get('operator');
+      if (operatorFlag === '1') { localStorage.setItem('departedDigitalOperatorBrowser', 'true'); }
+      if (operatorFlag === '0') { localStorage.removeItem('departedDigitalOperatorBrowser'); }
+    } catch (e) { /* private mode */ }
+
     var consent = readConsent();
 
     if (consent === 'granted') {
