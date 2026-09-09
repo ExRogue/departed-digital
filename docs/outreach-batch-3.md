@@ -19,7 +19,7 @@ Open the page in a browser and confirm the address before sending.
 
 - 8 Sept 2026, 17:15 to 17:45 BST: 23 sent from hello@departed.digital (16 UK, 7 US), each checked on screen before sending and verified in the Sent folder. Automatic acknowledgements so far from Willowbrook, Dorothy House, Healthwatch Greenwich, Young Lives vs Cancer and OUR HOUSE.
 - Bounced: NHS Lancashire and South Cumbria ICB (lsc.icb@nhs.net, the address their own contact page shows, returned "address not found"). Needs another route.
-- Still to send, planned for the morning of 9 Sept 2026 UK time so that New Zealand and Canada receive them in working hours: 2, 3, 4 (Imperial: only imperial.postmortem.services@nhs.net is visible on the page; the web team address was not found in the browser, so check before sending), 20, 21, 22, 23, 24 and 32 to 40.
+- 9 Sept 2026, 11:40 to 12:30 BST: the remaining 17 sent (8 UK, 4 Canada, 5 New Zealand), same checks. Imperial went to the website feedback address shown on their contact page. All 40 are now sent; 39 delivered, 1 bounced.
 - Follow up once, on or after 18 Sept 2026, with anyone still silent.
 
 ## UK: 24 with email addresses
@@ -27,9 +27,9 @@ Open the page in a browser and confirm the address before sending.
 | # | Organisation | Their page | Email | Sent | Reply |
 | --- | --- | --- | --- | --- | --- |
 | 1 | NHS Lancashire and South Cumbria Integrated Care Board | Bereavement support (Cruse, Childhood Bereavement Network, Sands, local hospital teams) | lsc.icb@nhs.net | 8 Sept 2026, bounced: address not found | |
-| 2 | King's College Hospital NHS Foundation Trust | Bereavement support (Cruse, TCF, Winston's Wish, Good Grief Trust, Lambeth Register Office) | kch-tr.kchbereavementservices@nhs.net (check on the page first) | | |
-| 3 | Leeds Teaching Hospitals NHS Trust | Bereavement support (Bereavement Advice Centre, Sudden, Cruse, Carers Leeds, At a Loss) | leedsth-tr.bereavementnurse@nhs.net (check on the page first) | | |
-| 4 | Imperial College Healthcare NHS Trust | Support following a bereavement (Age UK, Bereavement Advice Centre, Cruse, NAFD, SAIF, GOV.UK) | imperial.web@nhs.net (web team; check on the page first) | | |
+| 2 | King's College Hospital NHS Foundation Trust | Bereavement support (Cruse, TCF, Winston's Wish, Good Grief Trust, Lambeth Register Office) | kch-tr.kchbereavementservices@nhs.net (confirmed in the browser) | 9 Sept 2026 | |
+| 3 | Leeds Teaching Hospitals NHS Trust | Bereavement support (Bereavement Advice Centre, Sudden, Cruse, Carers Leeds, At a Loss) | leedsth-tr.bereavementnurse@nhs.net (confirmed in the browser) | 9 Sept 2026 | |
+| 4 | Imperial College Healthcare NHS Trust | Support following a bereavement (Age UK, Bereavement Advice Centre, Cruse, NAFD, SAIF, GOV.UK) | imperial.web@nhs.net (website feedback address, confirmed on the contact page) | 9 Sept 2026 | |
 | 5 | Healthwatch Greenwich | Someone I love has died, where can I find support? | info@healthwatchgreenwich.co.uk | 8 Sept 2026 | |
 | 6 | Healthwatch Sutton | Someone I love has died (republished May 2025, has a social media section) | info@healthwatchsutton.org.uk | 8 Sept 2026 | |
 | 7 | Healthwatch Medway | Someone I love has died (2021, has a social media section) | enquiries@healthwatchmedway.com | 8 Sept 2026 | |
@@ -45,11 +45,11 @@ Open the page in a browser and confirm the address before sending.
 | 17 | Teesside Hospice | Bereavement support | marketing@teessidehospice.co.uk | 8 Sept 2026 | |
 | 18 | Southwark Council | Bereavement support service | bereavementservice@southwark.gov.uk | 8 Sept 2026 | |
 | 19 | Islington Council | Bereavement (long external list, includes Untangle and NAFD) | clientaffairs@islington.gov.uk (ask them to pass it on) | 8 Sept 2026 | |
-| 20 | Cardiff Bereavement Services (Cardiff Council) | Support and advice | thornhillreception@cardiff.gov.uk | | |
-| 21 | Bexley Council | Bereavement (public health page) | Community.Safety@bexley.gov.uk | | |
-| 22 | Telford and Wrekin Council | Tell Us Once, deaths | register.office@telford.gov.uk | | |
-| 23 | Merthyr Tydfil County Borough Council | Bereavement advice and support | customer.care@merthyr.gov.uk | | |
-| 24 | East Riding of Yorkshire Council | Grief Awareness Week article (news story, ask for the permanent page) | healthandwellbeing@eastriding.gov.uk | | |
+| 20 | Cardiff Bereavement Services (Cardiff Council) | Support and advice | thornhillreception@cardiff.gov.uk | 9 Sept 2026 | |
+| 21 | Bexley Council | Bereavement (public health page) | Community.Safety@bexley.gov.uk | 9 Sept 2026 | |
+| 22 | Telford and Wrekin Council | Tell Us Once, deaths | register.office@telford.gov.uk | 9 Sept 2026 | |
+| 23 | Merthyr Tydfil County Borough Council | Bereavement advice and support | customer.care@merthyr.gov.uk | 9 Sept 2026 | |
+| 24 | East Riding of Yorkshire Council | Grief Awareness Week article (news story, ask for the permanent page) | healthandwellbeing@eastriding.gov.uk | 9 Sept 2026 | |
 
 ## Outside the UK: 16 with email addresses
 
@@ -62,15 +62,15 @@ Open the page in a browser and confirm the address before sending.
 | 29 | Funeral Consumers Alliance of Maryland and Environs | US | General Information Sources | info@mdfunerals.org | 8 Sept 2026 | |
 | 30 | The Memorial Society of Georgia | US | Resources | members@memorialsocietyofgeorgia.org | 8 Sept 2026 | |
 | 31 | Funeral Consumers Alliance of California | US | More Resources | fcacalif@gmail.com | 8 Sept 2026 | |
-| 32 | Bereavement Authority of Ontario | Canada | Grief support information | Info@TheBAO.ca | | |
-| 33 | Funeral Advisory and Memorial Society of Saskatchewan | Canada | Resources | info@famss.ca | | |
-| 34 | Canadian Virtual Hospice | Canada | Programs and Services directory | info@virtualhospice.ca | | |
-| 35 | Memorial Society of BC | Canada | Upon a death of a member (checklist) | info@memsoc.org | | |
-| 36 | Victim Support New Zealand | NZ | Support through bereavement (already mentions social media accounts) | contactservice@victimsupport.org.nz | | |
-| 37 | Hospice New Zealand | NZ | Bereavement care | admin@hospice.org.nz | | |
-| 38 | Funeral Directors Association of New Zealand | NZ | Grieving | info@funeraldirectors.co.nz | | |
-| 39 | Coronial Services of New Zealand (Ministry of Justice) | NZ | Get help after someone dies | coronial.information@justice.govt.nz | | |
-| 40 | Mary Potter Hospice (Wellington) | NZ | Bereavement support | mph@marypotter.org.nz | | |
+| 32 | Bereavement Authority of Ontario | Canada | Grief support information | Info@TheBAO.ca | 9 Sept 2026 | |
+| 33 | Funeral Advisory and Memorial Society of Saskatchewan | Canada | Resources | info@famss.ca | 9 Sept 2026 | |
+| 34 | Canadian Virtual Hospice | Canada | Programs and Services directory | info@virtualhospice.ca | 9 Sept 2026 | |
+| 35 | Memorial Society of BC | Canada | Upon a death of a member (checklist) | info@memsoc.org | 9 Sept 2026 | |
+| 36 | Victim Support New Zealand | NZ | Support through bereavement (already mentions social media accounts) | contactservice@victimsupport.org.nz | 9 Sept 2026 | |
+| 37 | Hospice New Zealand | NZ | Bereavement care | admin@hospice.org.nz | 9 Sept 2026 | |
+| 38 | Funeral Directors Association of New Zealand | NZ | Grieving | info@funeraldirectors.co.nz | 9 Sept 2026 | |
+| 39 | Coronial Services of New Zealand (Ministry of Justice) | NZ | Get help after someone dies | coronial.information@justice.govt.nz | 9 Sept 2026 | |
+| 40 | Mary Potter Hospice (Wellington) | NZ | Bereavement support | mph@marypotter.org.nz | 9 Sept 2026 | |
 
 ## The 21 reachable only by web form
 
@@ -128,7 +128,7 @@ One practical task most lists leave out is the person's social media, email and 
 
 If they would help the families who use the page, you are very welcome to add them. If this should go to a web or communications colleague, I would be grateful if you could pass it on.
 
-### 2. King's College Hospital NHS Foundation Trust, kch-tr.kchbereavementservices@nhs.net (check on the page first)
+### 2. King's College Hospital NHS Foundation Trust, kch-tr.kchbereavementservices@nhs.net (confirmed in the browser)
 Subject: A practical resource for your bereavement support page
 
 Hello,
@@ -142,7 +142,7 @@ The step that follows registering the death is the one families find hardest: cl
 
 If they would help the families you see, you are very welcome to add them. If this should go to a web or communications colleague, I would be grateful if you could pass it on.
 
-### 3. Leeds Teaching Hospitals NHS Trust, leedsth-tr.bereavementnurse@nhs.net (check on the page first)
+### 3. Leeds Teaching Hospitals NHS Trust, leedsth-tr.bereavementnurse@nhs.net (confirmed in the browser)
 Subject: A practical resource for your bereavement support page
 
 Hello,
@@ -156,7 +156,7 @@ One practical task it does not yet cover is the person's social media, email and
 
 If they fit alongside the practical links you already list, you are very welcome to add them. If this should go to a web or communications colleague, I would be grateful if you could pass it on.
 
-### 4. Imperial College Healthcare NHS Trust, imperial.web@nhs.net (web team; check on the page first)
+### 4. Imperial College Healthcare NHS Trust, imperial.web@nhs.net (website feedback address, confirmed on the contact page)
 Subject: Suggestion for the "Support following a bereavement" page
 
 Hello,
