@@ -98,11 +98,26 @@ Best fits first. Paste the short form text at the end of this document.
 | Legacy of Hope (Alabama) | US | Grief and bereavement resources | Contact form | Long list for donor families |
 | Eluna | US | Resource Center | elunanetwork.org/contact | Directory style resource centre |
 | Hospice Palliative Care Ontario | Canada | Grief and bereavement supports | hpco.ca/contact-us | Excellent provincial signposting page |
-| Skylight Trust | NZ | Other organisations that can help | skylight.org.nz contact form | Largest external directory found in NZ |
+| Skylight Trust | NZ | Other organisations that can help | Email found: contact@skylight.org.nz | Largest external directory found in NZ |
 
 Considered and left out: Dougy Center, Grief Centre (NZ), Keech Hospice, University Hospital Southampton, Royal Berkshire, Sheffield, Nottingham and Amber Valley councils (their pages do not signpost outside resources); Public Trust NZ (sells estate services); Good Life, Good Death, Good Grief (already batch two).
 
 Worth a manual look because the sites blocked automated checks: Clatterbridge Cancer Centre (bereavement page reportedly covers online accounts), Arthur Rank Hospice, St Wilfrid's Hospice Eastbourne, Pilgrims Hospices, South Tyneside Council, Belfast City Council, Ontario Funeral Service Association, Bereaved Families of Ontario.
+
+### Web form outcomes, part two (10 Sept 2026)
+
+| Organisation | Outcome |
+| --- | --- |
+| The Compassionate Friends (USA) | Form submitted, thank you page confirmed |
+| Hospice of Holland | Form submitted (Bereavement Services category), "Thank you for your message" confirmed |
+| Legacy of Hope | Form submitted, "Your submission was successful" confirmed |
+| Hospice Palliative Care Ontario | Blocked: the form carries a reCAPTCHA. Not attempted. |
+| Three emails found instead of forms, still to send: Skylight Trust contact@skylight.org.nz, Bracknell Forest customer.services@bracknell-forest.gov.uk, Hospice Foundation of America info@hospicefoundation.org | |
+| Kansas City Hospice, Home Health and Hospice Care NH, Hospice and Community Care PA | Forms require a phone number or have no message field. Not submitted. |
+| Newham, Redbridge, Chelmsford, Hartlepool, West Lindsey | Council forms need a postcode, an address or a sign in. Not submitted. |
+| Waltham Forest | Only an anonymous website satisfaction survey. Not suitable. |
+| Washington State AG, Frederick Health Hospice, Eluna, Cheshire West | No reachable form found. |
+
 
 ## Emails (40), personalised
 
