@@ -160,6 +160,19 @@
             "priceCurrency": "GBP"
           }
         ]
+      },
+      {
+        "@type": "VideoObject",
+        "@id": "https://www.departed.digital/#showcase-film",
+        "name": "How Departed Digital works: a walkthrough",
+        "description": "A silent 26 second walkthrough of Departed Digital, showing the short form families fill in, choosing which online accounts to deal with, choosing whether each one is closed or turned into a memorial page, and the three packages.",
+        "thumbnailUrl": "https://www.departed.digital/videos/departed-digital-showcase-poster.jpg",
+        "uploadDate": "2026-09-11",
+        "duration": "PT26S",
+        "contentUrl": "https://www.departed.digital/videos/departed-digital-showcase.mp4",
+        "isFamilyFriendly": true,
+        "inLanguage": "en-GB",
+        "publisher": { "@id": "https://www.departed.digital/#organization" }
       }
     ]
   }
@@ -167,6 +180,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/styles/showcase-video.css" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -1750,6 +1764,23 @@
           <p>Upload the death certificate and proof that you can act for them on your private case page. Then we deal with each platform and keep you updated until everything is resolved.</p>
         </div>
       </div>
+
+      <figure class="showcase-film reveal" style="margin: 56px auto 0;">
+        <div class="showcase-film-frame">
+          <video class="showcase-film-player"
+                 controls
+                 preload="none"
+                 playsinline
+                 width="1280" height="720"
+                 poster="/videos/departed-digital-showcase-poster.jpg"
+                 data-track-label="Homepage showcase film"
+                 aria-label="A silent 26 second walkthrough: the homepage, choosing which accounts to deal with, choosing to close or memorialise each one, comparing the three packages, and a family afterwards">
+            <source src="/videos/departed-digital-showcase.mp4" type="video/mp4" />
+            <p class="showcase-film-fallback">Your browser cannot play this video. <a href="/videos/departed-digital-showcase.mp4">Download the file instead</a>, or read the three steps above.</p>
+          </video>
+        </div>
+        <figcaption class="showcase-film-caption"><strong>See it before you start.</strong> Twenty six seconds, no sound. The short form, choosing which accounts to deal with, close or memorialise, and the three packages.</figcaption>
+      </figure>
 
       <div id="services" style="margin-top: 72px;">
         <span class="section-label reveal">What we do</span>

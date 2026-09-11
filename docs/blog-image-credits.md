@@ -28,3 +28,14 @@ each photo's Pexels page is `https://www.pexels.com/photo/<id>/`.
 | paypal-account-after-death | 4452399 | Dark leather wallet on a wooden table |
 | amazon-account-after-death | 4464483 | Stack of cardboard parcels |
 | microsoft-outlook-account-after-death | 389818 | Laptop on a stand at a desk by a window |
+
+## Website showcase film
+
+`/videos/departed-digital-showcase.mp4` is a 26 second silent walkthrough built from live site captures on 11 September 2026. Its two closing scenes use Pexels photographs under the [Pexels licence](https://www.pexels.com/license/):
+
+| Scene | Pexels ID | Photographer | Description |
+| --- | --- | --- | --- |
+| More time for each other | 7232039 | cottonbro studio | Family looking through a photo album |
+| One less thing to carry | 233223 | Matthias Zomer | Two people holding hands |
+
+The people pictured are stock models. They are not customers and the film does not present them as endorsers. No case was submitted and no payment was made to record the interface scenes. Source files and the render script are in `creative/website-showcase/`, outside this repository.
