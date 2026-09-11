@@ -1,0 +1,54 @@
+/* Shared styling for the website showcase film.
+   Self contained colours so the same markup works on the homepage, the partner
+   pages and the article template, none of which share variable names. */
+
+.showcase-film {
+  margin: 0;
+  max-width: 900px;
+}
+
+.showcase-film-frame {
+  position: relative;
+  border-radius: 18px;
+  overflow: hidden;
+  background: #111b35;
+  box-shadow: 0 22px 60px rgba(26, 39, 68, 0.22);
+  border: 1px solid rgba(201, 168, 76, 0.28);
+}
+
+.showcase-film-player {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  background: #111b35;
+}
+
+.showcase-film-caption {
+  margin-top: 14px;
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: #6b7a8d;
+}
+
+.showcase-film-caption strong {
+  color: #1a2744;
+  font-weight: 600;
+}
+
+/* The film is silent, so a visitor who cannot play video loses nothing that is
+   not also written on the page. This link is the fallback for that case. */
+.showcase-film-fallback {
+  padding: 24px;
+  color: #f9f6f0;
+  font-size: 0.95rem;
+}
+
+.showcase-film-fallback a {
+  color: #e0c06a;
+}
+
+@media (max-width: 620px) {
+  .showcase-film-frame { border-radius: 14px; }
+  .showcase-film-caption { font-size: 0.88rem; }
+}

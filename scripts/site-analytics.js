@@ -302,4 +302,20 @@
       label: target.dataset[labelAttribute] || target.textContent.trim()
     });
   });
+
+  // The showcase film costs a visitor nothing until they press play, so a play
+  // is a real signal of interest. Counted once per video per page view, and in
+  // the capture phase because the play event does not bubble.
+  document.addEventListener('play', function (event) {
+    const video = event.target;
+
+    if (!video || video.tagName !== 'VIDEO' || video.dataset.ddPlayTracked === 'true') {
+      return;
+    }
+
+    video.dataset.ddPlayTracked = 'true';
+    track('video_played', {
+      label: video.dataset[labelAttribute] || video.getAttribute('aria-label') || 'Showcase film'
+    });
+  }, true);
 })();

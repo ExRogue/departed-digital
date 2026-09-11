@@ -49,7 +49,8 @@ for up to ~3 days, so short gaps self-heal once fixed.
 ## Analytics: internal traffic and key events (added 9 Sep 2026)
 
 - GA4 property G-VBKFG16BZY loads only after the visitor accepts the analytics cookie (scripts/consent.js).
-- Every first party event sent to /api/analytics is mirrored into GA4 by `forwardToGoogle()` in scripts/site-analytics.js when gtag exists. Event names: page_view, article_view, cta_click, intake_submitted, payment_confirmed, documents_uploaded, partner_lead_submitted.
+- Every first party event sent to /api/analytics is mirrored into GA4 by `forwardToGoogle()` in scripts/site-analytics.js when gtag exists. Event names: page_view, article_view, cta_click, intake_submitted, payment_confirmed, documents_uploaded, partner_lead_submitted, video_played.
 - Key events in GA4 Admin: intake_submitted, payment_confirmed, partner_lead_submitted.
 - Internal traffic: open any page with `?operator=1` once on a device to mark that browser as internal (`?operator=0` clears it). The flag lives in localStorage as departedDigitalOperatorBrowser, sets `traffic_type=internal` on the GA4 tag, and is excluded by the Internal Traffic data filter, which is Active. Non production hosts are always internal.
+- The showcase film (`/videos/departed-digital-showcase.mp4`, on the homepage, /partners and /partners/aftercare) is served with `preload="none"`, so none of its 1.3 MB downloads until a visitor presses play. A play fires `video_played` once per video per page view, from a capture phase listener in scripts/site-analytics.js. The source cut lives outside the repo in `creative/website-showcase/`; re-export from there if the interface changes.
 - IndexNow key de5dc8cb835ef06767fd2092aa8c0523 is served at the site root; submit changed URLs with a POST to https://api.indexnow.org/indexnow (see the sitemap for the URL list).
