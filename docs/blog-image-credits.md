@@ -28,6 +28,7 @@ each photo's Pexels page is `https://www.pexels.com/photo/<id>/`.
 | paypal-account-after-death | 4452399 | Dark leather wallet on a wooden table |
 | amazon-account-after-death | 4464483 | Stack of cardboard parcels |
 | microsoft-outlook-account-after-death | 389818 | Laptop on a stand at a desk by a window |
+| redirect-post-when-someone-dies-uk | 4935823 | Brass letterbox marked Letters on a green door (Calvin Hanson) |
 
 ## Website showcase film
 

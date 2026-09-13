@@ -1629,6 +1629,113 @@
       .photo-band-grid { grid-template-columns: 1fr; gap: 32px; }
       .photo-band-figure { aspect-ratio: 16 / 11; }
     }
+
+    /* ── FREE GUIDES ── */
+    .guides-band {
+      position: relative;
+      background:
+        radial-gradient(circle at 12% 0%, rgba(26,39,68,0.04), transparent 22%),
+        linear-gradient(180deg, rgba(255,253,248,0.96) 0%, rgba(250,245,237,0.94) 100%);
+    }
+    .guides-band::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 24px;
+      right: 24px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(26,39,68,0.08), transparent);
+    }
+    .guides-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 20px;
+      margin-top: 34px;
+    }
+    .guide-card {
+      display: flex;
+      flex-direction: column;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 28px 26px;
+      color: inherit;
+      text-decoration: none;
+      position: relative;
+      overflow: hidden;
+      transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+    }
+    .guide-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(90deg, var(--gold), var(--gold-light));
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform var(--transition);
+    }
+    .guide-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--gold);
+    }
+    .guide-card:hover::before { transform: scaleX(1); }
+    .guide-card:focus-visible {
+      outline: 2px solid var(--gold);
+      outline-offset: 3px;
+    }
+    .guide-kicker {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 10px;
+    }
+    .guide-card h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.16rem;
+      line-height: 1.35;
+      color: var(--navy);
+      margin-bottom: 10px;
+    }
+    .guide-card p {
+      font-size: 0.92rem;
+      color: var(--text-muted);
+      line-height: 1.65;
+      margin-bottom: 18px;
+    }
+    .guide-more {
+      margin-top: auto;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--navy);
+    }
+    .guides-all {
+      margin-top: 28px;
+      font-size: 0.98rem;
+    }
+    .guides-all a {
+      color: var(--navy);
+      font-weight: 600;
+      text-decoration: none;
+      border-bottom: 1px solid var(--gold);
+      padding-bottom: 2px;
+    }
+    .guides-all a:hover { color: var(--gold); }
+    @media (max-width: 1024px) {
+      .guides-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 620px) {
+      .guides-grid { grid-template-columns: 1fr; gap: 14px; }
+      .guide-card { padding: 22px 20px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .guide-card, .guide-card::before { transition: none; }
+      .guide-card:hover { transform: none; }
+    }
   </style>
   <script src="/scripts/consent.js" defer></script>
 </head>
@@ -1964,6 +2071,54 @@
       <div class="faq-cta reveal">
         <a href="/start" class="btn-primary" data-track="faq_cta" data-track-label="Homepage FAQ start case">Start a case</a>
       </div>
+    </div>
+  </section>
+
+  <!-- Free guides -->
+  <section class="guides-band" id="guides" aria-labelledby="guides-title">
+    <div class="container">
+      <span class="section-label reveal">Free guides</span>
+      <h2 class="section-title reveal" id="guides-title">Rather do it yourself?</h2>
+      <p class="section-sub reveal">Our guides walk you through each platform's own process after a death, step by step. They are free, and there is nothing to buy.</p>
+      <div class="guides-grid">
+        <a class="guide-card reveal reveal-delay-1" href="/blog/close-online-accounts-when-someone-dies" data-track="homepage_guide" data-track-label="Homepage guide: complete guide">
+          <span class="guide-kicker">Start here</span>
+          <h3>How to close a loved one's online accounts</h3>
+          <p>The two documents you need, every major platform at a glance, and the right order to work in.</p>
+          <span class="guide-more">Read the guide →</span>
+        </a>
+        <a class="guide-card reveal reveal-delay-2" href="/blog/digital-accounts-checklist-after-death-uk" data-track="homepage_guide" data-track-label="Homepage guide: checklist">
+          <span class="guide-kicker">Checklist</span>
+          <h3>A checklist of accounts to close</h3>
+          <p>Social media, email, cloud storage, shopping and subscriptions, in one list to work through.</p>
+          <span class="guide-more">Read the guide →</span>
+        </a>
+        <a class="guide-card reveal reveal-delay-3" href="/blog/delete-deceased-facebook-account" data-track="homepage_guide" data-track-label="Homepage guide: facebook">
+          <span class="guide-kicker">Facebook</span>
+          <h3>Delete or memorialise a Facebook account</h3>
+          <p>Both routes, the forms Meta uses, the documents it accepts, and what to do when nothing happens.</p>
+          <span class="guide-more">Read the guide →</span>
+        </a>
+        <a class="guide-card reveal reveal-delay-1" href="/blog/delete-deceased-instagram-account" data-track="homepage_guide" data-track-label="Homepage guide: instagram">
+          <span class="guide-kicker">Instagram</span>
+          <h3>Remove or memorialise an Instagram account</h3>
+          <p>How memorialisation and removal work, and why saving the photos comes first.</p>
+          <span class="guide-more">Read the guide →</span>
+        </a>
+        <a class="guide-card reveal reveal-delay-2" href="/blog/apple-id-icloud-account-after-death" data-track="homepage_guide" data-track-label="Homepage guide: apple">
+          <span class="guide-kicker">Apple</span>
+          <h3>Apple ID and iCloud after a death</h3>
+          <p>Legacy Contacts, the photo library, Activation Lock, and what to read before asking Apple to close anything.</p>
+          <span class="guide-more">Read the guide →</span>
+        </a>
+        <a class="guide-card reveal reveal-delay-3" href="/blog/email-accounts-after-death" data-track="homepage_guide" data-track-label="Homepage guide: email">
+          <span class="guide-kicker">Email</span>
+          <h3>Close their email accounts</h3>
+          <p>Gmail, Outlook and Yahoo compared, and why the inbox should be the last account you close.</p>
+          <span class="guide-more">Read the guide →</span>
+        </a>
+      </div>
+      <p class="guides-all reveal"><a href="/blog" data-track="homepage_guides_all" data-track-label="Homepage all guides">See all our free guides →</a></p>
     </div>
   </section>
 
