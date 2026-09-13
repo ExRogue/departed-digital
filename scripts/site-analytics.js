@@ -287,8 +287,11 @@
 
   rememberReferralCode();
 
-  const isArticle = window.location.pathname.indexOf('/blog/') === 0 && window.location.pathname !== '/blog';
-  track(isArticle ? 'article_view' : 'page_view');
+  // The 404 page marks itself so a damaged guide address is not counted as an
+  // article view.
+  const isNotFound = document.documentElement.getAttribute('data-page') === 'not-found';
+  const isArticle = !isNotFound && window.location.pathname.indexOf('/blog/') === 0 && window.location.pathname !== '/blog';
+  track(isNotFound ? 'not_found_view' : (isArticle ? 'article_view' : 'page_view'));
 
   document.addEventListener('click', function (event) {
     const target = event.target.closest('[data-' + dataAttribute + ']');
