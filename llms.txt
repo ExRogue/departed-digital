@@ -44,6 +44,7 @@ Contact: hello@departed.digital
 - [Delete a deceased person's Facebook account in the UK](https://www.departed.digital/blog/delete-deceased-facebook-account-uk)
 - [Remove a deceased person's Instagram account in the UK](https://www.departed.digital/blog/delete-deceased-instagram-account-uk)
 - [Close a deceased person's Google or Gmail account in the UK](https://www.departed.digital/blog/close-deceased-google-account-uk)
+- [Redirect or stop post when someone dies in the UK](https://www.departed.digital/blog/redirect-post-when-someone-dies-uk)
 
 ## Policies
 - [Terms of Service](https://www.departed.digital/terms)
