@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-page="not-found">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Page Not Found | Departed Digital</title>
   <meta name="description" content="The page you requested could not be found." />
+  <meta name="robots" content="noindex" />
   <link rel="icon" type="image/x-icon" href="/favicon.ico" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
@@ -12,6 +13,13 @@
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
   <link rel="manifest" href="/site.webmanifest" />
   <meta name="theme-color" content="#1a2744" />
+  <script>
+    // A missing guide address gets a chance to be rescued below, so hide the
+    // plain 404 message for those before the first paint.
+    if (/^\/blog\/[^\/]/.test(window.location.pathname)) {
+      document.documentElement.className += ' guide-miss';
+    }
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
@@ -36,6 +44,7 @@
       font-family: 'Inter', sans-serif;
     }
     .wrap {
+      width: 100%;
       max-width: 640px;
     }
     h1 {
@@ -49,7 +58,14 @@
       margin-bottom: 28px;
       line-height: 1.7;
     }
-    a {
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+      margin-bottom: 0;
+    }
+    .btn {
       display: inline-block;
       background: var(--gold);
       color: var(--navy-dark);
@@ -58,24 +74,222 @@
       padding: 14px 22px;
       font-weight: 700;
     }
-    a:hover { background: var(--gold-light); }
+    .btn:hover { background: var(--gold-light); }
+    .btn-ghost {
+      background: transparent;
+      color: var(--white);
+      border: 1px solid rgba(255,255,255,0.35);
+    }
+    .btn-ghost:hover { background: rgba(255,255,255,0.08); }
+
+    /* States: the plain 404, "finding that guide", and the guide list. */
+    .state-finding,
+    .state-results { display: none; }
+    html.guide-miss .state-plain { display: none; }
+    html.guide-miss .state-finding { display: block; }
+    html.guide-listed .state-finding { display: none; }
+    html.guide-listed .state-results { display: block; }
+    html.guide-failed .state-plain { display: block; }
+    html.guide-failed .state-finding { display: none; }
+
+    .results-title {
+      font-size: clamp(1.8rem, 5vw, 2.6rem);
+      line-height: 1.2;
+    }
+    .results-intro { margin-bottom: 20px; }
+    .guide-list {
+      list-style: none;
+      text-align: left;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(201,168,76,0.25);
+      border-radius: 18px;
+      padding: 8px 22px;
+      margin-bottom: 28px;
+    }
+    .guide-list li + li { border-top: 1px solid rgba(255,255,255,0.08); }
+    .guide-list a {
+      display: block;
+      padding: 12px 0;
+      color: var(--gold-light);
+      text-decoration: none;
+      line-height: 1.45;
+    }
+    .guide-list a:hover { text-decoration: underline; }
   </style>
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBKFG16BZY"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-VBKFG16BZY');
-  </script>
+  <script src="/scripts/consent.js" defer></script>
 </head>
 <body>
-  <div class="wrap">
-    <h1>404</h1>
-    <p>The page you were looking for is not here. You can head back to the homepage or browse the latest guides.</p>
-    <p>
-      <a href="/">Back to home</a>
-    </p>
-  </div>
+  <main class="wrap">
+    <div class="state state-plain">
+      <h1>404</h1>
+      <p>The page you were looking for is not here. You can head back to the homepage or browse our free guides.</p>
+      <p class="actions">
+        <a class="btn" href="/">Back to home</a>
+        <a class="btn btn-ghost" href="/blog">Browse the guides</a>
+      </p>
+    </div>
+
+    <div class="state state-finding" aria-live="polite">
+      <p>One moment, finding that guide&hellip;</p>
+    </div>
+
+    <div class="state state-results">
+      <h1 class="results-title">That link did not come through properly</h1>
+      <p class="results-intro"></p>
+      <ul class="guide-list"></ul>
+      <p class="actions">
+        <a class="btn" href="/blog">See all guides</a>
+        <a class="btn btn-ghost" href="/">Back to home</a>
+      </p>
+    </div>
+  </main>
+
+  <script src="/scripts/site-analytics.js"></script>
+  <script>
+    // Guide links that pass through email security scanners, forwards or chat
+    // apps sometimes arrive damaged: cut short, with punctuation stuck on the
+    // end, or base64 encoded and truncated. In September 2026 visitors reached
+    // /blog/ZGlnaXRhbC, which is "digital", the start of the checklist guide.
+    // Work out which guide was meant from the guide list on /blog, send the
+    // visitor straight there when only one fits, and list the options when not.
+    (function () {
+      var root = document.documentElement;
+      var match = window.location.pathname.match(/^\/blog\/([^\/]+)/);
+
+      if (!match) {
+        return;
+      }
+
+      var requested = match[1];
+
+      function track(eventType, label) {
+        try {
+          if (window.DepartedAnalytics) {
+            window.DepartedAnalytics.track(eventType, { label: label });
+          }
+        } catch (error) {
+          // Analytics should never block the rescue.
+        }
+      }
+
+      function giveUp() {
+        root.classList.remove('guide-miss');
+        root.classList.add('guide-failed');
+      }
+
+      function plainPrefix(segment) {
+        var text = segment;
+
+        try {
+          text = decodeURIComponent(segment);
+        } catch (error) {
+          // Keep the raw segment.
+        }
+
+        return text.toLowerCase().replace(/_/g, '-').replace(/[^a-z0-9-].*$/, '').replace(/-+$/, '');
+      }
+
+      function base64Prefix(segment) {
+        if (!/^[A-Za-z0-9+_-]{6,}={0,2}$/.test(segment)) {
+          return '';
+        }
+
+        var cleaned = segment.replace(/-/g, '+').replace(/_/g, '/').replace(/=+$/, '');
+
+        if (cleaned.length % 4 === 1) {
+          cleaned = cleaned.slice(0, -1);
+        }
+
+        try {
+          var lead = window.atob(cleaned).match(/^[a-z0-9-]+/);
+          return lead ? lead[0] : '';
+        } catch (error) {
+          return '';
+        }
+      }
+
+      function candidatesFor(prefix, guides) {
+        if (!prefix || prefix.length < 5) {
+          return [];
+        }
+
+        // A whole guide address with something stuck on the end: take the
+        // longest guide address it starts with.
+        var containing = guides.filter(function (guide) {
+          return prefix.indexOf(guide.slug) === 0;
+        });
+
+        if (containing.length) {
+          containing.sort(function (a, b) { return b.slug.length - a.slug.length; });
+          return [containing[0]];
+        }
+
+        // An address cut short: every guide it could have been.
+        return guides.filter(function (guide) {
+          return guide.slug.indexOf(prefix) === 0;
+        });
+      }
+
+      function showList(guides, isShortlist) {
+        var intro = document.querySelector('.results-intro');
+        var list = document.querySelector('.guide-list');
+
+        intro.textContent = isShortlist
+          ? 'It was probably one of these guides:'
+          : 'Here are all of our free guides, so you can pick the one you were after:';
+
+        guides.forEach(function (guide) {
+          var item = document.createElement('li');
+          var link = document.createElement('a');
+          link.href = '/blog/' + guide.slug;
+          link.textContent = guide.title;
+          item.appendChild(link);
+          list.appendChild(item);
+        });
+
+        root.classList.add('guide-listed');
+      }
+
+      fetch('/blog', { credentials: 'same-origin' })
+        .then(function (response) {
+          if (!response.ok) {
+            throw new Error('Guide list unavailable');
+          }
+          return response.text();
+        })
+        .then(function (html) {
+          var doc = new DOMParser().parseFromString(html, 'text/html');
+          var guides = Array.prototype.map.call(doc.querySelectorAll('a.card[href^="/blog/"]'), function (link) {
+            var heading = link.querySelector('h2, h3');
+            return {
+              slug: link.getAttribute('href').replace(/^\/blog\//, '').replace(/\/$/, ''),
+              title: (heading ? heading.textContent : link.textContent).replace(/\s+/g, ' ').trim()
+            };
+          }).filter(function (guide) {
+            return /^[a-z0-9-]+$/.test(guide.slug);
+          });
+
+          if (!guides.length) {
+            throw new Error('No guides found');
+          }
+
+          var candidates = candidatesFor(plainPrefix(requested), guides);
+
+          if (!candidates.length) {
+            candidates = candidatesFor(base64Prefix(requested), guides);
+          }
+
+          if (candidates.length === 1) {
+            track('broken_link_rescued', requested + ' -> ' + candidates[0].slug);
+            window.location.replace('/blog/' + candidates[0].slug + window.location.search + window.location.hash);
+            return;
+          }
+
+          track('broken_link_listed', requested + (candidates.length ? ' (' + candidates.length + ' possible)' : ' (no match)'));
+          showList(candidates.length ? candidates : guides, candidates.length > 0);
+        })
+        .catch(giveUp);
+    })();
+  </script>
 </body>
 </html>
