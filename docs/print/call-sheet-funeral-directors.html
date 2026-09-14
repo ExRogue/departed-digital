@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Departed Digital: funeral director call sheet (print)</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Inter:wght@400;500;600&display=swap">
+<style>
+  @page { size: A4 portrait; margin: 14mm 13mm 14mm; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root { --navy: #1a2744; --navy-dark: #111b35; --gold: #c9a84c; --gold-soft: #f3ead6; --cream: #f9f6f0; --text: #2d3a4a; --muted: #6b7a8d; --line: #e4ddd0; }
+  body { font-family: 'Inter', -apple-system, sans-serif; color: var(--text); font-size: 9.6pt; line-height: 1.5; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  h1, h2, h3 { font-family: 'Playfair Display', Georgia, serif; color: var(--navy); font-weight: 600; }
+  h1 { font-size: 21pt; line-height: 1.15; }
+  h2 { font-size: 13.5pt; margin: 0 0 6px; }
+  h3 { font-size: 11pt; }
+  p + p { margin-top: 6px; }
+  a { color: inherit; text-decoration: none; }
+  .page { break-after: page; }
+  .page:last-child { break-after: auto; }
+
+  .masthead { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2px solid var(--gold); padding-bottom: 8px; margin-bottom: 12px; }
+  .masthead .kicker { font-size: 7.5pt; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold); font-weight: 600; margin-bottom: 4px; }
+  .masthead .meta { font-size: 8pt; color: var(--muted); text-align: right; }
+
+  .section { margin-bottom: 12px; break-inside: avoid; }
+  .rules { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
+  .rule { background: var(--cream); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; break-inside: avoid; }
+  .rule strong { display: block; color: var(--navy); font-size: 9pt; margin-bottom: 2px; }
+  .rule p { font-size: 8.6pt; }
+
+  .script { background: var(--navy); color: #f5f1e8; border-radius: 10px; padding: 12px 14px; break-inside: avoid; }
+  .script .label { font-size: 7.5pt; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold); font-weight: 600; margin-bottom: 5px; }
+  .script p { font-size: 10.4pt; line-height: 1.55; }
+  .script p + p { margin-top: 7px; }
+  .script em { color: #e0c06a; font-style: normal; }
+
+  .box { border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; break-inside: avoid; }
+  .box + .box { margin-top: 8px; }
+  .box .label { font-size: 7.5pt; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold); font-weight: 600; margin-bottom: 3px; }
+  .say { font-size: 9.8pt; color: var(--navy); }
+
+  .objection { border-left: 3px solid var(--gold); padding: 3px 0 3px 11px; margin-bottom: 9px; break-inside: avoid; }
+  .objection h3 { margin-bottom: 3px; }
+  .objection .theysay { font-size: 8.6pt; color: var(--muted); margin-bottom: 3px; }
+
+  .quick { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 14px; }
+  .quick div { font-size: 8.8pt; break-inside: avoid; }
+  .quick strong { color: var(--navy); }
+
+  .email { background: var(--cream); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; font-size: 9pt; break-inside: avoid; }
+  .email .subject { font-weight: 600; color: var(--navy); margin-bottom: 5px; }
+
+  .order { font-size: 8.8pt; background: var(--gold-soft); border-radius: 8px; padding: 6px 10px; margin-bottom: 8px; }
+  .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+  .card { border: 1px solid var(--line); border-radius: 9px; padding: 7px 10px 6px; break-inside: avoid; display: flex; flex-direction: column; }
+  .card .top { display: flex; justify-content: space-between; align-items: baseline; gap: 6px; }
+  .card .num { font-size: 7.5pt; color: var(--muted); font-weight: 600; white-space: nowrap; }
+  .card .area { font-size: 7.8pt; color: var(--muted); margin: 0 0 3px; }
+  .card .phone { font-size: 12.5pt; font-weight: 600; color: var(--navy); letter-spacing: 0.01em; }
+  .card .phone small { font-size: 7.8pt; font-weight: 500; color: var(--muted); letter-spacing: 0; }
+  .card .alt { font-size: 7.8pt; color: var(--muted); margin-bottom: 2px; }
+  .card dl { display: grid; grid-template-columns: 48px 1fr; gap: 1px 6px; font-size: 8.2pt; line-height: 1.4; margin: 2px 0 4px; }
+  .card dt { color: var(--muted); }
+  .card dd { color: var(--text); }
+  .card .flag { font-size: 7.8pt; line-height: 1.35; background: var(--gold-soft); border-radius: 6px; padding: 3px 7px; margin-bottom: 4px; color: var(--navy); }
+  .card .outcome { margin-top: auto; border-top: 1px dashed var(--line); padding-top: 4px; font-size: 8pt; color: var(--muted); display: flex; flex-wrap: wrap; gap: 3px 10px; }
+  .card .outcome span::before { content: ""; display: inline-block; width: 8px; height: 8px; border: 1px solid #b9ae98; border-radius: 2px; margin-right: 4px; vertical-align: -1px; }
+  .card .notes { margin-top: 3px; height: 16px; border-bottom: 1px solid var(--line); }
+  .footer-note { margin-top: 10px; font-size: 8pt; color: var(--muted); }
+</style>
+</head>
+<body>
+
+<!-- Page 1: how to run the call -->
+<section class="page">
+  <div class="masthead">
+    <div>
+      <div class="kicker">Departed Digital · internal</div>
+      <h1>Funeral director call sheet</h1>
+    </div>
+    <div class="meta">16 warm leads, 15 calls<br>Numbers checked on each firm's own website, 14 September 2026</div>
+  </div>
+
+  <div class="rules">
+    <div class="rule"><strong>The only goal</strong><p>Permission to send the card and the 26 second film, and the name and email of the right person. Not a yes to the partnership.</p></div>
+    <div class="rule"><strong>When to call</strong><p>Mid-morning or mid-afternoon on a weekday. Avoid Monday mornings, when the weekend's arrangements come in.</p></div>
+    <div class="rule"><strong>Mind the line</strong><p>Most of these numbers are also the firm's 24 hour line for families. Keep it short, and if they sound busy or are with a family, apologise and ask when is better.</p></div>
+  </div>
+
+  <div class="section">
+    <h2>The opener</h2>
+    <div class="script">
+      <div class="label">Say this</div>
+      <p>Hello, is that <em>[firm]</em>? My name's Steven Kong, I run a small London service called Departed Digital. I'm not selling anything today, and I'll be quick.</p>
+      <p>Families keep getting stuck on the online accounts after a funeral: the Facebook, the email, the Apple account. We close or memorialise those for them. Could I send you a card and a 26 second film, so you can see what it is?</p>
+      <p>The first family you pass on is free, so you can judge the work before your name goes anywhere near it.</p>
+      <p><em>Then:</em> Who's the best person to send it to, and what's their email?</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="box">
+      <div class="label">If they ask how it works (30 seconds)</div>
+      <p class="say">The family tells us which accounts, and sends the death certificate once. We use each platform's own process for a death, chase every one, and give the family a written record at the end. We never ask for passwords. Families pay us directly, from £149, so there's nothing for your team to do. If a family goes ahead we pay you £50, but you don't have to take it.</p>
+    </div>
+    <div class="box">
+      <div class="label">Use their own page</div>
+      <p class="say">Each card overleaf has one true thing about the firm. Mention it early: "I was reading your bereavement support page, and it's better than most, but like every aftercare page I've read it stops short of the online accounts."</p>
+    </div>
+    <div class="box">
+      <div class="label">If it goes to voicemail (office hours only)</div>
+      <p class="say">"Hi, it's Steven Kong from Departed Digital. I help families close a loved one's online accounts after a funeral. I'll send a short email with a 26 second film. No need to call back. Thank you." Then send the email below, and try once more in a few days.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Page 2: objections, quick answers, follow up email -->
+<section class="page">
+  <div class="masthead">
+    <div><div class="kicker">Departed Digital · internal</div><h1>What they'll say</h1></div>
+    <div class="meta">Four objections, then the quick ones</div>
+  </div>
+
+  <div class="objection">
+    <h3>1. "How many families have you done this for?"</h3>
+    <p class="theysay">Or: "We've never heard of you."</p>
+    <p class="say">"We're new, and I'd rather be straight with you about that. It's exactly why the first family you pass on is free. You'll see the whole thing, the updates and the written record at the end, before you decide whether to recommend us to anyone else."</p>
+  </div>
+
+  <div class="objection">
+    <h3>2. "We don't take referral fees."</h3>
+    <p class="theysay">Or: "It doesn't feel right taking money for that."</p>
+    <p class="say">"That's completely fine, and plenty of firms feel the same. You don't have to take the fee, and the card works exactly the same without it. The main thing is that families have somewhere to go when the Facebook becomes a problem."</p>
+  </div>
+
+  <div class="objection">
+    <h3>3. "Families can do that themselves."</h3>
+    <p class="theysay">Or: "We already point them to Cruse and SAIFCare."</p>
+    <p class="say">"They can, and our do-it-yourself guides are free on the site, so most families start there. The ones who come to us have been stuck in Facebook's forms for weeks, or have five or six accounts and can't face it. This just gives them a next step when that happens. It sits alongside Cruse and SAIFCare, it doesn't replace anything."</p>
+  </div>
+
+  <div class="objection">
+    <h3>4. "Is it safe? What about their data?"</h3>
+    <p class="theysay">Or: "Do you need their passwords?"</p>
+    <p class="say">"We never ask for passwords, and we never log into anyone's account. We only use each platform's own process for a death, with the death certificate and proof of who's dealing with the estate. Documents go through a private page for that family only, and everything is handled under UK data protection law."</p>
+  </div>
+
+  <div class="section">
+    <h2>The quick ones</h2>
+    <div class="quick">
+      <div><strong>"Just send me an email."</strong> That's a win. "Of course. Who's the best person, and what's their email?"</div>
+      <div><strong>"What does it cost the family?"</strong> "From £149 for up to two accounts, £249 for up to five, £399 for everything."</div>
+      <div><strong>"I'll need to ask head office."</strong> "Of course. I'll send it to you so it's easy to pass on."</div>
+      <div><strong>"We're not interested."</strong> "No problem at all, thank you for your time." Log it and move on.</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>The email to send straight after</h2>
+    <div class="email">
+      <p class="subject">Subject: The card and film I mentioned</p>
+      <p>Hello [name],</p>
+      <p>Thank you for your time on the phone today. As promised, this page has the family card for your aftercare pack and a 26 second film showing exactly what a family sees: www.departed.digital/partners/aftercare</p>
+      <p>The first family you pass on is handled free of charge, so you can judge the work before your name goes near it. If you would like printed cards for the branch, just reply with the address and I will post some.</p>
+      <p>Kind regards,<br>Steven Kong<br>Founder, Departed Digital, London<br>hello@departed.digital · www.departed.digital</p>
+    </div>
+  </div>
+</section>
+
+<!-- Pages 3 and 4: the firms -->
+<section class="page">
+  <div class="masthead">
+    <div><div class="kicker">Departed Digital · internal</div><h1>The firms</h1></div>
+    <div class="meta">Numbers from the list in docs/outreach-batch-4-funeral-directors.md</div>
+  </div>
+
+  <p class="order"><strong>Suggested order:</strong> start with Poetic Endings, Poppy's and Exit Here. They are modern, aftercare-minded firms and the likeliest quick yes. Then work down the list. Every firm here already publishes an aftercare page.</p>
+
+  <div class="cards">
+
+    <div class="card">
+      <div class="top"><h3>Poetic Endings</h3><span class="num">#16</span></div>
+      <div class="area">Forest Hill, Lewisham</div>
+      <a class="phone" href="tel:+442045258318">020 4525 8318 <small>24 hours</small></a>
+      <dl><dt>Ask for</dt><dd>Louise Winter (founder) or Isabel Potter</dd><dt>Mention</dt><dd>Their resources page. Louise wrote "We All Know How This Ends", and Isabel ran Cruse's London hub.</dd></dl>
+      <div class="outcome"><span>No answer</span><span>Call back</span><span>Send pack</span><span>Not now</span></div>
+      <div class="notes"></div>
+    </div>
+
+    <div class="card">
+      <div class="top"><h3>Poppy's</h3><span class="num">#28</span></div>
+      <div class="area">Tooting, Sheen, Raynes Park</div>
+      <a class="phone" href="tel:+442035894726">020 3589 4726 <small>main line</small></a>
+      <div class="alt">Office Mon to Fri 9 to 5 (Thursday from 9.30). Sheen 020 3879 9111 · Raynes Park 020 3861 0554</div>
+      <dl><dt>Ask for</dt><dd>Poppy Mardall (founder) or whoever leads aftercare</dd><dt>Mention</dt><dd>The anniversary card they send a year on, and their Bereavement Support page. Certified B Corp.</dd></dl>
+      <div class="outcome"><span>No answer</span><span>Call back</span><span>Send pack</span><span>Not now</span></div>
+      <div class="notes"></div>
+    </div>
+
+    <div class="card">
+      <div class="top"><h3>Exit Here</h3><span class="num">#11</span></div>
+      <div class="area">Chiswick, Crouch End, Chelsea</div>
+      <a class="phone" href="tel:+442080502400">020 8050 2400 <small>main, 24/7</small></a>
+      <div class="alt">Chiswick 020 8050 2000 · Crouch End 020 8050 2100 · Chelsea 020 8050 2200</div>
+      <dl><dt>Ask for</dt><dd>Whoever runs the bereavement groups; founder Oliver Peyton</dd><dt>Mention</dt><dd>The coffee mornings and bereavement groups at all three shops, and their Bereavement Resources page.</dd></dl>
+      <div class="outcome"><span>No answer</span><span>Call back</span><span>Send pack</span><span>Not now</span></div>
+      <div class="notes"></div>
+    </div>
+
+    <div class="card">
+      <div class="top"><h3>Leverton &amp; Sons</h3><span class="num">#1</span></div>
+      <div class="area">Camden, Kentish Town, Hampstead, Golders Green, Muswell Hill</div>
+      <a class="phone" href="tel:+442073876075">020 7387 6075 <small>Camden head office</small></a>
+      <div class="alt">Office 9 to 5; the same number is their 24 hour line</div>
+      <dl><dt>Ask for</dt><dd>Andrew or Hannah Leverton, or whoever looks after aftercare</dd><dt>Mention</dt><dd>Eight generations since 1789, and their "Help with bereavement" page.</dd></dl>
+      <div class="outcome"><span>No answer</span><span>Call back</span><span>Send pack</span><span>Not now</span></div>
+      <div class="notes"></div>
+    </div>
+
+    <div class="card">
+      <div class="top"><h3>LDC Funerals</h3><span class="num">#2</span></div>
+      <div class="area">Kentish Town, north London</div>
+      <a class="phone" href="tel:+442074820264">020 7482 0264 <small>office</small></a>
+      <dl><dt>Ask for</dt><dd>Paul</dd><dt>Mention</dt><dd>Their Helpful Links page, the Unsung Hero award, and their work with the Whittington Hospital.</dd></dl>
+      <div class="outcome"><span>No answer</span><span>Call back</span><span>Send pack</span><span>Not now</span></div>
+      <div class="notes"></div>
+    </div>
+
+    <div class="card">
+      <div class="top"><h3>James Funeral Service</h3><span class="num">#6</span></div>
+      <div class="area">Kenton, Harrow</div>
+      <a class="phone" href="tel:+442089076655">020 8907 6655 <small>24 hours</small></a>
+      <dl><dt>Ask for</dt><dd>James or Laura (the proprietors)</dd><dt>Mention</dt><dd>GriefChat on their Bereavement Support page, unusual for a firm their size.</dd></dl>
+      <div class="outcome"><span>No answer</span><span>Call back</span><span>Send pack</span><span>Not now</span></div>
+      <div class="notes"></div>
+    </div>
+
+
+    <div class="card">
+      <div class="top"><h3>West &amp; Coe</h3><span class="num">#12</span></div>
+      <div class="area">Dagenham head office; Hornchurch, Barkingside, Chingford</div>
+      <a class="phone" href="tel:+442085920164">020 8592 0164 <small>24/7</small></a>
+      <dl><dt>Ask for</dt><dd>Whoever runs H.O.P.E.; chairman Jeremy West</dd><dt>Mention</dt><dd>The H.O.P.E. bereavement programme they have run since 2006.</dd></dl>
+      <div class="outcome"><span>No answer</span><span>Call back</span><span>Send pack</span><span>Not now</span></div>
+      <div class="notes"></div>
+    </div>
+
+    <div class="card">
+      <div class="top"><h3>Graceful Funerals</h3><span class="num">#17</span></div>
+      <div class="area">New Cross, Lewisham</div>
+      <a class="phone" href="tel:+442034890492">020 3489 0492</a>
+      <dl><dt>Ask for</dt><dd>Liz or Tom Grace</dd><dt>Mention</dt><dd>That they offer grief counselling alongside the funeral, rare for a husband and wife firm.</dd></dl>
+      <div class="outcome"><span>No answer</span><span>Call back</span><span>Send pack</span><span>Not now</span></div>
+      <div class="notes"></div>
+    </div>
+
+    <div class="card">
+      <div class="top"><h3>Mears Family Funerals</h3><span class="num">#20</span></div>
+      <div class="area">South east London group, ten branches</div>
+      <a class="phone" href="tel:+441689363001">01689 363001 <small>head office, Orpington</small></a>
+      <div class="alt">Catford &amp; Sydenham branch 020 8719 0910</div>
+      <dl><dt>Ask for</dt><dd>Head office; Group CEO Steven Mears</dd><dt>Mention</dt><dd>A hundred years and four generations, and their Grief Support page.</dd></dl>
+      <div class="flag">Mears also owns James Harper in Bromley (#40), so one yes can cover both.</div>
+      <div class="outcome"><span>No answer</span><span>Call back</span><span>Send pack</span><span>Not now</span></div>
+      <div class="notes"></div>
+    </div>
+
+    <div class="card">
+      <div class="top"><h3>Rowland Brothers and Colin Fisher</h3><span class="num">#25 + #21</span></div>
+      <div class="area">Croydon, Purley, Coulsdon, West Wickham; Colin Fisher in Orpington, Bromley, Sidcup</div>
+      <a class="phone" href="tel:+448000789636">0800 0789 636 <small>Rowland Brothers</small></a>
+      <div class="alt">Colin Fisher line 020 8300 3700</div>
+      <dl><dt>Ask for</dt><dd>Stephen Rowland (managing director) or Joe Rowland</dd><dt>Mention</dt><dd>The Rowland Brothers Foundation's counselling, and Colin Fisher's "When Life Changes" programme.</dd></dl>
+      <div class="flag">Colin Fisher is a trading name of Rowland Brothers Limited, as its own site says. Make one call, and don't email both.</div>
+      <div class="outcome"><span>No answer</span><span>Call back</span><span>Send pack</span><span>Not now</span></div>
+      <div class="notes"></div>
+    </div>
+
+    <div class="card">
+      <div class="top"><h3>J. B. Shakespeare</h3><span class="num">#24</span></div>
+      <div class="area">Croydon, Selsdon</div>
+      <a class="phone" href="tel:+442086881447">020 8688 1447 <small>Croydon, 24 hours</small></a>
+      <div class="alt">Selsdon 020 8657 3616</div>
+      <dl><dt>Ask for</dt><dd>Peter Bryant (Croydon manager) or Tim Hussein (Selsdon)</dd><dt>Mention</dt><dd>Founded 1877 and still independent, with a Bereavement Support page that does more than list a helpline.</dd></dl>
+      <div class="outcome"><span>No answer</span><span>Call back</span><span>Send pack</span><span>Not now</span></div>
+      <div class="notes"></div>
+    </div>
+
+    <div class="card">
+      <div class="top"><h3>O'Dwyer Funeral Directors</h3><span class="num">#31</span></div>
+      <div class="area">Ealing, West Kilburn</div>
+      <a class="phone" href="tel:+442030670068">020 3067 0068 <small>Ealing</small></a>
+      <div class="alt">Kilburn 020 3301 4747 (24 hours)</div>
+      <dl><dt>Ask for</dt><dd>Anthea Barrett (runs it day to day); owner Don O'Dwyer</dd><dt>Mention</dt><dd>First Good Funeral Guide recommended firm in West London, and they already point families to SAIFCare.</dd></dl>
+      <div class="outcome"><span>No answer</span><span>Call back</span><span>Send pack</span><span>Not now</span></div>
+      <div class="notes"></div>
+    </div>
+
+    <div class="card">
+      <div class="top"><h3>Southall Funeral Service</h3><span class="num">#33</span></div>
+      <div class="area">Southall, Ealing</div>
+      <a class="phone" href="tel:+442088430777">020 8843 0777 <small>office</small></a>
+      <div class="alt">24 hour line 020 8571 0621</div>
+      <dl><dt>Ask for</dt><dd>Jennifer, Michael or Ben Tiney</dd><dt>Mention</dt><dd>Three generations since 1982, and the Useful Links page that already works with the Good Grief Trust.</dd></dl>
+      <div class="outcome"><span>No answer</span><span>Call back</span><span>Send pack</span><span>Not now</span></div>
+      <div class="notes"></div>
+    </div>
+
+    <div class="card">
+      <div class="top"><h3>Chelsea Funeral Directors</h3><span class="num">#34</span></div>
+      <div class="area">Chelsea, Fulham, Westminster</div>
+      <a class="phone" href="tel:+442073520008">020 7352 0008 <small>Chelsea office</small></a>
+      <div class="alt">Fulham 020 7385 0866 · Westminster 020 7834 3281</div>
+      <dl><dt>Ask for</dt><dd>The owner or manager (no names on the site)</dd><dt>Mention</dt><dd>More than 130 years family run, and the SAIF Bereavement Care page.</dd></dl>
+      <div class="outcome"><span>No answer</span><span>Call back</span><span>Send pack</span><span>Not now</span></div>
+      <div class="notes"></div>
+    </div>
+
+    <div class="card">
+      <div class="top"><h3>Harold White</h3><span class="num">#39</span></div>
+      <div class="area">Chingford, Walthamstow, Buckhurst Hill</div>
+      <a class="phone" href="tel:+442085291530">020 8529 1530 <small>Chingford, 24 hours</small></a>
+      <div class="alt">Buckhurst Hill 020 8505 7051 · Walthamstow 020 8520 4166 (appointments only)</div>
+      <dl><dt>Ask for</dt><dd>The manager, or one of the White family</dd><dt>Mention</dt><dd>Founded 1888, now in the fifth generation, with a Bereavement Support and Advice page families can use.</dd></dl>
+      <div class="outcome"><span>No answer</span><span>Call back</span><span>Send pack</span><span>Not now</span></div>
+      <div class="notes"></div>
+    </div>
+
+  </div>
+  <p class="footer-note">After each call, log the outcome, the contact's name and the date in the send log in docs/outreach-batch-4-funeral-directors.md, and send the follow up email the same day.</p>
+</section>
+
+</body>
+</html>
