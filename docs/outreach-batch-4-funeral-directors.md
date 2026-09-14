@@ -116,6 +116,41 @@ Use these as the first line, then the template. They are drawn from each firm's 
 
 For the 24 firms without an aftercare page, use the same template but change the third paragraph opening to: "You do not have a page on this yet, and almost nobody does, which is exactly the gap."
 
+## Call sheet (14 September 2026)
+
+Plan changed: call the 16 warm leads first, then send the email straight after as the follow up, rather than emailing cold. The printable call sheet is `docs/print/call-sheet-funeral-directors.pdf` (source: `call-sheet-funeral-directors.html` in the same folder). It has the opener, the four objections with answers, the follow up email, and a card per firm with the number, who to ask for and what to mention.
+
+Phone numbers were read on each firm's own website on 14 September 2026:
+
+| # | Firm | Call | Other lines |
+|---|---|---|---|
+| 1 | Leverton & Sons | 020 7387 6075 (Camden head office, also 24 hour; office 9 to 5) | Kentish Town 020 7485 1266, Hampstead 020 7586 4221, Golders Green 020 8455 4992, Muswell Hill 020 8444 5753 |
+| 2 | LDC Funerals | 020 7482 0264 (office) | Mobile on site, not for cold calls |
+| 6 | James Funeral Service | 020 8907 6655 (24 hours) | |
+| 11 | Exit Here | 020 8050 2400 (main, 24/7) | Chiswick 020 8050 2000, Crouch End 020 8050 2100, Chelsea 020 8050 2200 |
+| 12 | West & Coe | 020 8592 0164 (24/7) | |
+| 16 | Poetic Endings | 020 4525 8318 (24 hours) | |
+| 17 | Graceful Funerals | 020 3489 0492 | |
+| 20 | Mears Family Funerals | 01689 363001 (head office, Orpington) | Catford & Sydenham 020 8719 0910 |
+| 21 + 25 | Rowland Brothers, trading also as Colin Fisher | 0800 0789 636 | Colin Fisher 020 8300 3700 |
+| 24 | J. B. Shakespeare | 020 8688 1447 (Croydon, 24 hours) | Selsdon 020 8657 3616 |
+| 28 | Poppy's | 020 3589 4726 (office Mon to Fri 9 to 5, Thursday from 9.30) | Sheen 020 3879 9111, Raynes Park 020 3861 0554 |
+| 31 | O'Dwyer Funeral Directors | 020 3067 0068 (Ealing) | Kilburn 020 3301 4747 (24 hours) |
+| 33 | Southall Funeral Service | 020 8843 0777 (office) | 24 hour 020 8571 0621 |
+| 34 | Chelsea Funeral Directors | 020 7352 0008 (Chelsea office) | Fulham 020 7385 0866, Westminster 020 7834 3281 |
+| 39 | Harold White | 020 8529 1530 (Chingford, 24 hours) | Buckhurst Hill 020 8505 7051, Walthamstow 020 8520 4166 (appointments only) |
+
+Corrections to the list above, found while checking numbers:
+
+- **Colin Fisher (#21) is not a separate independent.** Its own site says "Colin Fisher Funeral Directors is a trading style of Rowland Brothers Limited". Treat #21 and #25 as one firm: one call, one email, not two.
+- **Mears (#20) owns James Harper (#40)**, so a conversation with Mears head office covers both.
+
+## Call log
+
+| Date | Firm | Spoke to | Outcome | Follow up sent |
+|---|---|---|---|---|
+| | | | | |
+
 ## Send log
 
 | Date | Firms | Notes |
