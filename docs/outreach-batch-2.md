@@ -51,6 +51,7 @@ day. Log the date in the table. Follow up once after 10 days if silent.
 
 - The Compassionate Friends (Annabelle): free help only policy, so no listing for the service, but she told the support staff about us and sent the TCF digital legacy leaflet. Replied in thread 8 Sept 2026, 09:45. Their leaflet is now linked from the delete or memorialise guide.
 - Funeral Consumers Alliance (April St. Onge, Chief Administrative Officer): will share the guides with consumers according to need. Replied in thread 8 Sept 2026, 09:58, offering to answer platform questions for their team or consumers.
+- Surrey County Council (Farrah Orr, contact centre): declined 11 Sept 2026, 08:36. "We now don't usually add new links unless they are directly relevant to a service that we provide or there has been a specific recommendation from the webmaster of the Surrey County Council service concerned." Batch two target; no chaser needed.
 
 
 ### Follow-up sweep (one chaser each, then stop)
