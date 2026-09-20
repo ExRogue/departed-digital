@@ -1001,6 +1001,20 @@
       card.addEventListener('click', renderFitHint);
     });
 
+    // A troubleshooting guide can send a family here with the stuck account
+    // already ticked, for example /start?accounts=facebook,instagram, so the
+    // form starts half done. Unknown names are ignored.
+    (params.get('accounts') || '').split(',').forEach((raw) => {
+      const key = raw.trim().toLowerCase();
+      if (!key) { return; }
+      const match = PLATFORM_OPTIONS.find((name) => {
+        const lower = name.toLowerCase();
+        return lower === key || lower.split(/[\s/(]/)[0] === key;
+      });
+      if (match && !chosenPlatforms.has(match)) {
+        chosenPlatforms.set(match, MEMORIALISABLE.includes(match) ? 'not_sure' : '');
+      }
+    });
     renderPicker();
 
     function collectPlatformSelections() {

@@ -93,7 +93,7 @@ If it still errors, try another browser, or ask a second person to submit it too
 
 Once it's done her name shows as "Remembering", nobody can ever log in, she stops appearing in "People you may know" and birthday reminders, and her photos and posts stay exactly as they were.
 
-For transparency, I run a small service that does this for families, but everything above you can do yourself for free. I've written the steps up in more detail here if it helps: https://www.departed.digital/blog/delete-deceased-facebook-account-uk
+For transparency, I run a small service that does this for families, but everything above you can do yourself for free. I've written up what to do when the form keeps failing here, if it helps: https://www.departed.digital/blog/facebook-memorialisation-request-not-working
 
 ### 2. Mumsnet, Bereavement: memorialising facebook??
 https://www.mumsnet.com/talk/bereavement/5153261-memorialising-facebook

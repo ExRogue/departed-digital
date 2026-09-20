@@ -29,6 +29,9 @@ each photo's Pexels page is `https://www.pexels.com/photo/<id>/`.
 | amazon-account-after-death | 4464483 | Stack of cardboard parcels |
 | microsoft-outlook-account-after-death | 389818 | Laptop on a stand at a desk by a window |
 | redirect-post-when-someone-dies-uk | 4935823 | Brass letterbox marked Letters on a green door (Calvin Hanson) |
+| facebook-memorialisation-request-not-working | 8573370 | Hourglass on a table by a window in soft light (Towfiqu barbhuiya) |
+| instagram-deceased-account-request-not-working | 215582 | Phone lying dark on a wooden table (John Tekeridis) |
+| apple-account-deceased-no-legacy-contact | 612800 | Two old iron keys on handwritten paper (Ylanite Koppens) |
 
 ## Website showcase film
 
