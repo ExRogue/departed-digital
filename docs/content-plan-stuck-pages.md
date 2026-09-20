@@ -1,6 +1,6 @@
 # Content plan: the "it isn't working" pages
 
-Written 20 September 2026. Purpose: the first pages on the site written for people who have already tried to close or memorialise an account and got stuck, because those are the people most likely to pay. The 22 existing guides are written for people who want to do it themselves; 336 search appearances in the last 28 days have produced no cases.
+Written 20 September 2026. Status: all three pages published 20 September 2026, with the /start pre-selection, guide links, stories links, sitemap and llms.txt entries. Purpose: the first pages on the site written for people who have already tried to close or memorialise an account and got stuck, because those are the people most likely to pay. The 22 existing guides are written for people who want to do it themselves; 336 search appearances in the last 28 days have produced no cases.
 
 ## 1. The three pages
 
