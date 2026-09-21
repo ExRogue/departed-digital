@@ -21,6 +21,7 @@ Open the page in a browser and confirm the address before sending.
 - Bounced: NHS Lancashire and South Cumbria ICB (lsc.icb@nhs.net, the address their own contact page shows, returned "address not found"). Needs another route.
 - 9 Sept 2026, 11:40 to 12:30 BST: the remaining 17 sent (8 UK, 4 Canada, 5 New Zealand), same checks. Imperial went to the website feedback address shown on their contact page. All 40 are now sent; 39 delivered, 1 bounced.
 - Follow up once, on or after 18 Sept 2026, with anyone still silent.
+- 21 Sept 2026, 17:06 to 17:26 BST: follow-ups sent to numbers 2 to 11 (King's, Leeds, Imperial, Healthwatch Greenwich, Sutton and Medway, Young Lives vs Cancer, Sands, WAY, Willowbrook). Numbers 12 to 40 not yet chased. Full log in docs/outreach-batch-2.md, "Follow-up log, 21 Sept 2026".
 
 ## UK: 24 with email addresses
 
