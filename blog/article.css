@@ -186,3 +186,12 @@ footer a:hover { color: var(--gold); }
   .sidebar { position: static; }
   nav { padding: 16px 20px; }
 }
+
+/* Author signals and the footer guide links, added 21 Sep 2026. */
+.article-meta a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+.article-meta a:hover { color: var(--gold-light); }
+.author-box { margin-top: 44px; padding: 20px 22px; border: 1px solid var(--border); border-radius: 14px; background: var(--white); font-size: 0.95rem; }
+.author-box strong { display: block; color: var(--navy); margin-bottom: 6px; }
+.author-box p { margin: 0; color: var(--text-muted); line-height: 1.6; }
+.author-box a { color: var(--navy); }
+footer .footer-guides a { display: inline-block; margin: 4px 10px; }

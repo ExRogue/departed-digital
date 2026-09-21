@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>About Departed Digital | A calmer way to handle digital accounts after a loss</title>
-  <meta name="description" content="Learn why Departed Digital exists, how the service is designed, and why the process is built to feel calm, private, and respectful for UK families." />
+  <title>About Departed Digital | Steven Kong, London</title>
+  <meta name="description" content="Departed Digital is a small London service run by Steven Kong that closes or memorialises online accounts after a death. Why it exists and how it works." />
   <link rel="canonical" href="https://www.departed.digital/about" />
   <link rel="icon" type="image/x-icon" href="/favicon.ico" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -13,9 +13,9 @@
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
   <link rel="manifest" href="/site.webmanifest" />
   <meta name="theme-color" content="#1a2744" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="preload" href="/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/fonts/playfair-display-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="/styles/fonts.css" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
@@ -255,6 +255,18 @@
   </style>
   <script src="/scripts/consent.js" defer></script>
   <link rel="stylesheet" href="/styles/site-header.css" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "@id": "https://www.departed.digital/about#steven",
+    "name": "Steven Kong",
+    "jobTitle": "Founder",
+    "url": "https://www.departed.digital/about#steven",
+    "worksFor": { "@type": "Organization", "@id": "https://www.departed.digital/#organization", "name": "Departed Digital", "url": "https://www.departed.digital/" },
+    "knowsAbout": ["Closing online accounts after a death", "Facebook memorialisation", "Digital legacy"]
+  }
+  </script>
 </head>
 <body>
   <nav class="site-nav">
@@ -309,6 +321,12 @@
         </div>
       </section>
 
+      <section class="panel" id="steven" style="margin-bottom: 28px;">
+        <span class="eyebrow">The founder</span>
+        <h2>Steven Kong</h2>
+        <p>Departed Digital is run by Steven Kong from London. He started it after seeing, close to home, how long a person's accounts stay live after they die, and how little practical help there is for the family left to deal with them.</p>
+        <p>Steven is responsible for every guide on this site. Each one is checked against the platform's own process before it is published and again when that process changes. If you find something that is out of date, <a href="mailto:hello@departed.digital">email him</a> and he will put it right.</p>
+      </section>
       <section class="panel" style="margin-bottom: 28px;">
         <span class="eyebrow">Principles</span>
         <h2>How the service is designed.</h2>
@@ -354,6 +372,17 @@
       <a href="/privacy">Privacy</a>
       <a href="/terms">Terms</a>
       <a href="/cookies">Cookies</a>
+    </div>
+    <div class="footer-inner footer-guides" style="margin-top: 14px; flex-wrap: wrap;">
+      <a href="/blog/close-online-accounts-when-someone-dies">Closing every account: the complete guide</a>
+      <a href="/blog/digital-accounts-checklist-after-death-uk">Checklist of accounts to close</a>
+      <a href="/blog/delete-deceased-facebook-account">Facebook after a death</a>
+      <a href="/blog/delete-deceased-instagram-account">Instagram after a death</a>
+      <a href="/blog/apple-id-icloud-account-after-death">Apple ID and iCloud</a>
+      <a href="/blog/close-deceased-google-account">Google and Gmail</a>
+      <a href="/blog/tiktok-account-after-death">TikTok</a>
+      <a href="/blog/redirect-post-when-someone-dies-uk">Redirecting post</a>
+      <a href="/blog/facebook-memorialisation-request-not-working">Request not working?</a>
     </div>
   </footer>
   <script src="/scripts/site-analytics.js"></script>
