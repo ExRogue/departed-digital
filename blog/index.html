@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Resources | Departed Digital</title>
-  <meta name="description" content="Helpful guides from Departed Digital for families handling the removal or memorialisation of a loved one's digital accounts." />
+  <title>Free Guides to Closing Online Accounts After a Death</title>
+  <meta name="description" content="Step by step guides for families: Facebook, Instagram, Apple, Google, email, subscriptions and post, plus what to do when a request is not working." />
   <link rel="canonical" href="https://www.departed.digital/blog" />
   <link rel="icon" type="image/x-icon" href="/favicon.ico" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -13,9 +13,9 @@
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
   <link rel="manifest" href="/site.webmanifest" />
   <meta name="theme-color" content="#1a2744" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="preload" href="/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/fonts/playfair-display-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="/styles/fonts.css" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
@@ -104,6 +104,11 @@
       color: var(--text-muted);
       margin-bottom: 40px;
     }
+    .hub-intro { max-width: 760px; margin-bottom: 56px; }
+    .hub-intro p { font-size: 1.05rem; color: var(--text-muted); line-height: 1.75; margin-bottom: 14px; }
+    .hub-intro a { color: var(--navy); font-weight: 600; }
+    .guide-group { margin-bottom: 64px; }
+    .guide-group .section-sub { margin-bottom: 26px; }
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -233,28 +238,24 @@
 
   <section class="hero">
     <div class="container">
-      <span class="section-label" style="color: var(--gold-light);">Resources</span>
-      <h1>Practical guides for families handling digital accounts after bereavement.</h1>
-      <p>Clear, kind guidance for the admin that follows a loss, from Facebook removal to every other online account.</p>
+      <span class="section-label" style="color: var(--gold-light);">Free guides</span>
+      <h1>Free guides to closing online accounts after a death</h1>
+      <p>Facebook, Instagram, Apple, Google, email, subscriptions and the post, written for families doing it themselves, and what to do when a request is not working.</p>
     </div>
   </section>
 
   <main class="content">
     <div class="container">
-      <span class="section-label">Featured guides</span>
-      <h2 class="section-title">Start with the clearest next step</h2>
-      <p class="section-sub">Each article focuses on what documents you need, what the platform expects, and where people typically get stuck, whether you are in the UK or anywhere else in the world.</p>
+      <div class="hub-intro">
+        <p>These guides exist because the online side of a death is harder than anyone warns you. Each one is written for a family doing it themselves, checked against the platform's own process before it is published, and rechecked when that process changes. There is nothing to buy on any of them.</p>
+        <p>If you have not started, begin with the complete guide, which explains the two documents you need and the right order to work in. If you have already sent a request and nothing has happened, go straight to the pages for when a request is not working. And if you would rather hand the whole thing over, <a href="/start">start a case</a> and we will do it for you, from £149.</p>
+      </div>
 
-      <div class="grid">
-        <a class="card" href="/stories">
-          <div class="card-media"><img src="/blog/images/cards/find-online-accounts-of-someone-who-has-died.webp" alt="A magnifying glass resting on a handwritten logbook" width="1200" height="675" loading="lazy" /></div>
-          <div class="card-body">
-            <div class="card-kicker">Real stories</div>
-            <h2>What Happens When Nobody Closes the Accounts</h2>
-            <p>Eight real situations from bereavement forums, names removed: the form that kept saying no, a sister's Instagram run by a stranger, seven phone contracts, and what would have helped.</p>
-            <div class="card-cta">Read the stories →</div>
-          </div>
-        </a>
+      <section id="start" class="guide-group">
+        <span class="section-label">Start here</span>
+        <h2 class="section-title">The complete guide</h2>
+        <p class="section-sub">One page that explains the whole job: the documents, every major platform at a glance, and the order to do it in.</p>
+        <div class="grid">
         <a class="card" href="/blog/close-online-accounts-when-someone-dies">
           <div class="card-media"><img src="/blog/images/cards/close-online-accounts-when-someone-dies.webp" alt="A single lit candle glowing softly against a dark blue background" width="1200" height="675" /></div>
           <div class="card-body">
@@ -264,30 +265,20 @@
             <div class="card-cta">Read guide →</div>
           </div>
         </a>
-                <a class="card" href="/blog/delete-deceased-facebook-account">
-          <div class="card-media"><img src="/blog/images/cards/delete-deceased-facebook-account.webp" alt="A spread of old sepia family photographs" width="1200" height="675" /></div>
-          <div class="card-body">
-            <div class="card-kicker">Practical Guide</div>
-            <h2>How to Delete or Memorialise a Deceased Person's Facebook Account</h2>
-            <p>Both routes explained for families anywhere in the world: the two Meta forms, the documents accepted, and what to do when nothing happens.</p>
-            <div class="card-cta">Read guide →</div>
-          </div>
-        </a>
+        </div>
+      </section>
+
+      <section id="stuck" class="guide-group">
+        <span class="section-label">If you are stuck</span>
+        <h2 class="section-title">When a request is not working</h2>
+        <p class="section-sub">You sent the form and nothing happened, or the platform said no. These pages take each situation in turn and say what to do next.</p>
+        <div class="grid">
         <a class="card" href="/blog/facebook-memorialisation-request-not-working">
           <div class="card-media"><img src="/blog/images/cards/facebook-memorialisation-request-not-working.webp" alt="An hourglass on a table by a window in soft light" width="1200" height="675" loading="lazy" /></div>
           <div class="card-body">
             <div class="card-kicker">If you are stuck</div>
             <h2>Facebook Memorialisation Request Not Working? What to Do Next</h2>
             <p>Form errors, weeks of silence, rejected documents, a suspended account. Find which one is happening and the exact next step.</p>
-            <div class="card-cta">Read guide →</div>
-          </div>
-        </a>
-        <a class="card" href="/blog/delete-deceased-instagram-account">
-          <div class="card-media"><img src="/blog/images/cards/delete-deceased-instagram-account.webp" alt="A vintage film camera displayed behind glass" width="1200" height="675" /></div>
-          <div class="card-body">
-            <div class="card-kicker">Practical Guide</div>
-            <h2>How to Remove a Deceased Person's Instagram Account</h2>
-            <p>Memorialisation and removal for families anywhere in the world, and why saving the photos comes first.</p>
             <div class="card-cta">Read guide →</div>
           </div>
         </a>
@@ -300,120 +291,29 @@
             <div class="card-cta">Read guide →</div>
           </div>
         </a>
-        <a class="card" href="/blog/close-deceased-google-account">
-          <div class="card-media"><img src="/blog/images/cards/close-deceased-google-account.webp" alt="Handwritten letters and an ink bottle on a desk" width="1200" height="675" loading="lazy" /></div>
+        <a class="card" href="/blog/apple-account-deceased-no-legacy-contact">
+          <div class="card-media"><img src="/blog/images/cards/apple-account-deceased-no-legacy-contact.webp" alt="Two old iron keys resting on handwritten paper" width="1200" height="675" loading="lazy" /></div>
+          <div class="card-body">
+            <div class="card-kicker">If you are stuck</div>
+            <h2>No Legacy Contact on a Deceased Person's Apple Account? What You Can Still Do</h2>
+            <p>Apple has said court order. What that means in the UK, why probate was not enough, what you can do today without one, and when the court route is worth it.</p>
+            <div class="card-cta">Read guide →</div>
+          </div>
+        </a>
+        </div>
+      </section>
+
+      <section id="platforms" class="guide-group">
+        <span class="section-label">By platform</span>
+        <h2 class="section-title">One guide for each account</h2>
+        <p class="section-sub">What each platform allows after a death, the documents it asks for, and where families usually get stuck. UK versions where the process differs.</p>
+        <div class="grid">
+        <a class="card" href="/blog/delete-deceased-facebook-account">
+          <div class="card-media"><img src="/blog/images/cards/delete-deceased-facebook-account.webp" alt="A spread of old sepia family photographs" width="1200" height="675" /></div>
           <div class="card-body">
             <div class="card-kicker">Practical Guide</div>
-            <h2>How to Close a Deceased Person's Google Account</h2>
-            <p>One account holds Gmail, Photos, Drive, and YouTube. The deceased user request, Inactive Account Manager, and what closure destroys.</p>
-            <div class="card-cta">Read guide →</div>
-          </div>
-        </a>
-        <a class="card" href="/blog/whatsapp-account-after-death">
-          <div class="card-media"><img src="/blog/images/cards/whatsapp-account-after-death.webp" alt="A smartphone resting on a paper-toned surface in soft shadow" width="1200" height="675" loading="lazy" /></div>
-          <div class="card-body">
-            <div class="card-kicker">Practical Guide</div>
-            <h2>What Happens to a WhatsApp Account When Someone Dies?</h2>
-            <p>No memorial option and a 120-day clock. How to save the chats first, delete the account, and avoid the reused number surprise.</p>
-            <div class="card-cta">Read guide →</div>
-          </div>
-        </a>
-        <a class="card" href="/blog/email-accounts-after-death">
-          <div class="card-media"><img src="/blog/images/cards/email-accounts-after-death.webp" alt="A hand posting a white envelope into a row of vintage letterboxes" width="1200" height="675" loading="lazy" /></div>
-          <div class="card-body">
-            <div class="card-kicker">Practical Guide</div>
-            <h2>How to Close a Deceased Person's Email Accounts</h2>
-            <p>Gmail, Outlook, and Yahoo compared, and why the inbox should be the last account you close, not the first.</p>
-            <div class="card-cta">Read guide →</div>
-          </div>
-        </a>
-        <a class="card" href="/blog/cancel-subscriptions-after-death">
-          <div class="card-media"><img src="/blog/images/cards/cancel-subscriptions-after-death.webp" alt="A hand pointing a remote control at a television showing a streaming service" width="1200" height="675" loading="lazy" /></div>
-          <div class="card-body">
-            <div class="card-kicker">Practical Guide</div>
-            <h2>How to Cancel a Deceased Person's Subscriptions</h2>
-            <p>Netflix, Spotify, Amazon Prime, app store subscriptions and the rest. Which ones stop by themselves, which ones need a proper cancellation, and how to find them all.</p>
-            <div class="card-cta">Read guide →</div>
-          </div>
-        </a>
-        <a class="card" href="/blog/find-online-accounts-of-someone-who-has-died">
-          <div class="card-media"><img src="/blog/images/cards/find-online-accounts-of-someone-who-has-died.webp" alt="A magnifying glass resting on a handwritten logbook" width="1200" height="675" loading="lazy" /></div>
-          <div class="card-body">
-            <div class="card-kicker">Practical Guide</div>
-            <h2>How to Find Out Which Online Accounts Someone Had</h2>
-            <p>Ten places the accounts hide, from the inbox and the bank statement to the password manager, and what you can and cannot do with a password you find.</p>
-            <div class="card-cta">Read guide →</div>
-          </div>
-        </a>
-        <a class="card" href="/blog/paypal-account-after-death">
-          <div class="card-media"><img src="/blog/images/cards/paypal-account-after-death.webp" alt="A small dark leather wallet on a wooden table beside a leather bag" width="1200" height="675" loading="lazy" /></div>
-          <div class="card-body">
-            <div class="card-kicker">Practical Guide</div>
-            <h2>What Happens to a PayPal Account When Someone Dies?</h2>
-            <p>The balance belongs to the estate. Which documents PayPal asks for, how the money comes back, and what to do about PayPal Credit and automatic payments.</p>
-            <div class="card-cta">Read guide →</div>
-          </div>
-        </a>
-        <a class="card" href="/blog/amazon-account-after-death">
-          <div class="card-media"><img src="/blog/images/cards/amazon-account-after-death.webp" alt="A stack of plain cardboard parcels" width="1200" height="675" loading="lazy" /></div>
-          <div class="card-body">
-            <div class="card-kicker">Practical Guide</div>
-            <h2>How to Close a Deceased Person's Amazon Account</h2>
-            <p>Prime, Kindle, Audible, Alexa and the photos. What to save, what to cancel, and how to close the account with or without the password.</p>
-            <div class="card-cta">Read guide →</div>
-          </div>
-        </a>
-        <a class="card" href="/blog/microsoft-outlook-account-after-death">
-          <div class="card-media"><img src="/blog/images/cards/microsoft-outlook-account-after-death.webp" alt="A laptop on a wooden stand at a tidy desk by a window" width="1200" height="675" loading="lazy" /></div>
-          <div class="card-body">
-            <div class="card-kicker">Practical Guide</div>
-            <h2>What Happens to a Microsoft, Outlook or Hotmail Account When Someone Dies?</h2>
-            <p>Microsoft's next of kin process, the two year inactivity rule, OneDrive and Xbox, and how to close the account without ever needing the password.</p>
-            <div class="card-cta">Read guide →</div>
-          </div>
-        </a>
-        <a class="card" href="/blog/what-happens-to-social-media-accounts-when-someone-dies-uk">
-          <div class="card-media"><img src="/blog/images/cards/what-happens-to-social-media-accounts-when-someone-dies-uk.webp" alt="A white lily photographed in black and white against a dark background" width="1200" height="675" loading="lazy" /></div>
-          <div class="card-body">
-            <div class="card-kicker">Decision Guide</div>
-            <h2>What Happens to Social Media Accounts When Someone Dies in the UK?</h2>
-            <p>A practical overview of what usually happens to accounts after death, why they stay live, and when families choose deletion or memorialisation.</p>
-            <div class="card-cta">Read guide →</div>
-          </div>
-        </a>
-        <a class="card" href="/blog/digital-accounts-checklist-after-death-uk">
-          <div class="card-media"><img src="/blog/images/cards/digital-accounts-checklist-after-death-uk.webp" alt="A hand writing a list on paper with a pen" width="1200" height="675" loading="lazy" /></div>
-          <div class="card-body">
-            <div class="card-kicker">Checklist</div>
-            <h2>A Checklist of Digital Accounts to Close After a Death</h2>
-            <p>A practical list of social, email, cloud, shopping, and subscription accounts families often need to review.</p>
-            <div class="card-cta">Read guide →</div>
-          </div>
-        </a>
-        <a class="card" href="/blog/redirect-post-when-someone-dies-uk">
-          <div class="card-media"><img src="/blog/images/cards/redirect-post-when-someone-dies-uk.webp" alt="A brass letterbox marked Letters on a green front door" width="1200" height="675" loading="lazy" /></div>
-          <div class="card-body">
-            <div class="card-kicker">Practical Guide</div>
-            <h2>How to Redirect or Stop Post When Someone Dies in the UK</h2>
-            <p>Royal Mail redirection, the Bereavement Register, what to do with letters addressed to them, and why their post is the best list of accounts you will get.</p>
-            <div class="card-cta">Read guide →</div>
-          </div>
-        </a>
-        <a class="card" href="/blog/delete-or-memorialise-social-media-after-death-uk">
-          <div class="card-media"><img src="/blog/images/cards/delete-or-memorialise-social-media-after-death-uk.webp" alt="Framed family photographs standing on a shelf" width="1200" height="675" loading="lazy" /></div>
-          <div class="card-body">
-            <div class="card-kicker">Decision Guide</div>
-            <h2>Delete or Memorialise? How to Decide What Happens After Death</h2>
-            <p>How families can think clearly about deletion, memorialisation, and preserving important material first.</p>
-            <div class="card-cta">Read guide →</div>
-          </div>
-        </a>
-        <a class="card" href="/blog/what-documents-do-you-need-to-remove-deceased-person-online-accounts-uk">
-          <div class="card-media"><img src="/blog/images/cards/what-documents-do-you-need-to-remove-deceased-person-online-accounts-uk.webp" alt="A hand signing a document with a pen" width="1200" height="675" loading="lazy" /></div>
-          <div class="card-body">
-            <div class="card-kicker">Documents Guide</div>
-            <h2>What Documents Do You Need to Remove a Deceased Person's Online Accounts?</h2>
-            <p>A practical guide to the document set families are commonly asked for across social and digital account cases.</p>
+            <h2>How to Delete or Memorialise a Deceased Person's Facebook Account</h2>
+            <p>Both routes explained for families anywhere in the world: the two Meta forms, the documents accepted, and what to do when nothing happens.</p>
             <div class="card-cta">Read guide →</div>
           </div>
         </a>
@@ -426,21 +326,21 @@
             <div class="card-cta">Read guide →</div>
           </div>
         </a>
+        <a class="card" href="/blog/delete-deceased-instagram-account">
+          <div class="card-media"><img src="/blog/images/cards/delete-deceased-instagram-account.webp" alt="A vintage film camera displayed behind glass" width="1200" height="675" /></div>
+          <div class="card-body">
+            <div class="card-kicker">Practical Guide</div>
+            <h2>How to Remove a Deceased Person's Instagram Account</h2>
+            <p>Memorialisation and removal for families anywhere in the world, and why saving the photos comes first.</p>
+            <div class="card-cta">Read guide →</div>
+          </div>
+        </a>
         <a class="card" href="/blog/delete-deceased-instagram-account-uk">
           <div class="card-media"><img src="/blog/images/cards/delete-deceased-instagram-account-uk.webp" alt="An old film camera resting among vintage equipment" width="1200" height="675" loading="lazy" /></div>
           <div class="card-body">
             <div class="card-kicker">Practical Guide</div>
             <h2>How to Remove a Deceased Person's Instagram Account in the UK</h2>
             <p>A calmer route through Instagram removal, Meta document requests, and the points where families often get stuck.</p>
-            <div class="card-cta">Read guide →</div>
-          </div>
-        </a>
-        <a class="card" href="/blog/close-deceased-google-account-uk">
-          <div class="card-media"><img src="/blog/images/cards/close-deceased-google-account-uk.webp" alt="A handwritten letter beside a wax seal stamp" width="1200" height="675" loading="lazy" /></div>
-          <div class="card-body">
-            <div class="card-kicker">Practical Guide</div>
-            <h2>How to Close a Deceased Person's Google or Gmail Account in the UK</h2>
-            <p>Why Google cases are often broader than email alone and what to prepare before you start.</p>
             <div class="card-cta">Read guide →</div>
           </div>
         </a>
@@ -453,12 +353,48 @@
             <div class="card-cta">Read guide →</div>
           </div>
         </a>
-        <a class="card" href="/blog/apple-account-deceased-no-legacy-contact">
-          <div class="card-media"><img src="/blog/images/cards/apple-account-deceased-no-legacy-contact.webp" alt="Two old iron keys resting on handwritten paper" width="1200" height="675" loading="lazy" /></div>
+        <a class="card" href="/blog/close-deceased-google-account">
+          <div class="card-media"><img src="/blog/images/cards/close-deceased-google-account.webp" alt="Handwritten letters and an ink bottle on a desk" width="1200" height="675" loading="lazy" /></div>
           <div class="card-body">
-            <div class="card-kicker">If you are stuck</div>
-            <h2>No Legacy Contact on a Deceased Person's Apple Account? What You Can Still Do</h2>
-            <p>Apple has said court order. What that means in the UK, why probate was not enough, what you can do today without one, and when the court route is worth it.</p>
+            <div class="card-kicker">Practical Guide</div>
+            <h2>How to Close a Deceased Person's Google Account</h2>
+            <p>One account holds Gmail, Photos, Drive, and YouTube. The deceased user request, Inactive Account Manager, and what closure destroys.</p>
+            <div class="card-cta">Read guide →</div>
+          </div>
+        </a>
+        <a class="card" href="/blog/close-deceased-google-account-uk">
+          <div class="card-media"><img src="/blog/images/cards/close-deceased-google-account-uk.webp" alt="A handwritten letter beside a wax seal stamp" width="1200" height="675" loading="lazy" /></div>
+          <div class="card-body">
+            <div class="card-kicker">Practical Guide</div>
+            <h2>How to Close a Deceased Person's Google or Gmail Account in the UK</h2>
+            <p>Why Google cases are often broader than email alone and what to prepare before you start.</p>
+            <div class="card-cta">Read guide →</div>
+          </div>
+        </a>
+        <a class="card" href="/blog/email-accounts-after-death">
+          <div class="card-media"><img src="/blog/images/cards/email-accounts-after-death.webp" alt="A hand posting a white envelope into a row of vintage letterboxes" width="1200" height="675" loading="lazy" /></div>
+          <div class="card-body">
+            <div class="card-kicker">Practical Guide</div>
+            <h2>How to Close a Deceased Person's Email Accounts</h2>
+            <p>Gmail, Outlook, and Yahoo compared, and why the inbox should be the last account you close, not the first.</p>
+            <div class="card-cta">Read guide →</div>
+          </div>
+        </a>
+        <a class="card" href="/blog/microsoft-outlook-account-after-death">
+          <div class="card-media"><img src="/blog/images/cards/microsoft-outlook-account-after-death.webp" alt="A laptop on a wooden stand at a tidy desk by a window" width="1200" height="675" loading="lazy" /></div>
+          <div class="card-body">
+            <div class="card-kicker">Practical Guide</div>
+            <h2>What Happens to a Microsoft, Outlook or Hotmail Account When Someone Dies?</h2>
+            <p>Microsoft's next of kin process, the two year inactivity rule, OneDrive and Xbox, and how to close the account without ever needing the password.</p>
+            <div class="card-cta">Read guide →</div>
+          </div>
+        </a>
+        <a class="card" href="/blog/whatsapp-account-after-death">
+          <div class="card-media"><img src="/blog/images/cards/whatsapp-account-after-death.webp" alt="A smartphone resting on a paper-toned surface in soft shadow" width="1200" height="675" loading="lazy" /></div>
+          <div class="card-body">
+            <div class="card-kicker">Practical Guide</div>
+            <h2>What Happens to a WhatsApp Account When Someone Dies?</h2>
+            <p>No memorial option and a 120-day clock. How to save the chats first, delete the account, and avoid the reused number surprise.</p>
             <div class="card-cta">Read guide →</div>
           </div>
         </a>
@@ -489,13 +425,115 @@
             <div class="card-cta">Read guide →</div>
           </div>
         </a>
-      </div>
+        <a class="card" href="/blog/amazon-account-after-death">
+          <div class="card-media"><img src="/blog/images/cards/amazon-account-after-death.webp" alt="A stack of plain cardboard parcels" width="1200" height="675" loading="lazy" /></div>
+          <div class="card-body">
+            <div class="card-kicker">Practical Guide</div>
+            <h2>How to Close a Deceased Person's Amazon Account</h2>
+            <p>Prime, Kindle, Audible, Alexa and the photos. What to save, what to cancel, and how to close the account with or without the password.</p>
+            <div class="card-cta">Read guide →</div>
+          </div>
+        </a>
+        <a class="card" href="/blog/paypal-account-after-death">
+          <div class="card-media"><img src="/blog/images/cards/paypal-account-after-death.webp" alt="A small dark leather wallet on a wooden table beside a leather bag" width="1200" height="675" loading="lazy" /></div>
+          <div class="card-body">
+            <div class="card-kicker">Practical Guide</div>
+            <h2>What Happens to a PayPal Account When Someone Dies?</h2>
+            <p>The balance belongs to the estate. Which documents PayPal asks for, how the money comes back, and what to do about PayPal Credit and automatic payments.</p>
+            <div class="card-cta">Read guide →</div>
+          </div>
+        </a>
+        <a class="card" href="/blog/cancel-subscriptions-after-death">
+          <div class="card-media"><img src="/blog/images/cards/cancel-subscriptions-after-death.webp" alt="A hand pointing a remote control at a television showing a streaming service" width="1200" height="675" loading="lazy" /></div>
+          <div class="card-body">
+            <div class="card-kicker">Practical Guide</div>
+            <h2>How to Cancel a Deceased Person's Subscriptions</h2>
+            <p>Netflix, Spotify, Amazon Prime, app store subscriptions and the rest. Which ones stop by themselves, which ones need a proper cancellation, and how to find them all.</p>
+            <div class="card-cta">Read guide →</div>
+          </div>
+        </a>
+        </div>
+      </section>
 
-      <div class="help-box">
-        <h3>Need help instead of another guide?</h3>
-        <p>Departed Digital can send the requests, handle the documents and chase every platform for you, if you would rather not do it yourself.</p>
-        <a class="btn" href="/start" data-track="blog_index_cta" data-track-label="Blog index start case">Start a case</a>
-      </div>
+      <section id="uk" class="guide-group">
+        <span class="section-label">UK admin after a death</span>
+        <h2 class="section-title">The paperwork around the accounts</h2>
+        <p class="section-sub">The checklist, the documents, the post, and how to find the accounts you do not know about yet.</p>
+        <div class="grid">
+        <a class="card" href="/blog/digital-accounts-checklist-after-death-uk">
+          <div class="card-media"><img src="/blog/images/cards/digital-accounts-checklist-after-death-uk.webp" alt="A hand writing a list on paper with a pen" width="1200" height="675" loading="lazy" /></div>
+          <div class="card-body">
+            <div class="card-kicker">Checklist</div>
+            <h2>A Checklist of Digital Accounts to Close After a Death</h2>
+            <p>A practical list of social, email, cloud, shopping, and subscription accounts families often need to review.</p>
+            <div class="card-cta">Read guide →</div>
+          </div>
+        </a>
+        <a class="card" href="/blog/what-documents-do-you-need-to-remove-deceased-person-online-accounts-uk">
+          <div class="card-media"><img src="/blog/images/cards/what-documents-do-you-need-to-remove-deceased-person-online-accounts-uk.webp" alt="A hand signing a document with a pen" width="1200" height="675" loading="lazy" /></div>
+          <div class="card-body">
+            <div class="card-kicker">Documents Guide</div>
+            <h2>What Documents Do You Need to Remove a Deceased Person's Online Accounts?</h2>
+            <p>A practical guide to the document set families are commonly asked for across social and digital account cases.</p>
+            <div class="card-cta">Read guide →</div>
+          </div>
+        </a>
+        <a class="card" href="/blog/find-online-accounts-of-someone-who-has-died">
+          <div class="card-media"><img src="/blog/images/cards/find-online-accounts-of-someone-who-has-died.webp" alt="A magnifying glass resting on a handwritten logbook" width="1200" height="675" loading="lazy" /></div>
+          <div class="card-body">
+            <div class="card-kicker">Practical Guide</div>
+            <h2>How to Find Out Which Online Accounts Someone Had</h2>
+            <p>Ten places the accounts hide, from the inbox and the bank statement to the password manager, and what you can and cannot do with a password you find.</p>
+            <div class="card-cta">Read guide →</div>
+          </div>
+        </a>
+        <a class="card" href="/blog/redirect-post-when-someone-dies-uk">
+          <div class="card-media"><img src="/blog/images/cards/redirect-post-when-someone-dies-uk.webp" alt="A brass letterbox marked Letters on a green front door" width="1200" height="675" loading="lazy" /></div>
+          <div class="card-body">
+            <div class="card-kicker">Practical Guide</div>
+            <h2>How to Redirect or Stop Post When Someone Dies in the UK</h2>
+            <p>Royal Mail redirection, the Bereavement Register, what to do with letters addressed to them, and why their post is the best list of accounts you will get.</p>
+            <div class="card-cta">Read guide →</div>
+          </div>
+        </a>
+        <a class="card" href="/blog/what-happens-to-social-media-accounts-when-someone-dies-uk">
+          <div class="card-media"><img src="/blog/images/cards/what-happens-to-social-media-accounts-when-someone-dies-uk.webp" alt="A white lily photographed in black and white against a dark background" width="1200" height="675" loading="lazy" /></div>
+          <div class="card-body">
+            <div class="card-kicker">Decision Guide</div>
+            <h2>What Happens to Social Media Accounts When Someone Dies in the UK?</h2>
+            <p>A practical overview of what usually happens to accounts after death, why they stay live, and when families choose deletion or memorialisation.</p>
+            <div class="card-cta">Read guide →</div>
+          </div>
+        </a>
+        <a class="card" href="/blog/delete-or-memorialise-social-media-after-death-uk">
+          <div class="card-media"><img src="/blog/images/cards/delete-or-memorialise-social-media-after-death-uk.webp" alt="Framed family photographs standing on a shelf" width="1200" height="675" loading="lazy" /></div>
+          <div class="card-body">
+            <div class="card-kicker">Decision Guide</div>
+            <h2>Delete or Memorialise? How to Decide What Happens After Death</h2>
+            <p>How families can think clearly about deletion, memorialisation, and preserving important material first.</p>
+            <div class="card-cta">Read guide →</div>
+          </div>
+        </a>
+        </div>
+      </section>
+
+      <section id="stories" class="guide-group">
+        <span class="section-label">Why it matters</span>
+        <h2 class="section-title">Real stories</h2>
+        <p class="section-sub">What happens when nobody closes the accounts, told by the families it happened to.</p>
+        <div class="grid">
+        <a class="card" href="/stories">
+          <div class="card-media"><img src="/blog/images/cards/find-online-accounts-of-someone-who-has-died.webp" alt="A magnifying glass resting on a handwritten logbook" width="1200" height="675" loading="lazy" /></div>
+          <div class="card-body">
+            <div class="card-kicker">Real stories</div>
+            <h2>What Happens When Nobody Closes the Accounts</h2>
+            <p>Eight real situations from bereavement forums, names removed: the form that kept saying no, a sister's Instagram run by a stranger, seven phone contracts, and what would have helped.</p>
+            <div class="card-cta">Read the stories →</div>
+          </div>
+        </a>
+        </div>
+      </section>
+
     </div>
   </main>
 
@@ -508,6 +546,17 @@
       <a href="/privacy">Privacy</a>
       <a href="/terms">Terms</a>
       <a href="/cookies">Cookies</a>
+    </p>
+    <p class="footer-guides" style="margin-top: 12px;">
+      <a href="/blog/close-online-accounts-when-someone-dies">Closing every account: the complete guide</a>
+      <a href="/blog/digital-accounts-checklist-after-death-uk">Checklist of accounts to close</a>
+      <a href="/blog/delete-deceased-facebook-account">Facebook after a death</a>
+      <a href="/blog/delete-deceased-instagram-account">Instagram after a death</a>
+      <a href="/blog/apple-id-icloud-account-after-death">Apple ID and iCloud</a>
+      <a href="/blog/close-deceased-google-account">Google and Gmail</a>
+      <a href="/blog/tiktok-account-after-death">TikTok</a>
+      <a href="/blog/redirect-post-when-someone-dies-uk">Redirecting post</a>
+      <a href="/blog/facebook-memorialisation-request-not-working">Request not working?</a>
     </p>
   </footer>
   <script src="/scripts/site-analytics.js"></script>
