@@ -195,3 +195,13 @@ footer a:hover { color: var(--gold); }
 .author-box p { margin: 0; color: var(--text-muted); line-height: 1.6; }
 .author-box a { color: var(--navy); }
 footer .footer-guides a { display: inline-block; margin: 4px 10px; }
+
+/* Comparison tables, added 21 Sep 2026. */
+.table-wrap { overflow-x: auto; margin: 22px 0 28px; border: 1px solid var(--border); border-radius: 12px; }
+.article-body table { width: 100%; border-collapse: collapse; font-size: 0.9rem; line-height: 1.5; min-width: 640px; }
+.article-body th, .article-body td { text-align: left; vertical-align: top; padding: 10px 12px; border-bottom: 1px solid var(--border); }
+.article-body th { background: var(--cream); color: var(--navy); font-weight: 600; font-size: 0.82rem; letter-spacing: 0.02em; }
+.article-body tr:last-child td { border-bottom: none; }
+.article-body td strong { color: var(--navy); }
+.yes { color: #2f6b3a; font-weight: 600; }
+.no { color: #8a3b2e; font-weight: 600; }
