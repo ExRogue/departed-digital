@@ -86,8 +86,29 @@ Follow-up text for funeral directors and partners:
 
 | Batch | Due | Sent | Notes |
 | --- | --- | --- | --- |
-| 1 (8 silent) | 16 Sept 2026 | | |
-| 2 (silent on the day) | 18 Sept 2026 | | |
+| 1 (8 silent) | 16 Sept 2026 | 21 Sept 2026, 7 sent | Ashgate had replied (see log below), so 7 of the 8 were chased. |
+| 2 (silent on the day) | 18 Sept 2026 | 21 Sept 2026, 28 sent | 22 of the 23 emailed plus 6 of the 7 form-list addresses. Macmillan and Surrey declined, so neither was chased. |
+| 3 (39 delivered) | 19 Sept 2026 | 21 Sept 2026, 10 sent, 29 still to do | Stopped part way, see log below. |
+
+### Follow-up log, 21 Sept 2026
+
+All sent from hello@departed.digital as replies inside the original threads, so the first email sits underneath. Each one was read on screen before sending and then seen in its thread with Gmail's "Message sent" notice. Total 45, checked against Gmail at 17:35: a search of everything sent from hello@ on 21 Sept shows 45 conversations, newest Willowbrook at 17:26, none to Dorothy House.
+
+Batch one, 7 sent: AtaLoss 10:52, NAFD Funeral Directory 10:57, Passage partnership email 11:01, Birmingham 11:03, North Devon 11:04, Charity for Civil Servants 11:04, Hospice UK 11:05. NAFD and Passage had the funeral director text, the rest the charity text. Each thread held only the 6 Sept original beforehand. The 16 Sept scheduled follow-up task is recorded as having succeeded, but its run was not read, so what it did is unknown; these threads show it sent nothing to them.
+
+Batch two, 28 sent: Rowcroft 11:06, Scottish Partnership for Palliative Care 11:07, St Margaret's 11:08, St Luke's 11:09, Princess Alice 11:10, St Christopher's 11:11, Oakhaven 11:12, National Bereavement Service 11:13, Cancer Support UK 11:14, Living On 11:15, Wiltshire Treehouse 11:16, Untangle 11:16, Lancaster 11:17, South West Middlesex Crematorium 11:18, Lambeth 11:19, Northumberland 11:20, Stafford 11:21, Fife 11:23, Edinburgh 11:24, Tendring 11:26, Ceredigion 11:26, Manchester 11:28, Healthwatch England 11:29 (in the corrected thread), Healthwatch Richmond 11:29, Healthwatch Milton Keynes 11:31, Barry Town Council 17:00, St Nicholas Hospice 17:02, Sue Ryder 17:04.
+
+Batch three, 10 sent: King's College Hospital 17:06, Leeds Teaching Hospitals 17:09, Imperial 17:11, Healthwatch Greenwich 17:13, Healthwatch Sutton 17:15, Healthwatch Medway 17:17, Young Lives vs Cancer 17:19, Sands 17:22, WAY Widowed and Young 17:24, Willowbrook 17:26. Not yet chased: numbers 12 to 40 in docs/outreach-batch-3.md, Dorothy House to Mary Potter (29). Number 1 bounced on 8 Sept and gets nothing.
+
+Not chased because a person had replied: Macmillan (Faraz, 8 Sept: "we are unable to signpost to any page or organisation which contains a paid service"), Surrey (declined 11 Sept), The Compassionate Friends and Funeral Consumers Alliance (replied earlier), Ashgate Hospice (below).
+
+Ashgate Hospice: Rebecca Littlewood, Marketing Manager, replied 16 Sept 10:24 that they "would be happy to point people to them from our web pages". Still unanswered as of 21 Sept 17:30.
+
+Wording: the charity text as written above, except "the people who read your article" for the six Healthwatch branches, "the people who use your app" for Untangle, and "if they would help your members" for WAY, each matching the closing line of the original.
+
+Problems on the day. After the browser window was resized in the afternoon, text typed straight after opening a reply came out garbled (Barry and St Nicholas). Both were caught on screen before sending, cleared and retyped, and the sent copies read correctly. Typing only after clicking into the reply body was clean every time after that; the cause is not known. At 17:27 the Claude Code permission classifier refused the typing step for Dorothy House. Nothing was typed or sent to them, the empty draft was discarded, and sending stopped there.
+
+Automatic replies received to the chasers (none from a person, judged from sender, subject and preview line): Lambeth, Stafford, Weeley Crematorium, Healthwatch Richmond (out of office until 6 Oct), Untangle, St Christopher's, Charity for Civil Servants, Sue Ryder, Young Lives vs Cancer, Willowbrook.
 
 ## The 19 reachable only by web form
 
