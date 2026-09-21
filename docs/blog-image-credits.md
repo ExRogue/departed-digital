@@ -32,6 +32,10 @@ each photo's Pexels page is `https://www.pexels.com/photo/<id>/`.
 | facebook-memorialisation-request-not-working | 8573370 | Hourglass on a table by a window in soft light (Towfiqu barbhuiya) |
 | instagram-deceased-account-request-not-working | 215582 | Phone lying dark on a wooden table (John Tekeridis) |
 | apple-account-deceased-no-legacy-contact | 612800 | Two old iron keys on handwritten paper (Ylanite Koppens) |
+| phone-contract-when-someone-dies-uk | 5211568 | Beige corded telephone on a wooden table (Anna Tarazevich) |
+| what-to-do-with-a-loved-ones-phone-when-they-die | 6940357 | Bedside table at night with an alarm clock and a phone (cottonbro studio) |
+| what-is-a-digital-legacy-uk | 2440970 | Open notebook with a pen and glasses (Isabella Mendes) |
+| digital-legacy-service (page, not a guide) | 5662139 | Desk lamp beside a laptop at dusk (Mathias Reding) |
 
 ## Website showcase film
 
