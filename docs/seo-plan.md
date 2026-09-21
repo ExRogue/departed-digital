@@ -63,6 +63,17 @@ The council and charity route has produced three polite refusals from about 80 e
 | 4 | Read the results. Rewrite titles on anything new to page one. Google and WhatsApp stuck pages if the first three are appearing. | Claude |
 | Ongoing | Forum replies, Bing, Google Business Profile, partner links from every funeral director yes. | Steven |
 
+## Progress (updated 21 September 2026, evening)
+
+Done, live and merged (PRs #61, #62, #63):
+
+- Tier 1, items 1 to 5 and 7: titles and descriptions on all indexable pages (60 and 155 or fewer, guide titles without the brand suffix); Inter and Playfair self-hosted from /fonts (production Lighthouse on mobile went from 84 and 88 to 99 and 98, first paint from 3.3 s to 1.0 s on the homepage); nine-guide footer block on every page; /blog rebuilt as a grouped hub with a real title and introduction; the six thin UK pages rewritten at 950 to 1,150 words with the checklist now a real checklist plus an A4 PDF at /blog/downloads/digital-accounts-checklist-uk.pdf; author bylines, Person schema, author boxes and a founder section on /about. The address was left out at Steven's request.
+- Tier 2, items 8 to 11: the phone contracts hub, the phone guide, the digital legacy hub and the /digital-legacy-service page.
+- Tier 4, item 21: a weekly search report task runs each Monday at 9am and writes to docs/search-weekly/. Steven should press "Run now" once to pre-approve its browser access.
+- Every new or changed URL submitted to IndexNow; new pages requested in Search Console.
+
+Not yet done: chasers for batches two and three (item 6), the comparison data piece and press pitch (item 15), directory submissions (item 16), guest pieces (item 18), the Google and WhatsApp stuck pages (item 12). Steven's items: Bing Webmaster Tools, Google Business Profile, forum replies, partner links.
+
 ## What good looks like
 
 - Six weeks: every page under 60/155 in search results, first paint under two seconds on mobile, all 33 pages indexed, the checklist and documents pages over 900 words.
