@@ -36,6 +36,7 @@ each photo's Pexels page is `https://www.pexels.com/photo/<id>/`.
 | what-to-do-with-a-loved-ones-phone-when-they-die | 6940357 | Bedside table at night with an alarm clock and a phone (cottonbro studio) |
 | what-is-a-digital-legacy-uk | 2440970 | Open notebook with a pen and glasses (Isabella Mendes) |
 | digital-legacy-service (page, not a guide) | 5662139 | Desk lamp beside a laptop at dusk (Mathias Reding) |
+| which-platforms-let-you-plan-for-death | 35462658 | Warm desk lamp, candle and handwritten notes (Hedefneydii) |
 
 ## Website showcase film
 
