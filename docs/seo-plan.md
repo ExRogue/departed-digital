@@ -74,6 +74,24 @@ Done, live and merged (PRs #61, #62, #63):
 
 Not yet done: chasers for batches two and three (item 6), the comparison data piece and press pitch (item 15), directory submissions (item 16), guest pieces (item 18), the Google and WhatsApp stuck pages (item 12). Steven's items: Bing Webmaster Tools, Google Business Profile, forum replies, partner links.
 
+## Progress (updated 27 September 2026)
+
+Search for 18 to 24 September: 218 appearances, 4 clicks, average position 29.1. Every click went to a troubleshooting page (Instagram request not working, 2 clicks from 8 appearances at position 12.4; Facebook memorialisation not working, 1 from 10 at position 7.3) plus /about and /partners. The phone contracts page arrived at position 23.8 with 22 appearances and already shows for "o2 bereavement" and "vodafone bereavement form". Index is now 30 indexed, 9 not.
+
+Done this round:
+
+- **Footer guide lists extended from nine links to fifteen** across all 34 pages that carry them plus the homepage column, adding WhatsApp, PayPal, phone contracts, what to do with their phone, the digital legacy hub and the Instagram troubleshooting page. Each of those went from two to five internal links to 35. The post guide's anchor text is now "Redirecting mail for someone who has died".
+- **Titles and descriptions rewritten** on the four pages the numbers pointed at: TikTok (now "How to Delete a Deceased Person's TikTok Account"), PayPal, WhatsApp and the post guide, which is retitled around "redirect mail for a deceased person" because that, not "redirect post", is what its queries say. That page's H1 and opening callout now use the same wording and name the Special Circumstances form in the first callout.
+- **Related guides sidebars** on the Facebook and Instagram guides now point at the matching troubleshooting page and at the social media UK page, which had only three internal links and is crawled but not indexed.
+- **GA4 click tracking**: every button reported as one `cta_click` with the button name buried in `click_type`, so `stuck_email`, `service_cta`, `checklist_pdf` and the rest never appeared in GA4's events list and could not be marked as key events. `scripts/site-analytics.js` now also sends the click type as its own GA4 event.
+
+Two things for Steven, both needing his console:
+
+1. **Mark the key events in GA4** once the new event names appear (Admin, Events, toggle "Mark as key event" on `stuck_email`, `service_cta`, `start_submit` and `checklist_pdf`). Nothing counts as a conversion today.
+2. **Bing Webmaster Tools** (item 19), still not set up.
+
+Worth a decision, not yet acted on: the UK and non-UK pairs (Facebook, Instagram, Google) look like near duplicates to Google. /blog/delete-deceased-facebook-account-uk is 1,131 words against 957 for the non-UK version and has been discovered but not indexed since it went up. Either make each pair clearly different in purpose or consolidate one into the other with a redirect.
+
 ## What good looks like
 
 - Six weeks: every page under 60/155 in search results, first paint under two seconds on mobile, all 33 pages indexed, the checklist and documents pages over 900 words.
