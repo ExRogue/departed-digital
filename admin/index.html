@@ -335,6 +335,126 @@
     .skeleton { color: var(--muted); padding: 30px 0; text-align: center; }
     [hidden] { display: none !important; }
 
+    /* Traffic */
+    .tab-traffic { margin-left: auto; }
+    .traffic {
+      --series-1: #2a78d6;
+      --grid: #ece7dc;
+    }
+    .range { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+    .range-btn {
+      padding: 7px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--white);
+      color: var(--text);
+      font-size: 0.86rem;
+      font-weight: 500;
+    }
+    .range-btn.active { border-color: var(--navy); box-shadow: inset 0 0 0 1px var(--navy); color: var(--navy); font-weight: 600; }
+    .traffic-note { color: var(--muted); font-size: 0.86rem; margin-bottom: 18px; }
+    #traffic-body { transition: opacity 0.15s ease; }
+    .tiles { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-bottom: 16px; }
+    .tile {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 18px;
+    }
+    .tile-label { font-size: 0.84rem; color: var(--muted); }
+    .tile-value { font-size: 1.9rem; font-weight: 600; color: var(--navy); line-height: 1.25; }
+    .tile-delta { font-size: 0.8rem; color: var(--muted); }
+    .tile-delta.up { color: var(--green); }
+    .tile-delta.down { color: var(--red); }
+
+    .chart-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+    .text-btn {
+      background: none;
+      border: none;
+      color: var(--navy);
+      font-size: 0.84rem;
+      text-decoration: underline;
+      padding: 2px;
+      white-space: nowrap;
+    }
+    .text-btn:hover { color: var(--amber); }
+    .plot { position: relative; height: 200px; margin: 8px 0 0 34px; }
+    .gridline { position: absolute; left: 0; right: 0; height: 1px; background: var(--grid); }
+    .gridline span {
+      position: absolute;
+      left: -34px;
+      width: 28px;
+      top: -0.75em;
+      text-align: right;
+      font-size: 0.74rem;
+      color: var(--muted);
+      font-variant-numeric: tabular-nums;
+    }
+    .bars { position: absolute; inset: 0; display: flex; align-items: flex-end; }
+    .bar-slot {
+      flex: 1 1 0;
+      min-width: 0;
+      height: 100%;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding: 0 1px;
+      background: none;
+      border: none;
+      cursor: default;
+    }
+    .bar { display: block; width: 100%; max-width: 24px; background: var(--series-1); border-radius: 4px 4px 0 0; }
+    .bar-slot:hover .bar, .bar-slot:focus-visible .bar { filter: brightness(1.18); }
+    .bar-slot:focus-visible { outline: 2px solid var(--gold); outline-offset: -2px; border-radius: 4px; }
+    .x-axis { position: relative; height: 26px; margin-left: 34px; }
+    .x-axis span {
+      position: absolute;
+      top: 6px;
+      transform: translateX(-50%);
+      font-size: 0.74rem;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+    .tip {
+      position: absolute;
+      z-index: 3;
+      pointer-events: none;
+      background: var(--navy-dark);
+      color: var(--white);
+      border-radius: 8px;
+      padding: 8px 11px;
+      font-size: 0.8rem;
+      line-height: 1.45;
+      white-space: nowrap;
+      transform: translate(-50%, -100%);
+    }
+    .tip strong { font-size: 0.98rem; }
+    .tip .tip-sub { display: block; color: rgba(255,255,255,0.72); }
+    .table-scroll { max-height: 340px; overflow-y: auto; margin-top: 10px; }
+    .traffic-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; align-items: start; }
+    .traffic-grid .card { margin-bottom: 0; }
+    table.rank { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+    table.rank th {
+      text-align: left;
+      font-size: 0.76rem;
+      font-weight: 500;
+      color: var(--muted);
+      padding: 0 0 6px;
+      border-bottom: 1px solid var(--border);
+    }
+    table.rank td { padding: 7px 0; border-bottom: 1px solid var(--border); vertical-align: top; word-break: break-word; }
+    table.rank tr:last-child td { border-bottom: none; }
+    table.rank .num {
+      text-align: right;
+      white-space: nowrap;
+      padding-left: 14px;
+      font-variant-numeric: tabular-nums;
+    }
+    table.rank td.num { color: var(--navy); font-weight: 600; }
+    table.rank .sub { display: block; color: var(--muted); font-size: 0.8rem; }
+    .card-foot { color: var(--muted); font-size: 0.8rem; margin-top: 10px; }
+    .traffic-foot { color: var(--muted); font-size: 0.82rem; margin-top: 18px; }
+
     @media (max-width: 620px) {
       .wrap { padding: 20px 16px 60px; }
       .case-row { grid-template-columns: 1fr; gap: 10px; }
@@ -342,6 +462,9 @@
       .panel-body { padding: 18px 18px 50px; }
       dl.facts { grid-template-columns: 1fr; gap: 3px; }
       dl.facts dt { margin-top: 8px; }
+      .tab-traffic { margin-left: 0; }
+      .tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .traffic-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -383,13 +506,27 @@
       <button type="button" class="tab" data-tab="waiting">Waiting <span class="count" data-count="waiting">0</span></button>
       <button type="button" class="tab" data-tab="done">Done <span class="count" data-count="done">0</span></button>
       <button type="button" class="tab" data-tab="unpaid">Unpaid <span class="count" data-count="unpaid">0</span></button>
+      <button type="button" class="tab tab-traffic" data-tab="traffic">Traffic</button>
     </div>
 
-    <div class="toolbar">
-      <input type="search" id="search" placeholder="Search name, reference, or email" aria-label="Search cases" />
+    <div id="case-view">
+      <div class="toolbar">
+        <input type="search" id="search" placeholder="Search name, reference, or email" aria-label="Search cases" />
+      </div>
+
+      <div id="case-list" class="case-list"></div>
     </div>
 
-    <div id="case-list" class="case-list"></div>
+    <section id="traffic" class="traffic" hidden>
+      <div class="range" id="traffic-range" role="group" aria-label="Period">
+        <button type="button" class="range-btn" data-days="7">Last 7 days</button>
+        <button type="button" class="range-btn active" data-days="28">Last 28 days</button>
+        <button type="button" class="range-btn" data-days="90">Last 90 days</button>
+      </div>
+      <p class="traffic-note">Every visitor is counted, whether or not they accept cookies. Known crawlers are left out.</p>
+      <div class="notice notice-error" id="traffic-error" hidden></div>
+      <div id="traffic-body"></div>
+    </section>
   </div>
 
   <!-- Case detail -->
@@ -418,7 +555,8 @@
     cases: [],
     tab: 'attention',
     search: '',
-    selected: null
+    selected: null,
+    traffic: { days: 28, data: null, showTable: false }
   };
 
   var el = function (id) { return document.getElementById(id); };
@@ -973,6 +1111,331 @@
     }
   }
 
+  // Traffic: every visitor, counted by the site's own events whether or not
+  // they accepted the analytics cookie. Built with DOM nodes and textContent
+  // because page addresses and referrers arrive from the open web.
+  var SOURCE_WORDS = {
+    organic_search: 'Search engine',
+    social: 'Social media',
+    referral: 'Another website',
+    direct: 'No referring site',
+    email: 'Email',
+    paid: 'Paid campaign',
+    campaign: 'Campaign link'
+  };
+
+  function node(tag, className, text) {
+    var created = document.createElement(tag);
+    if (className) created.className = className;
+    if (text !== undefined && text !== null) created.textContent = text;
+    return created;
+  }
+
+  function formatCount(value) {
+    return (Number(value) || 0).toLocaleString('en-GB');
+  }
+
+  function plural(count, one, many) {
+    return formatCount(count) + ' ' + (Number(count) === 1 ? one : many);
+  }
+
+  function parseDay(day) {
+    var parts = String(day || '').split('-');
+    return new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
+  }
+
+  function countryName(code) {
+    if (!code) return 'Not recorded';
+    try {
+      return new Intl.DisplayNames(['en-GB'], { type: 'region' }).of(code) || code;
+    } catch (e) {
+      return code;
+    }
+  }
+
+  // Whole-number axis steps, so a quiet week reads 0 to 4 and not 0 to 3.2.
+  function niceScale(maxValue) {
+    var max = Math.max(1, Number(maxValue) || 0);
+    if (max <= 4) return { max: 4, step: 1 };
+    var rough = max / 4;
+    var magnitude = Math.pow(10, Math.floor(Math.log10(rough)));
+    var candidates = [1, 2, 5, 10];
+    var step = magnitude * 10;
+    for (var i = 0; i < candidates.length; i += 1) {
+      if (candidates[i] * magnitude >= rough) { step = candidates[i] * magnitude; break; }
+    }
+    return { max: step * Math.ceil(max / step), step: step };
+  }
+
+  function buildTile(label, current, previous, days) {
+    var tile = node('div', 'tile');
+    var diff = current - previous;
+    var before = 'the ' + days + ' days before';
+    var delta = node('div', 'tile-delta');
+
+    if (diff > 0) {
+      delta.classList.add('up');
+      delta.textContent = '▲ ' + formatCount(diff) + ' more than ' + before;
+    } else if (diff < 0) {
+      delta.classList.add('down');
+      delta.textContent = '▼ ' + formatCount(-diff) + ' fewer than ' + before;
+    } else {
+      delta.textContent = 'Same as ' + before;
+    }
+
+    tile.appendChild(node('div', 'tile-label', label));
+    tile.appendChild(node('div', 'tile-value', formatCount(current)));
+    tile.appendChild(delta);
+    return tile;
+  }
+
+  function buildChart(report) {
+    var daily = Array.isArray(report.daily) ? report.daily : [];
+    var card = node('div', 'card');
+    var head = node('div', 'chart-head');
+    var toggle = node('button', 'text-btn', state.traffic.showTable ? 'Show as chart' : 'Show as table');
+    var figure = node('div');
+    var tableWrap = node('div', 'table-scroll');
+
+    toggle.type = 'button';
+    head.appendChild(node('h3', '', 'Page views per day'));
+    head.appendChild(toggle);
+    card.appendChild(head);
+    figure.hidden = state.traffic.showTable;
+    tableWrap.hidden = !state.traffic.showTable;
+
+    toggle.addEventListener('click', function () {
+      state.traffic.showTable = !state.traffic.showTable;
+      figure.hidden = state.traffic.showTable;
+      tableWrap.hidden = !state.traffic.showTable;
+      toggle.textContent = state.traffic.showTable ? 'Show as chart' : 'Show as table';
+    });
+
+    // Chart
+    var scale = niceScale(daily.reduce(function (most, entry) { return Math.max(most, entry.views); }, 0));
+    var plot = node('div', 'plot');
+    var bars = node('div', 'bars');
+    var tip = node('div', 'tip');
+    var axis = node('div', 'x-axis');
+    var count = daily.length;
+    var labelEvery = count <= 7 ? 1 : (count <= 28 ? 7 : 14);
+
+    for (var tick = 0; tick <= scale.max; tick += scale.step) {
+      var line = node('div', 'gridline');
+      line.style.bottom = (tick / scale.max * 100) + '%';
+      line.appendChild(node('span', '', formatCount(tick)));
+      plot.appendChild(line);
+    }
+
+    bars.setAttribute('role', 'group');
+    bars.setAttribute('aria-label', 'Page views per day. Use the left and right arrow keys to move between days.');
+    tip.hidden = true;
+
+    daily.forEach(function (entry, index) {
+      var date = parseDay(entry.day);
+      var fromToday = count - 1 - index;
+      var slot = node('button', 'bar-slot');
+      var bar = node('span', 'bar');
+      var shortDate = fromToday === 0
+        ? 'Today'
+        : date.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
+
+      slot.type = 'button';
+      slot.tabIndex = fromToday === 0 ? 0 : -1;
+      slot.setAttribute('aria-label',
+        date.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' }) + ': ' +
+        plural(entry.views, 'page view', 'page views') + ', ' + plural(entry.visits, 'visit', 'visits'));
+      bar.style.height = entry.views > 0 ? 'max(2px, ' + (entry.views / scale.max * 100) + '%)' : '0';
+      slot.appendChild(bar);
+
+      var show = function () {
+        var lead = node('span');
+        lead.appendChild(node('strong', '', formatCount(entry.views)));
+        lead.appendChild(document.createTextNode(entry.views === 1 ? ' page view' : ' page views'));
+        tip.textContent = '';
+        tip.appendChild(lead);
+        tip.appendChild(node('span', 'tip-sub',
+          shortDate + ' · ' + plural(entry.visits, 'visit', 'visits') + ' · ' + formatCount(entry.guideViews) + ' on guides'));
+        tip.hidden = false;
+
+        // Keep the tooltip inside the card when the bar is near either edge.
+        var half = tip.offsetWidth / 2;
+        var centre = slot.offsetLeft + slot.offsetWidth / 2;
+        tip.style.left = Math.min(Math.max(centre, half - 30), plot.offsetWidth - half + 16) + 'px';
+        tip.style.top = (plot.offsetHeight - bar.offsetHeight - 8) + 'px';
+      };
+      var hide = function () { tip.hidden = true; };
+
+      slot.addEventListener('pointerenter', show);
+      slot.addEventListener('pointerleave', hide);
+      slot.addEventListener('focus', show);
+      slot.addEventListener('blur', hide);
+      slot.addEventListener('keydown', function (event) {
+        var next = null;
+        if (event.key === 'ArrowLeft') next = slot.previousElementSibling;
+        if (event.key === 'ArrowRight') next = slot.nextElementSibling;
+        if (next) {
+          event.preventDefault();
+          next.focus();
+        }
+      });
+      bars.appendChild(slot);
+
+      if (fromToday % labelEvery === 0) {
+        var label = node('span', '', fromToday === 0
+          ? 'Today'
+          : date.toLocaleDateString('en-GB', count <= 7 ? { weekday: 'short', day: 'numeric' } : { day: 'numeric', month: 'short' }));
+        label.style.left = ((index + 0.5) / count * 100) + '%';
+        axis.appendChild(label);
+      }
+    });
+
+    plot.appendChild(bars);
+    plot.appendChild(tip);
+    figure.appendChild(plot);
+    figure.appendChild(axis);
+
+    // The same numbers as a table, for anyone who would rather read than hover.
+    var table = node('table', 'rank');
+    var headRow = node('tr');
+    var tbody = node('tbody');
+    ['Day', 'Page views', 'Visits', 'Guide views'].forEach(function (title, index) {
+      headRow.appendChild(node('th', index === 0 ? '' : 'num', title));
+    });
+    daily.slice().reverse().forEach(function (entry) {
+      var row = node('tr');
+      row.appendChild(node('td', '', parseDay(entry.day).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' })));
+      row.appendChild(node('td', 'num', formatCount(entry.views)));
+      row.appendChild(node('td', 'num', formatCount(entry.visits)));
+      row.appendChild(node('td', 'num', formatCount(entry.guideViews)));
+      tbody.appendChild(row);
+    });
+    table.appendChild(node('thead')).appendChild(headRow);
+    table.appendChild(tbody);
+    tableWrap.appendChild(table);
+
+    card.appendChild(figure);
+    card.appendChild(tableWrap);
+    return card;
+  }
+
+  function buildRankCard(title, columns, rows, emptyText, footText) {
+    var card = node('div', 'card');
+    card.appendChild(node('h3', '', title));
+
+    if (!rows.length) {
+      card.appendChild(node('p', 'card-foot', emptyText));
+      return card;
+    }
+
+    var table = node('table', 'rank');
+    var headRow = node('tr');
+    var tbody = node('tbody');
+    headRow.appendChild(node('th', '', columns[0]));
+    headRow.appendChild(node('th', 'num', columns[1]));
+    rows.forEach(function (entry) {
+      var row = node('tr');
+      var name = node('td', '', entry.name);
+      if (entry.sub) name.appendChild(node('span', 'sub', entry.sub));
+      row.appendChild(name);
+      row.appendChild(node('td', 'num', formatCount(entry.value)));
+      tbody.appendChild(row);
+    });
+    table.appendChild(node('thead')).appendChild(headRow);
+    table.appendChild(tbody);
+    card.appendChild(table);
+    if (footText) card.appendChild(node('p', 'card-foot', footText));
+    return card;
+  }
+
+  function renderTraffic() {
+    var body = el('traffic-body');
+    var report = state.traffic.data;
+    body.textContent = '';
+
+    if (!report || !report.available) {
+      var empty = node('div', 'empty');
+      empty.appendChild(node('strong', '', 'No traffic to show'));
+      empty.appendChild(document.createTextNode('The site is not connected to its database, so visits are not being counted.'));
+      body.appendChild(empty);
+      return;
+    }
+
+    var now = (report.totals && report.totals.current) || {};
+    var before = (report.totals && report.totals.previous) || {};
+    var tiles = node('div', 'tiles');
+    var grid = node('div', 'traffic-grid');
+
+    tiles.appendChild(buildTile('Visits', now.visits || 0, before.visits || 0, report.days));
+    tiles.appendChild(buildTile('Page views', now.views || 0, before.views || 0, report.days));
+    tiles.appendChild(buildTile('Guide views', now.guideViews || 0, before.guideViews || 0, report.days));
+    tiles.appendChild(buildTile('Cases started', now.casesStarted || 0, before.casesStarted || 0, report.days));
+
+    grid.appendChild(buildRankCard('Most viewed pages', ['Page', 'Views'],
+      report.topPages || [], 'No page views in this period.'));
+    grid.appendChild(buildRankCard('Where visits came from', ['Source', 'Visits'],
+      (report.sources || []).map(function (entry) {
+        return { name: entry.name, sub: SOURCE_WORDS[entry.category] || '', value: entry.value };
+      }), 'No visits in this period.'));
+    grid.appendChild(buildRankCard('Countries', ['Country', 'Visits'],
+      (report.countries || []).map(function (entry) {
+        return { name: countryName(entry.name), value: entry.value };
+      }), 'No visits in this period.', 'Country has been recorded since 4 October 2026.'));
+    grid.appendChild(buildRankCard('What people pressed', ['Button or link', 'Presses'],
+      report.clicks || [], 'No buttons or links pressed in this period.'));
+
+    body.appendChild(tiles);
+    body.appendChild(buildChart(report));
+    body.appendChild(grid);
+    body.appendChild(node('p', 'traffic-foot',
+      'A visit is one arrival from outside the site. To leave your own visits out, open the site once on each of your devices with ?operator=1 added to the address.'));
+  }
+
+  async function loadTraffic() {
+    var body = el('traffic-body');
+    var error = el('traffic-error');
+    var days = state.traffic.days;
+
+    error.hidden = true;
+    // Hold the last picture while the new numbers load, so nothing jumps.
+    if (state.traffic.data) {
+      body.style.opacity = '0.5';
+    } else {
+      body.innerHTML = '<div class="skeleton">Loading traffic…</div>';
+    }
+
+    try {
+      var data = await api('/api/admin/stats?view=traffic&days=' + encodeURIComponent(days));
+      if (days !== state.traffic.days) return;
+      state.traffic.data = (data.stats && data.stats.traffic) || null;
+      renderTraffic();
+    } catch (err) {
+      if (err.status === 401) {
+        signOut();
+        return;
+      }
+      error.textContent = err.message;
+      error.hidden = false;
+      if (!state.traffic.data) body.textContent = '';
+    }
+    body.style.opacity = '';
+  }
+
+  function showTab(name) {
+    var isTraffic = name === 'traffic';
+    state.tab = name;
+    Array.prototype.forEach.call(document.querySelectorAll('.tab'), function (tabNode) {
+      tabNode.classList.toggle('active', tabNode.dataset.tab === name);
+    });
+    el('case-view').hidden = isTraffic;
+    el('traffic').hidden = !isTraffic;
+    if (isTraffic) {
+      loadTraffic();
+    } else {
+      renderList();
+    }
+  }
+
   function showDesk(session) {
     state.session = session;
     el('login-view').hidden = true;
@@ -981,6 +1444,7 @@
     el('signout-btn').hidden = false;
     el('session-user').textContent = session && (session.name || session.username) ? (session.name || session.username) : '';
     loadCases();
+    if (state.tab === 'traffic') loadTraffic();
   }
 
   function showLogin() {
@@ -998,6 +1462,7 @@
     state.token = '';
     state.session = null;
     state.cases = [];
+    state.traffic.data = null;
     writeToken('');
     closePanel();
     showLogin();
@@ -1031,7 +1496,10 @@
   });
 
   el('signout-btn').addEventListener('click', signOut);
-  el('refresh-btn').addEventListener('click', loadCases);
+  el('refresh-btn').addEventListener('click', function () {
+    loadCases();
+    if (state.tab === 'traffic') loadTraffic();
+  });
   el('overlay').addEventListener('click', closePanel);
   el('panel-close').addEventListener('click', closePanel);
 
@@ -1047,11 +1515,17 @@
   el('tabs').addEventListener('click', function (event) {
     var tab = event.target.closest('[data-tab]');
     if (!tab) return;
-    state.tab = tab.dataset.tab;
-    Array.prototype.forEach.call(document.querySelectorAll('.tab'), function (node) {
-      node.classList.toggle('active', node === tab);
+    showTab(tab.dataset.tab);
+  });
+
+  el('traffic-range').addEventListener('click', function (event) {
+    var button = event.target.closest('[data-days]');
+    if (!button) return;
+    state.traffic.days = Number(button.dataset.days) || 28;
+    Array.prototype.forEach.call(document.querySelectorAll('.range-btn'), function (rangeNode) {
+      rangeNode.classList.toggle('active', rangeNode === button);
     });
-    renderList();
+    loadTraffic();
   });
 
   var searchTimer = null;
