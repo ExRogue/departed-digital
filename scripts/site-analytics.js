@@ -253,6 +253,20 @@
         click_type: metadata.clickType || '',
         package_key: metadata.packageKey || ''
       });
+
+      // Every button on the site reports as one cta_click with the button named
+      // in click_type, which GA4 hides unless someone builds a custom report.
+      // Sending the click type as its own event as well means stuck_email,
+      // service_cta, checklist_pdf and the rest appear in the events list,
+      // where they can be marked as key events.
+      const clickType = String(metadata.clickType || '');
+
+      if (eventType === 'cta_click' && /^[a-z][a-z0-9_]{0,38}$/.test(clickType)) {
+        window.gtag('event', clickType, {
+          event_label: metadata.label || '',
+          package_key: metadata.packageKey || ''
+        });
+      }
     } catch (error) {
       // Analytics should never block the user journey.
     }
