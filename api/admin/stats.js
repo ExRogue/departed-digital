@@ -32,6 +32,7 @@ module.exports = async function handler(req, res) {
     const permissions = (adminCheck.session && adminCheck.session.permissions) || [];
     const shouldLoadCases = view === 'operations' || view === 'summary' || view === 'all';
     const shouldLoadAnalytics = view === 'analytics' || view === 'all';
+    const shouldLoadTraffic = view === 'traffic';
     const shouldLoadPartners = view === 'partners' || view === 'all';
     const shouldLoadUsers = permissions.includes('users.manage') && (view === 'team' || view === 'all');
     const shouldLoadJobs = view === 'operations' || view === 'summary' || view === 'all';
@@ -43,7 +44,8 @@ module.exports = async function handler(req, res) {
       analytics,
       jobs,
       users,
-      partners
+      partners,
+      traffic
     ] = await Promise.all([
       shouldLoadCases ? repository.listAdminCaseSummaries() : Promise.resolve([]),
       shouldLoadAnalytics
@@ -51,7 +53,10 @@ module.exports = async function handler(req, res) {
         : Promise.resolve({}),
       shouldLoadJobs ? repository.getOpsJobSummary() : Promise.resolve({ queued: 0, dueNow: 0, failed: 0 }),
       shouldLoadUsers ? repository.listAdminUsers() : Promise.resolve([]),
-      shouldLoadPartners ? repository.listPartnerAccounts() : Promise.resolve([])
+      shouldLoadPartners ? repository.listPartnerAccounts() : Promise.resolve([]),
+      shouldLoadTraffic
+        ? repository.getTrafficReport({ days: requestUrl.searchParams.get('days') })
+        : Promise.resolve(null)
     ]);
     const architecture = repository.getArchitectureProfile();
     const activeCases = cases.filter((entry) => !entry.archivedAt);
@@ -97,6 +102,10 @@ module.exports = async function handler(req, res) {
 
     if (shouldLoadAnalytics) {
       stats.analytics = analytics;
+    }
+
+    if (shouldLoadTraffic) {
+      stats.traffic = traffic;
     }
 
     sendJson(res, 200, {

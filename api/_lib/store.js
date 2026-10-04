@@ -3798,6 +3798,191 @@ async function getAnalyticsOverview() {
   return getAnalyticsSummary();
 }
 
+// The traffic report counts every visitor, with or without the analytics
+// cookie, from the site's own events. The operator's own browser and known
+// crawlers are left out. Days are London days, and the period includes today.
+const TRAFFIC_BOUNDS = `
+  with bounds as (
+    select (now() at time zone 'Europe/London')::date - ($1::int - 1) as start_day,
+           (now() at time zone 'Europe/London')::date as end_day
+  )`;
+const TRAFFIC_IN_PERIOD = `e.created_at >= (b.start_day::timestamp at time zone 'Europe/London')`;
+const TRAFFIC_REAL_VISITORS = `
+  coalesce(e.metadata->>'isInternalOperator', 'false') <> 'true'
+  and coalesce(e.metadata->>'isBot', 'false') <> 'true'`;
+const TRAFFIC_VIEWS = `e.event_type in ('page_view', 'article_view')`;
+// A visit is a session that arrived from outside the site. Visitors who have
+// not accepted the analytics cookie get a fresh session id on every page, so
+// their later pages (source "internal") must not count as further visits.
+const TRAFFIC_ARRIVALS = `coalesce(e.metadata->>'sourceCategory', '') <> 'internal'`;
+
+function normalizeTrafficDays(value) {
+  const parsed = Number.parseInt(String(value || ''), 10);
+
+  if (!Number.isFinite(parsed)) {
+    return 28;
+  }
+
+  return Math.min(90, Math.max(7, parsed));
+}
+
+function toTrafficTotals(row) {
+  const source = row || {};
+
+  return {
+    views: Number(source.views) || 0,
+    guideViews: Number(source.guide_views) || 0,
+    visits: Number(source.visits) || 0,
+    clicks: Number(source.clicks) || 0,
+    casesStarted: Number(source.cases_started) || 0
+  };
+}
+
+async function getTrafficReport(options = {}) {
+  const days = normalizeTrafficDays(options.days);
+
+  if (!hasDatabaseConnection()) {
+    return { available: false, days };
+  }
+
+  const [daily, totals, pages, sources, countries, clicks] = await Promise.all([
+    query(`
+      ${TRAFFIC_BOUNDS},
+      events as (
+        select (e.created_at at time zone 'Europe/London')::date as day,
+               e.event_type,
+               e.session_id,
+               coalesce(e.metadata->>'sourceCategory', '') as source_category
+        from analytics_events e
+        cross join bounds b
+        where ${TRAFFIC_IN_PERIOD}
+          and ${TRAFFIC_VIEWS}
+          and ${TRAFFIC_REAL_VISITORS}
+      )
+      select to_char(d.day, 'YYYY-MM-DD') as day,
+             count(ev.event_type)::int as views,
+             count(ev.event_type) filter (where ev.event_type = 'article_view')::int as guide_views,
+             count(distinct ev.session_id) filter (where ev.source_category <> 'internal')::int as visits
+      from bounds b
+      cross join lateral generate_series(b.start_day::timestamp, b.end_day::timestamp, interval '1 day') as d(day)
+      left join events ev on ev.day = d.day::date
+      group by d.day
+      order by d.day
+    `, [days]),
+    query(`
+      ${TRAFFIC_BOUNDS},
+      scoped as (
+        select case when ${TRAFFIC_IN_PERIOD} then 'current' else 'previous' end as period,
+               e.event_type,
+               e.session_id,
+               coalesce(e.metadata->>'sourceCategory', '') as source_category
+        from analytics_events e
+        cross join bounds b
+        where e.created_at >= ((b.start_day - $1::int)::timestamp at time zone 'Europe/London')
+          and ${TRAFFIC_REAL_VISITORS}
+      )
+      select period,
+             count(*) filter (where event_type in ('page_view', 'article_view'))::int as views,
+             count(*) filter (where event_type = 'article_view')::int as guide_views,
+             count(distinct session_id) filter (
+               where event_type in ('page_view', 'article_view') and source_category <> 'internal'
+             )::int as visits,
+             count(*) filter (where event_type = 'cta_click')::int as clicks,
+             count(*) filter (where event_type = 'intake_submitted')::int as cases_started
+      from scoped
+      group by period
+    `, [days]),
+    query(`
+      ${TRAFFIC_BOUNDS}
+      select e.path as name, count(*)::int as value
+      from analytics_events e
+      cross join bounds b
+      where ${TRAFFIC_IN_PERIOD}
+        and ${TRAFFIC_VIEWS}
+        and ${TRAFFIC_REAL_VISITORS}
+        and e.path <> ''
+      group by e.path
+      order by value desc, name asc
+      limit 12
+    `, [days]),
+    query(`
+      ${TRAFFIC_BOUNDS}
+      select coalesce(nullif(e.metadata->>'sourceCategory', ''), 'unknown') as category,
+             coalesce(nullif(e.metadata->>'sourceLabel', ''), 'Direct') as name,
+             count(distinct e.session_id)::int as value
+      from analytics_events e
+      cross join bounds b
+      where ${TRAFFIC_IN_PERIOD}
+        and ${TRAFFIC_VIEWS}
+        and ${TRAFFIC_REAL_VISITORS}
+        and ${TRAFFIC_ARRIVALS}
+      group by 1, 2
+      order by value desc, name asc
+      limit 12
+    `, [days]),
+    query(`
+      ${TRAFFIC_BOUNDS}
+      select coalesce(e.metadata->>'country', '') as name,
+             count(distinct e.session_id)::int as value
+      from analytics_events e
+      cross join bounds b
+      where ${TRAFFIC_IN_PERIOD}
+        and ${TRAFFIC_VIEWS}
+        and ${TRAFFIC_REAL_VISITORS}
+        and ${TRAFFIC_ARRIVALS}
+      group by 1
+      order by value desc, name asc
+      limit 12
+    `, [days]),
+    query(`
+      ${TRAFFIC_BOUNDS}
+      select coalesce(nullif(e.label, ''), nullif(e.metadata->>'clickType', ''), 'Unlabelled') as name,
+             count(*)::int as value
+      from analytics_events e
+      cross join bounds b
+      where ${TRAFFIC_IN_PERIOD}
+        and e.event_type = 'cta_click'
+        and ${TRAFFIC_REAL_VISITORS}
+      group by 1
+      order by value desc, name asc
+      limit 10
+    `, [days])
+  ]);
+
+  const totalsByPeriod = {};
+  totals.rows.forEach((row) => {
+    totalsByPeriod[row.period] = toTrafficTotals(row);
+  });
+
+  const toEntries = (result) => result.rows.map((row) => ({
+    name: trimTo(row.name, 240),
+    value: Number(row.value) || 0
+  }));
+
+  return {
+    available: true,
+    days,
+    totals: {
+      current: totalsByPeriod.current || toTrafficTotals(),
+      previous: totalsByPeriod.previous || toTrafficTotals()
+    },
+    daily: daily.rows.map((row) => ({
+      day: trimTo(row.day, 10),
+      views: Number(row.views) || 0,
+      guideViews: Number(row.guide_views) || 0,
+      visits: Number(row.visits) || 0
+    })),
+    topPages: toEntries(pages),
+    sources: sources.rows.map((row) => ({
+      category: trimTo(row.category, 40),
+      name: trimTo(row.name, 240),
+      value: Number(row.value) || 0
+    })),
+    countries: toEntries(countries),
+    clicks: toEntries(clicks)
+  };
+}
+
 function parseBase64Payload(data) {
   const source = String(data || '');
   const match = source.match(/^data:(.*?);base64,(.*)$/);
@@ -4124,6 +4309,7 @@ module.exports = {
   getDocumentInventory,
   getOpsJobSummary,
   getStorageHealth,
+  getTrafficReport,
   isUuidLike,
   listPartnerAccounts,
   listAnalyticsEventsForMigration,

@@ -5,6 +5,22 @@ function normalizeString(value, maxLength = 240) {
   return String(value || '').trim().slice(0, maxLength);
 }
 
+const CRAWLER_PATTERN = /bot|crawl|spider|slurp|headless|lighthouse|pagespeed|pingdom|uptimerobot|facebookexternalhit|bingpreview|python|curl|wget|httpclient|phantomjs|puppeteer|playwright|selenium/i;
+
+// Facts the server knows about the request and the browser cannot be trusted
+// to report: the country Vercel resolved for it, and whether the user agent
+// is a known crawler. Neither the IP address nor the user agent is stored.
+function requestContext(req) {
+  const headers = (req && req.headers) || {};
+  const country = String(headers['x-vercel-ip-country'] || '').toUpperCase().replace(/[^A-Z]/g, '').slice(0, 2);
+  const userAgent = String(headers['user-agent'] || '');
+
+  return {
+    country,
+    isBot: !userAgent || CRAWLER_PATTERN.test(userAgent)
+  };
+}
+
 function sanitizeMetadata(value) {
   if (!value || typeof value !== 'object' || Array.isArray(value)) {
     return {};
@@ -48,6 +64,7 @@ module.exports = async function handler(req, res) {
     }
 
     const caseId = normalizeString(body.caseId, 80);
+    const metadata = Object.assign(sanitizeMetadata(body.metadata), requestContext(req));
 
     await recordAnalyticsEvent({
       eventType,
@@ -57,7 +74,7 @@ module.exports = async function handler(req, res) {
       pageTitle: normalizeString(body.pageTitle, 240),
       referrer: normalizeString(body.referrer, 500),
       caseId: isUuidLike(caseId) ? caseId : '',
-      metadata: sanitizeMetadata(body.metadata)
+      metadata
     });
 
     sendJson(res, 200, { ok: true });
