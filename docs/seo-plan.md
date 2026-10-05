@@ -78,7 +78,7 @@ Not yet done: chasers for batches two and three (item 6), the comparison data pi
 
 Where search stands (28 days to 2 Oct): 737 appearances, 8 clicks, average position 23.6, 32 pages appearing. The UK is 282 appearances at position 32; the United States and Canada together are 238 at position 14. Norway, the Netherlands, Germany and Japan appear with searches in their own languages ("slette avdøde fra facebook", "amazon kündigen bei todesfall"), which our English pages answer at position 40 to 60. Many searches for the post guide say "mail", not "post".
 
-Done in this round, in one pull request:
+Done in this round (pull requests #73 and #74), live and verified, all 36 new or changed addresses sent to IndexNow, and the eight new pages requested in Search Console (the daily limit stopped the UK Google guide and the TikTok guide being requested as well; ask again on 6 October):
 
 - Item 12: two more stuck pages. /blog/access-deceased-gmail-google-account (account recovery, the United States court order Google's form asks for, the two year inactivity rule) and /blog/delete-deceased-whatsapp-account-without-phone (WhatsApp says it cannot deactivate an account for someone else, so the routes are the phone, the SIM, or inactivity).
 - Worldwide versions of four UK guides, written as different documents and paired with hreflang: the documents guide by country, what happens to social media (law in the US, Canada, Australia and the EU), what a digital legacy is, and the checklist with an international PDF. No worldwide copy of the delete or memorialise guide, because nothing in it is specific to the UK.
@@ -92,7 +92,7 @@ Findings worth knowing:
 
 - The UK Google guide was crawled on 1 October and left out of the index. Near copies of a worldwide guide are not worth making.
 - Search Console hides the queries for the TikTok, PayPal and WhatsApp guides entirely (all too rare to show), so their titles cannot be tuned from data yet.
-- Search Console flagged the post guide as down 96 per cent in appearances in the last days of September; the retitle and the new US mail page are the response, and it should be checked again in the weekly report.
+- Search Console flagged the post guide as down 96 per cent in appearances, but the day by day figures show that is measured against a one day spike (43 appearances on 18 September). It ran at 1 to 4 a day afterwards and showed 31 again on 2 October, at position 58. It is a page two to six result that surfaces in bursts; the retitle around "mail" and the new US mail page are aimed at the searches it was shown for.
 
 Still open: batch two and three chasers (item 6), the press pitch (item 15, figures now corrected), directory submissions (item 16), guest pieces (item 18), all of which need Steven's go ahead to send. Steven's own items are unchanged: Bing Webmaster Tools, Google Business Profile, forum replies, partner links. Worth considering next: translated versions of the four most searched guides for Norwegian, German and Dutch, since those searches already find us.
 
