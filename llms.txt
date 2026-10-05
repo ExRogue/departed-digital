@@ -27,7 +27,7 @@ Contact: hello@departed.digital
 - [What happens to a WhatsApp account when someone dies](https://www.departed.digital/blog/whatsapp-account-after-death)
 - [Close a deceased person's email accounts (Gmail, Outlook, Yahoo)](https://www.departed.digital/blog/email-accounts-after-death)
 - [Apple ID and iCloud after death](https://www.departed.digital/blog/apple-id-icloud-account-after-death)
-- [Close a deceased person's TikTok account](https://www.departed.digital/blog/tiktok-account-after-death)
+- [Close or memorialise a deceased person's TikTok account, including TikTok's legacy contact](https://www.departed.digital/blog/tiktok-account-after-death)
 - [Memorialise or close a deceased person's LinkedIn account](https://www.departed.digital/blog/linkedin-account-after-death)
 - [Deactivate a deceased person's X (Twitter) account](https://www.departed.digital/blog/delete-deceased-x-twitter-account)
 - [Cancel a deceased person's subscriptions (Netflix, Spotify, Amazon Prime and more)](https://www.departed.digital/blog/cancel-subscriptions-after-death)
@@ -35,6 +35,12 @@ Contact: hello@departed.digital
 - [What happens to a PayPal account when someone dies](https://www.departed.digital/blog/paypal-account-after-death)
 - [Close a deceased person's Amazon account](https://www.departed.digital/blog/amazon-account-after-death)
 - [What happens to a Microsoft, Outlook or Hotmail account when someone dies](https://www.departed.digital/blog/microsoft-outlook-account-after-death)
+- [What happens to social media accounts when someone dies, with the law in the US, Canada, Australia and the EU](https://www.departed.digital/blog/what-happens-to-social-media-accounts-when-someone-dies)
+- [What documents you need to close a deceased person's online accounts: a country by country guide](https://www.departed.digital/blog/documents-needed-to-close-deceased-online-accounts)
+- [Checklist of digital accounts to close after a death, international edition with a printable PDF](https://www.departed.digital/blog/digital-accounts-checklist-after-death)
+- [What is a digital legacy, and how to plan one](https://www.departed.digital/blog/what-is-a-digital-legacy)
+- [What to do with a loved one's phone when they die](https://www.departed.digital/blog/what-to-do-with-a-loved-ones-phone-when-they-die)
+- [Which apps and platforms let you plan for your own death: 20 services compared](https://www.departed.digital/blog/which-platforms-let-you-plan-for-death)
 
 ## The service
 - [Digital legacy service: what we do, what it costs, how it works](https://www.departed.digital/digital-legacy-service)
@@ -49,14 +55,18 @@ Contact: hello@departed.digital
 - [Close a deceased person's Google or Gmail account in the UK](https://www.departed.digital/blog/close-deceased-google-account-uk)
 - [Redirect or stop post when someone dies in the UK](https://www.departed.digital/blog/redirect-post-when-someone-dies-uk)
 - [Phone and broadband contracts after a death: every UK provider's bereavement team](https://www.departed.digital/blog/phone-contract-when-someone-dies-uk)
-- [What to do with a loved one's phone when they die](https://www.departed.digital/blog/what-to-do-with-a-loved-ones-phone-when-they-die)
 - [What is a digital legacy, and how to plan one in the UK](https://www.departed.digital/blog/what-is-a-digital-legacy-uk)
-- [Which apps and platforms let you plan for your own death: 20 services compared](https://www.departed.digital/blog/which-platforms-let-you-plan-for-death)
+
+## Guides (United States)
+- [Cell phone accounts after a death: Verizon, AT&T, T-Mobile, Xfinity and Spectrum](https://www.departed.digital/blog/cell-phone-account-after-death-us)
+- [How to stop or forward mail for a deceased person (USPS)](https://www.departed.digital/blog/stop-mail-for-deceased-person-usps)
 
 ## If you are stuck (troubleshooting)
 - [Facebook memorialisation request not working: what to do next](https://www.departed.digital/blog/facebook-memorialisation-request-not-working)
 - [Instagram deceased account request not working: what to do next](https://www.departed.digital/blog/instagram-deceased-account-request-not-working)
 - [No Legacy Contact on a deceased person's Apple Account: what you can still do](https://www.departed.digital/blog/apple-account-deceased-no-legacy-contact)
+- [Cannot access a deceased person's Gmail or Google account: what Google allows, and the court order](https://www.departed.digital/blog/access-deceased-gmail-google-account)
+- [Cannot delete a deceased person's WhatsApp account: what works with and without the phone](https://www.departed.digital/blog/delete-deceased-whatsapp-account-without-phone)
 
 ## Policies
 - [Terms of Service](https://www.departed.digital/terms)

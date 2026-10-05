@@ -74,6 +74,28 @@ Done, live and merged (PRs #61, #62, #63):
 
 Not yet done: chasers for batches two and three (item 6), the comparison data piece and press pitch (item 15), directory submissions (item 16), guest pieces (item 18), the Google and WhatsApp stuck pages (item 12). Steven's items: Bing Webmaster Tools, Google Business Profile, forum replies, partner links.
 
+## Progress (updated 5 October 2026)
+
+Where search stands (28 days to 2 Oct): 737 appearances, 8 clicks, average position 23.6, 32 pages appearing. The UK is 282 appearances at position 32; the United States and Canada together are 238 at position 14. Norway, the Netherlands, Germany and Japan appear with searches in their own languages ("slette avdøde fra facebook", "amazon kündigen bei todesfall"), which our English pages answer at position 40 to 60. Many searches for the post guide say "mail", not "post".
+
+Done in this round, in one pull request:
+
+- Item 12: two more stuck pages. /blog/access-deceased-gmail-google-account (account recovery, the United States court order Google's form asks for, the two year inactivity rule) and /blog/delete-deceased-whatsapp-account-without-phone (WhatsApp says it cannot deactivate an account for someone else, so the routes are the phone, the SIM, or inactivity).
+- Worldwide versions of four UK guides, written as different documents and paired with hreflang: the documents guide by country, what happens to social media (law in the US, Canada, Australia and the EU), what a digital legacy is, and the checklist with an international PDF. No worldwide copy of the delete or memorialise guide, because nothing in it is specific to the UK.
+- Two United States guides: cell phone carriers (Verizon, AT&T, T-Mobile, Xfinity, Spectrum, each from its own page) and USPS mail for a deceased person. Written in American English with the dollar price.
+- Corrections found while checking sources. TikTok now publishes a policy: memorialise or delete on a family request, plus a legacy contact and a delete-after-death setting, so the TikTok guide, the comparison table (six became seven), the UK overview pages and the press pitch were all updated. WhatsApp's own pages say 120 days of inactivity generally and 365 days for the US, and that it cannot deactivate accounts for other people, so the WhatsApp guide no longer says WhatsApp acts on a family's request. Google's form says an approved data request needs a court order issued in the United States where Google LLC is the provider, which includes UK accounts; both Google guides said "your own country".
+- Titles: the post guide now leads with "mail" and names Royal Mail; LinkedIn leads with "delete" and "profile", the words people typed; TikTok says close or memorialise. The O2 section carries the "02" spelling.
+- Homepage: the search snippet says families in the UK and worldwide, and the Organization and Service schema list the UK, US, Canada, Australia, New Zealand and Ireland as areas served.
+- /blog regrouped: stuck (five), platforms, a worldwide paperwork section, the UK section, a US section.
+
+Findings worth knowing:
+
+- The UK Google guide was crawled on 1 October and left out of the index. Near copies of a worldwide guide are not worth making.
+- Search Console hides the queries for the TikTok, PayPal and WhatsApp guides entirely (all too rare to show), so their titles cannot be tuned from data yet.
+- Search Console flagged the post guide as down 96 per cent in appearances in the last days of September; the retitle and the new US mail page are the response, and it should be checked again in the weekly report.
+
+Still open: batch two and three chasers (item 6), the press pitch (item 15, figures now corrected), directory submissions (item 16), guest pieces (item 18), all of which need Steven's go ahead to send. Steven's own items are unchanged: Bing Webmaster Tools, Google Business Profile, forum replies, partner links. Worth considering next: translated versions of the four most searched guides for Norwegian, German and Dutch, since those searches already find us.
+
 ## What good looks like
 
 - Six weeks: every page under 60/155 in search results, first paint under two seconds on mobile, all 33 pages indexed, the checklist and documents pages over 900 words.
