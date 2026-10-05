@@ -37,6 +37,14 @@ each photo's Pexels page is `https://www.pexels.com/photo/<id>/`.
 | what-is-a-digital-legacy-uk | 2440970 | Open notebook with a pen and glasses (Isabella Mendes) |
 | digital-legacy-service (page, not a guide) | 5662139 | Desk lamp beside a laptop at dusk (Mathias Reding) |
 | which-platforms-let-you-plan-for-death | 35462658 | Warm desk lamp, candle and handwritten notes (Hedefneydii) |
+| access-deceased-gmail-google-account | 11237835 | Closed laptop on a dark wooden table (Josh Sorenson) |
+| delete-deceased-whatsapp-account-without-phone | 33277478 | SIM cards and an ejector tool on a white surface (Pascal) |
+| cell-phone-account-after-death-us | 214240 | Smartphone, notebook and cup of coffee on a wooden table (Markus Spiske) |
+| stop-mail-for-deceased-person-usps | 39740566 | Row of rural mailboxes in Newtown, Pennsylvania (Gene Samit) |
+| documents-needed-to-close-deceased-online-accounts | 8962523 | Folder marked Documents with papers and glasses (Leeloo The First) |
+| what-happens-to-social-media-accounts-when-someone-dies | 32472188 | Dried wildflowers in a vase by a sunlit window (Việt Anh Nguyễn) |
+| what-is-a-digital-legacy | 1157151 | Bundle of old letters tied with string, a handwritten letter and photographs (Suzy Hazelwood) |
+| digital-accounts-checklist-after-death | 7718755 | Clipboard with lined paper headed To do (MART PRODUCTION) |
 
 ## Website showcase film
 
