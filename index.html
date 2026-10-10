@@ -1102,6 +1102,10 @@
       text-decoration: none;
     }
     .footer-bottom a:hover { color: var(--gold); }
+    .footer-credit { display: flex; align-items: center; gap: 8px; margin-top: 18px; font-size: 0.74rem; color: rgba(255,255,255,0.3); }
+    .footer-credit a { display: inline-flex; opacity: 0.55; transition: opacity 0.2s; }
+    .footer-credit a:hover, .footer-credit a:focus-visible { opacity: 1; }
+    .footer-credit img { display: block; height: 12px; width: auto; }
     .footer-legal {
       display: flex;
       gap: 24px;
@@ -2187,6 +2191,7 @@
           <a href="/cookies">Cookie Policy</a>
         </div>
       </div>
+      <p class="footer-credit">Site by <a href="https://www.thatotheragency.co.uk/"><img src="/images/that-other-agency.svg" alt="That Other Agency" width="98" height="12" loading="lazy" /></a></p>
     </div>
   </footer>
 

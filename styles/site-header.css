@@ -72,3 +72,10 @@
     display: block;
   }
 }
+
+/* Agency credit at the foot of every page, added 10 Oct 2026. The logo file
+   is That Other Agency's own white wordmark; keep it at least 90px wide. */
+.footer-credit { display: flex; justify-content: center; align-items: center; gap: 8px; margin: 14px 0 0; font-size: 0.74rem; color: rgba(255,255,255,0.3); }
+.footer-credit a { display: inline-flex; margin: 0; opacity: 0.55; transition: opacity 0.2s; }
+.footer-credit a:hover, .footer-credit a:focus-visible { opacity: 1; }
+.footer-credit img { display: block; height: 12px; width: auto; }
