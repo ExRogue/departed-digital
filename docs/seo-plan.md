@@ -114,3 +114,18 @@ Still open: batch two and three chasers (item 6), the press pitch (item 15, figu
 1. Titles and descriptions: rewrite them to fit (keeping every H1, URL and keyword), or leave them.
 2. Address: put the Maida Vale, London address in the homepage's LocalBusiness data, as it already is on the printed card, or leave it off.
 3. Bing Webmaster Tools and Google Business Profile: both need his own sign-in.
+
+## Progress (updated 12 October 2026)
+
+Decision from Steven: no paid media until a couple of sales have come through organic search; partners are his focus and search leads are Claude's. docs/paid-search-test.md stays as a proposal.
+
+Where search stands (28 days to 8 October): 737 appearances, 8 clicks, no case started from any source in 30 days. The United States and Canada are 331 appearances at position 12 to 13, the UK 343 at position 27. For "facebook memorialisation request not working" we are fourth in the UK and outside the top ten in the US, where the query is spelt "memorialization". JustAnswer, a paid question service, ranks on both, which is evidence that people do pay for help at the stuck moment.
+
+Done in this round:
+
+- Hand-over line at the top of every stuck page (PR #79), tracked as "Stuck: <platform> top" and "Stuck: <platform> top email".
+- New comparison page /blog/death-admin-services-uk for "death admin services" (autocomplete confirmed), where the current fifth result is a dead page. It sends people to the right free service and explains the stuck moments none of them can finish. Card image reused from the documents guide for now.
+- US spelling "memorialization" in the description and introduction of the Facebook stuck page and the description of the Instagram one, so the pages carry both spellings.
+- /digital-legacy-service added to the guide block in the footer ("Let us do it for you"), which takes it from 2 internal links to about 50.
+
+Next, in order: read the "top" hand-over labels and the Traffic tab for which guides visitors read and whether any reach /start; title rewrites on TikTok and PayPal, which are shown 170 times a month at position 8 to 9 with no clicks; Bing Webmaster Tools and Google Business Profile remain Steven's.
